@@ -15,8 +15,9 @@ use wcf\system\WCF;
  * @category 	Community Framework
  */
 class UserProfileCommentListener implements IEventListener {
-	public $objectTypeID = 0;
 	public $commentList = null;
+	public $commentManager = null;
+	public $objectTypeID = 0;
 	
 	/**
 	 * @see wcf\system\event\IEventListener::execute()
@@ -39,17 +40,19 @@ class UserProfileCommentListener implements IEventListener {
 	
 	protected function readParameters() {
 		$this->objectTypeID = CommentHandler::getInstance()->getObjectTypeID('com.woltlab.wcf.user.profileComment');
-		if ($this->objectTypeID === null) {
-			die('<pre>KERNEL PANIC</pre>');
-		}
+		
+		$objectType = CommentHandler::getInstance()->getObjectType($this->objectTypeID);
+		$this->commentManager = $objectType->getProcessor();
 	}
 	
 	protected function readData($eventObj) {
-		$this->commentList = CommentHandler::getInstance()->getCommentList($this->objectTypeID, $eventObj->userID);
+		$this->commentList = CommentHandler::getInstance()->getCommentList($this->objectTypeID, $this->commentManager, $eventObj->userID);
 	}
 	
 	protected function assignVariables() {
 		WCF::getTPL()->assign(array(
+			'commentCanAdd' => $this->commentManager->canAdd(),
+			'commentsPerPage' => $this->commentManager->commentsPerPage(),
 			'commentList' => $this->commentList,
 			'commentObjectTypeID' => $this->objectTypeID
 		));

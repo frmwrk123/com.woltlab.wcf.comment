@@ -2,6 +2,7 @@
 namespace wcf\system\comment;
 use wcf\data\comment\StructuredCommentList;
 use wcf\data\object\type\ObjectTypeCache;
+use wcf\system\comment\manager\ICommentManager;
 use wcf\system\SingletonFactory;
 
 /**
@@ -68,12 +69,14 @@ class CommentHandler extends SingletonFactory {
 	/**
 	 * Returns a comment list for a given object type and object id.
 	 * 
-	 * @param	integer		$objectTypeID
-	 * @param	integer		$objectID
+	 * @param	integer						$objectTypeID
+	 * @param	wcf\data\comment\manager\ICommentManager	$commentManager
+	 * @param	integer						$objectID
 	 * @return	wcf\data\comment\StructuredCommentList
 	 */
-	public function getCommentList($objectTypeID, $objectID) {
+	public function getCommentList($objectTypeID, ICommentManager $commentManager, $objectID) {
 		$commentList = new StructuredCommentList($objectTypeID, $objectID);
+		$commentList->sqlLimit = $commentManager->commentsPerPage();
 		$commentList->readObjects();
 		
 		return $commentList;

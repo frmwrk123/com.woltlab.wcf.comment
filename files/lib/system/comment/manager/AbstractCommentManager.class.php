@@ -1,7 +1,6 @@
 <?php
 namespace wcf\system\comment\manager;
 use wcf\system\event\EventHandler;
-use wcf\system\SingletonFactory;
 
 /**
  * Default implementation for comment managers.
@@ -13,7 +12,7 @@ use wcf\system\SingletonFactory;
  * @subpackage	system.comment.manager
  * @category 	Community Framework
  */
-abstract class AbstractCommentManager extends SingletonFactory implements ICommentManager {
+abstract class AbstractCommentManager implements ICommentManager {
 	/**
 	 * set to true to allow creation of comments or responses
 	 * @var	boolean
@@ -33,9 +32,9 @@ abstract class AbstractCommentManager extends SingletonFactory implements IComme
 	protected $commentsPerPage = 10;
 	
 	/**
-	 * @see	wcf\system\SingletonFactory::init()
+	 * Initializes a new comment manager instance.
 	 */
-	protected final function init() {
+	public final function __construct() {
 		$this->setOptions();
 		
 		EventHandler::getInstance()->fireAction($this, 'didInit');
@@ -44,7 +43,7 @@ abstract class AbstractCommentManager extends SingletonFactory implements IComme
 	/**
 	 * Should be used to set options and validate permissions.
 	 * 
-	 * @see	wcf\system\comment\manager\AbstractCommentManager::init()
+	 * @see	wcf\system\comment\manager\AbstractCommentManager::__construct()
 	 */
 	abstract protected function setOptions();
 	
