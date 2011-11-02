@@ -16,16 +16,25 @@
 			{assign var=__dummy value=$__wcf->getUserProfileHandler()->getAvatar()->setMaxSize(32, 32)}
 			{assign var=userAvatar value=$__wcf->getUserProfileHandler()->getAvatar()}
 		{/if}
-		new WCF.Comment.Handler('{@$userAvatar}');
+		new WCF.Comment.Handler({if $commentCanAdd}true{else}false{/if}, {@$commentsPerPage}, '{@$userAvatar}');
 	});
 	//]]>
 </script>
 <style type="text/css">
-	div.commentResponsePrevious {
+	div.commentContent > div.border > div {
 		background-color: rgb(231, 242, 253);
+		border-bottom: 1px solid rgb(204, 204, 204);
 		padding: 7px;
 	}
 
+	div.commentContent > div.border > div:last-child {
+		border-bottom-width: 0;
+	}
+
+	div.commentContent > div.border > div a {
+		cursor: pointer;
+	}
+	
 	ul.commentList {
 		background-color: rgb(243, 252, 255);
 		margin: 0 auto;

@@ -13,8 +13,20 @@ WCF.Comment = {};
  * @copyright	2001-2011 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  */
-WCF.Comment.Handler = function(userAvatar) { this.init(userAvatar); };
+WCF.Comment.Handler = function(canAdd, commentsPerPage, userAvatar) { this.init(canAdd, commentsPerPage, userAvatar); };
 WCF.Comment.Handler.prototype = {
+	/**
+	 * user can add comments and responses
+	 * @var	boolean
+	 */
+	_canAdd: false,
+
+	/**
+	 * comments displayed at once
+	 * @var	integer
+	 */
+	_commentsPerPage: 0,
+
 	/**
 	 * list of comment containers
 	 * @var	object
@@ -31,7 +43,9 @@ WCF.Comment.Handler.prototype = {
 	 * 
 	 * @param	string		userAvatar
 	 */
-	init: function(userAvatar) {
+	init: function(canAdd, commentsPerPage, userAvatar) {
+		this._canAdd = canAdd;
+		this._commentsPerPage = commentsPerPage;
 		this._userAvatar = userAvatar;
 
 		// init containers
@@ -43,7 +57,7 @@ WCF.Comment.Handler.prototype = {
 			$container.data('WCF-Comment-Handler-API', this);
 
 			this._containers[$containerID] = $container;
-			new WCF.Comment.Add($containerID, $container);
+			if (this._canAdd) new WCF.Comment.Add($containerID, $container);
 			new WCF.Comment.List($containerID, $container);
 		}, this));
 	},
@@ -69,6 +83,24 @@ WCF.Comment.Handler.prototype = {
 	 */
 	getUserAvatar: function() {
 		return this._userAvatar;
+	},
+
+	/**
+	 * Returns true, if user can add comments and responses.
+	 * 
+	 * @return	boolean
+	 */
+	canAdd: function() {
+		return this._canAdd;
+	},
+
+	/**
+	 * Returns comments per page.
+	 * 
+	 * @return	integer
+	 */
+	commentsPerPage: function() {
+		return this._commentsPerPage;
 	}
 };
 
@@ -246,6 +278,12 @@ WCF.Comment.Add = WCF.Comment.Base.extend({
  */
 WCF.Comment.List = WCF.Comment.Base.extend({
 	/**
+	 * user can add comments and responses
+	 * @var	boolean
+	 */
+	_canAdd: null,
+
+	/**
 	 * list of comments
 	 * @var	object
 	 */
@@ -270,7 +308,7 @@ WCF.Comment.List = WCF.Comment.Base.extend({
 				this._comments[$containerID] = $comment;
 
 				new WCF.Comment.Editor($containerID, $comment);
-				new WCF.Comment.Response.Add($containerID, $comment);
+				if (this.canAdd()) new WCF.Comment.Response.Add($containerID, $comment);
 				new WCF.Comment.Response.List($containerID, $comment);
 			}
 		}, this));
@@ -286,6 +324,19 @@ WCF.Comment.List = WCF.Comment.Base.extend({
 	 */
 	_domNodeInserted: function() {
 		this._init();
+	},
+
+	/**
+	 * Returns true, if user can add comments and responses.
+	 * 
+	 * @return	boolean
+	 */
+	canAdd: function() {
+		if (this._canAdd === null) {
+			this._canAdd = this._container.data('WCF-Comment-Handler-API').canAdd();
+		}
+
+		return this._canAdd;
 	}
 });
 
@@ -585,13 +636,7 @@ WCF.Comment.Response.Add = WCF.Comment.Base.extend({
 		// get list items
 		var $listItems = $list.children('li');
 
-		var $showAll = this._container.find('div.commentResponsePrevious');
-
 		if ($listItems.length === 3) {
-			if ($showAll.length === 0) {
-				$showAll = $('<div class="commentResponsePrevious"><a></a></div>').insertAfter($list);
-			}
-
 			// remove last comment
 			var $lastResponse = $listItems.last();
 			$lastResponse.wcfBlindOut('vertical', $.proxy(function() {
@@ -599,8 +644,8 @@ WCF.Comment.Response.Add = WCF.Comment.Base.extend({
 			}, this));
 		}
 
-		// update message
-		$showAll.children('a').text(eval(WCF.Language.get('wcf.comment.response.count')));
+		// update response count
+		$list.data('responses', data.returnValues.responses);
 
 		// insert new response
 		$(data.returnValues.template).hide().prependTo($list).wcfBlindIn();
@@ -671,11 +716,9 @@ WCF.Comment.Response.List = WCF.Comment.Base.extend({
 		}, this));
 
 		if (!this._didInit) {
-			if (this._container.find('.commentResponsePrevious').length == 1) {
-				new WCF.Comment.Response.Loader(this._containerID, this._container);
-			}
+			new WCF.Comment.Response.Loader(this._containerID, this._container);
 
-			WCF.DOMNodeInsertedHandler.addCallback('WCF.Comment.Response.List', $.proxy(this._domNodeInserted, this));
+			WCF.DOMNodeInsertedHandler.addCallback('WCF.Comment.Response.List.' + this._containerID, $.proxy(this._domNodeInserted, this));
 			this._didInit = true;
 		}
 	},
@@ -710,56 +753,215 @@ WCF.Comment.Response.Editor = WCF.Comment.Editor.extend({
 	}
 });
 
+/**
+ * Loads previous responses.
+ * 
+ * @see	WCF.Comment.Base
+ */
 WCF.Comment.Response.Loader = WCF.Comment.Base.extend({
+	/**
+	 * list of navigation buttons
+	 * @var	object
+	 */
+	_buttons: { },
+
+	/**
+	 * button states
+	 * @var	object
+	 */
+	_buttonState: { },
+
+	/**
+	 * response list cache
+	 * @var	object
+	 */
+	_cache: { },
+
+	/**
+	 * current page number, whereas 0 is the default view
+	 * @var	integer
+	 */
 	_pageNo: 0,
 	
-	_responseList: { },
+	/**
+	 * response count
+	 * @var	integer
+	 */
+	_responses: 0,
 
+	/**
+	 * response list element
+	 * @var	jQuery
+	 */
+	_responseList: null,
+
+	/**
+	 * proxy object
+	 * @var	WCF.Action.Proxy
+	 */
 	_proxy: null,
 
+	/**
+	 * @see	WCF.Comment.Base._init()
+	 */
 	_init: function() {
 		this._proxy = new WCF.Action.Proxy({
 			success: $.proxy(this._success, this)
 		});
 
-		this._container.find('.commentResponsePrevious').click($.proxy(this._previous, this));
+		this._responseList = this._container.find('.commentResponseList');
+
+		// create buttons
+		this._buttons = {
+			previous: $('<div class="commentResponsePrevious"><a>Show previous responses</a></div>'),
+			recent: $('<div class="commentResponseRecent"><a>Show recent responses</a></div>')
+		};
+		this._buttonState = {
+			previous: {
+				visible: false
+			},
+			recent: {
+				visible: false
+			}
+		};
+
+		// show previous button if applicable
+		if (this._responseList.data('responses') > 3) {
+			this._showPreviousButton();
+		}
 	},
 
-	_previous: function() {
+	/**
+	 * Triggers previous responses.
+	 * 
+	 * @param	object		event
+	 */
+	_previous: function(event) {
 		this._pageNo++;
 
-		if (!this._responseList[this._pageNo]) {
-			this._proxy.setOption('data', {
-				actionName: 'getResponseList',
-				className: 'wcf\\data\\comment\\response\\CommentResponseAction',
-				parameters: {
-					data: {
-						action: 'previous',
-						containerID: this._containerID,
-						commentID: this._container.data('commentID'),
-						pageNo: this._pageNo
-					}
+		// populate cache and display list afterwards
+		if (!this._cache[this._pageNo]) {
+			this._load();
+		}
+		else {
+			this._showPrevious();
+		}
+	},
+
+	/**
+	 * Fetches response list from server.
+	 */
+	_load: function() {
+		this._proxy.setOption('data', {
+			actionName: 'getResponseList',
+			className: 'wcf\\data\\comment\\response\\CommentResponseAction',
+			parameters: {
+				data: {
+					containerID: this._containerID,
+					commentID: this._container.data('commentID'),
+					pageNo: this._pageNo
 				}
-			});
-			this._proxy.sendRequest();
-			return;
+			}
+		});
+		this._proxy.sendRequest();
+	},
+
+	/**
+	 * Shows a list of previous responses.
+	 */
+	_showPrevious: function() {
+		// validate if there's another page
+		if (this._countPages() <= this._pageNo) {
+			this._responseList.next().remove();
+			this._buttonState.previous.visible = false;
 		}
 
-		var $responseList = this._container.find('.commentResponseList').wrap('<div />').wcfBlindOut('vertical', $.proxy(function() {
-			$responseList.html(this._responseList[this._pageNo]).wcfBlindIn('vertical', function() {
+		// add recent button
+		if (this._pageNo > 1) {
+			this._showRecentButton();
+		}
+
+		// some more or less fancy list exchange
+		var $responseList = this._responseList.wrap('<div />').wcfBlindOut('vertical', $.proxy(function() {
+			$responseList.html(this._cache[this._pageNo]).wcfBlindIn('vertical', function() {
 				$responseList.unwrap('<div />');
 			}, 600);
 		}, this), 600);
 	},
 
+	/**
+	 * Triggers display of more recent responses.
+	 * 
+	 * @param	object		event
+	 */
+	_recent: function(event) {
+		this._pageNo--
+
+		this._showRecent();
+	},
+
+	/**
+	 * Shows a list of more recent responses.
+	 */
+	_showRecent: function() {
+		// validate if there's another page
+		if (this._pageNo <= 1) {
+			this._responseList.prev().remove();
+			this._buttonState.recent.visible = false;
+		}
+
+		// add previous button
+		this._showPreviousButton();
+
+		// once again some more or less fancy list exchange
+		var $responseList = this._responseList.wrap('<div />').wcfBlindOut('vertical', $.proxy(function() {
+			$responseList.html(this._cache[this._pageNo]).wcfBlindIn('vertical', function() {
+				$responseList.unwrap('<div />');
+			}, 600);
+		}, this), 600);
+	},
+
+	/**
+	 * Evaluates server response and populates response list cache.
+	 * 
+	 * @param	object		data
+	 * @param	string		textStatus
+	 * @param	jQuery		jqXHR
+	 */
 	_success: function(data, textStatus, jqXHR) {
 		if (data.returnValues.containerID != this._containerID) return;
 
-		this._responseList[this._pageNo] = data.returnValues.template;
+		this._cache[this._pageNo] = data.returnValues.template;
 		
-		if (data.returnValues.action == 'previous') {
-			this._pageNo--;
-			this._previous();
+		this._showPrevious();
+	},
+
+	/**
+	 * Display the previous button if applicable.
+	 */
+	_showPreviousButton: function() {
+		if (!this._buttonState.previous.visible) {
+			this._buttons.previous.click($.proxy(this._previous, this)).insertAfter(this._responseList);
+			this._buttonState.previous.visible = true;
 		}
+	},
+
+	/**
+	 * Displays the recent button if applicable.
+	 */
+	_showRecentButton: function() {
+		if (!this._buttonState.recent.visible) {
+			this._buttons.recent.click($.proxy(this._recent, this)).insertBefore(this._responseList);
+			this._buttonState.recent.visible = true;
+		}
+	},
+
+	/**
+	 * Counts the total amount of pages.
+	 * 
+	 * @return	integer
+	 */
+	_countPages: function() {
+		return Math.ceil(this._responseList.data('responses') / 20);
 	}
 });

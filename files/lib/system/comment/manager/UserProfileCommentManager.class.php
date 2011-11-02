@@ -1,5 +1,6 @@
 <?php
 namespace wcf\system\comment\manager;
+use wcf\system\WCF;
 
 /**
  * User profile comment manager implementation.
@@ -17,14 +18,22 @@ class UserProfileCommentManager extends AbstractCommentManager {
 	 */
 	protected function setOptions() {
 		$this->canAdd = true;
+		
+		if (!WCF::getUser()->userID) {
+			$this->canAdd = false;
+		}
 	}
 	
 	/**
 	 * @see	wcf\system\comment\manager\ICommentManager::canEdit()
 	 */
 	public function canEdit($userID, $time) {
-		parent::canEdit($userID, $time);
+		$this->canEdit = true;
 		
-		return true;
+		if (!WCF::getUser()->userID) {
+			$this->canEdit = false;
+		}
+		
+		parent::canEdit($userID, $time);
 	}
 }

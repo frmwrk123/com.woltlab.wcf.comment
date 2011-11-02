@@ -18,16 +18,11 @@
 				</ul>
 
 				<div class="border">
-					<ul class="commentResponseList">
+					<ul class="commentResponseList" data-responses="{@$comment->responses}">
 						{if $comment|count}
 							{include file='commentResponseList' sandbox=false responseList=$comment}
 						{/if}
 					</ul>
-					{if $comment->responses > 3}
-						<div class="commentResponsePrevious"> <!-- previous <> recent -->
-							<a>Show previous responses</a>
-						</div>
-					{/if}
 				</div>
 			</div>
 		</div>

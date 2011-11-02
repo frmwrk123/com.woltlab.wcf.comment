@@ -52,7 +52,6 @@ class CommentResponseAction extends AbstractDatabaseObjectAction {
 		));
 		
 		return array(
-			'action' => $this->parameters['data']['action'],
 			'containerID' => $this->parameters['data']['containerID'],
 			'template' => WCF::getTPL()->fetch('commentResponseList')
 		);

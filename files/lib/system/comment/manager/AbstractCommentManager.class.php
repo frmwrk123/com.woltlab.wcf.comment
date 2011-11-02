@@ -59,6 +59,8 @@ abstract class AbstractCommentManager implements ICommentManager {
 	 */
 	public function canEdit($userID, $time) {
 		EventHandler::getInstance()->fireAction($this, 'canEdit');
+		
+		return $this->canEdit;
 	}
 	
 	/**

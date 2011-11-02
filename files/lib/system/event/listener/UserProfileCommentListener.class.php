@@ -15,8 +15,22 @@ use wcf\system\WCF;
  * @category 	Community Framework
  */
 class UserProfileCommentListener implements IEventListener {
+	/**
+	 * comment list object
+	 * @var	wcf\data\comment\StructuredCommentList
+	 */
 	public $commentList = null;
+	
+	/**
+	 * comment manager object
+	 * @var	wcf\system\comment\manager\ICommentManager
+	 */
 	public $commentManager = null;
+	
+	/**
+	 * object type id
+	 * @var	integer
+	 */
 	public $objectTypeID = 0;
 	
 	/**
@@ -38,6 +52,9 @@ class UserProfileCommentListener implements IEventListener {
 		}
 	}
 	
+	/**
+	 * Initializes user profile comment system.
+	 */
 	protected function readParameters() {
 		$this->objectTypeID = CommentHandler::getInstance()->getObjectTypeID('com.woltlab.wcf.user.profileComment');
 		
@@ -45,10 +62,16 @@ class UserProfileCommentListener implements IEventListener {
 		$this->commentManager = $objectType->getProcessor();
 	}
 	
+	/**
+	 * Fetches comment list data.
+	 */
 	protected function readData($eventObj) {
 		$this->commentList = CommentHandler::getInstance()->getCommentList($this->objectTypeID, $this->commentManager, $eventObj->userID);
 	}
 	
+	/**
+	 * Assigns comment data to template.
+	 */
 	protected function assignVariables() {
 		WCF::getTPL()->assign(array(
 			'commentCanAdd' => $this->commentManager->canAdd(),
