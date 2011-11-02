@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data xmlns="http://www.woltlab.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.woltlab.com http://www.woltlab.com/XSD/templatelistener.xsd">
+	<import>
+		<templatelistener name="userProfileCommentListTabMenuItem">
+			<environment>user</environment>
+			<templatename>user</templatename>
+			<eventname>contentListItems</eventname>
+			<templatecode><![CDATA[<li><a href="#commentList">commentList</a></li>]]></templatecode>
+		</templatelistener>
+
+		<templatelistener name="userProfileCommentList">
+			<environment>user</environment>
+			<templatename>user</templatename>
+			<eventname>content</eventname>
+			<templatecode><![CDATA[{include file='userProfileCommentList'}]]></templatecode>
+		</templatelistener>
+	</import>
+</data>

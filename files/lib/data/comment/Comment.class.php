@@ -22,4 +22,22 @@ class Comment extends DatabaseObject {
 	 * @see	wcf\data\DatabaseObject::$databaseTableIndexName
 	 */
 	protected static $databaseTableIndexName = 'commentID';
+	
+	/**
+	 * Returns a list of last response ids.
+	 * 
+	 * @return array<integer>
+	 */
+	public function getLastResponseIDs() {
+		if ($this->lastResponseIDs === null || $this->lastResponseIDs == '') {
+			return array();
+		}
+		
+		$lastResponseIDs = @unserialize($this->lastResponseIDs);
+		if ($lastResponseIDs === false) {
+			return array();
+		}
+		
+		return $lastResponseIDs;
+	}
 }

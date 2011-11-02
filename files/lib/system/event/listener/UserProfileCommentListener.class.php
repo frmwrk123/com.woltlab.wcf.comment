@@ -1,6 +1,8 @@
 <?php
 namespace wcf\system\event\listener;
+use wcf\system\comment\CommentHandler;
 use wcf\system\event\IEventListener;
+use wcf\system\WCF;
 
 /**
  * Handles user profile comments.
@@ -13,6 +15,9 @@ use wcf\system\event\IEventListener;
  * @category 	Community Framework
  */
 class UserProfileCommentListener implements IEventListener {
+	public $objectTypeID = 0;
+	public $commentList = null;
+	
 	/**
 	 * @see wcf\system\event\IEventListener::execute()
 	 */
@@ -23,7 +28,7 @@ class UserProfileCommentListener implements IEventListener {
 			break;
 			
 			case 'readData':
-				$this->readData();
+				$this->readData($eventObj);
 			break;
 			
 			case 'assignVariables':
@@ -33,11 +38,20 @@ class UserProfileCommentListener implements IEventListener {
 	}
 	
 	protected function readParameters() {
+		$this->objectTypeID = CommentHandler::getInstance()->getObjectTypeID('com.woltlab.wcf.user.profileComment');
+		if ($this->objectTypeID === null) {
+			die('<pre>KERNEL PANIC</pre>');
+		}
 	}
 	
-	protected function readData() {
+	protected function readData($eventObj) {
+		$this->commentList = CommentHandler::getInstance()->getCommentList($this->objectTypeID, $eventObj->userID);
 	}
 	
 	protected function assignVariables() {
+		WCF::getTPL()->assign(array(
+			'commentList' => $this->commentList,
+			'commentObjectTypeID' => $this->objectTypeID
+		));
 	}
 }
