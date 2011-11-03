@@ -13,7 +13,7 @@ CREATE TABLE wcf1_comment (
 
 -- comment responses
 DROP TABLE IF EXISTS wcf1_comment_response;
-CREATE TABLE IF NOT EXISTS wcf1_comment_response (
+CREATE TABLE wcf1_comment_response (
 	responseID INT(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	commentID INT(10) NOT NULL,
 	time INT(10) NOT NULL DEFAULT '0',
