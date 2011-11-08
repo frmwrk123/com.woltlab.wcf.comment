@@ -27,5 +27,6 @@
 		<instruction type="objectType">objectType.xml</instruction>
 		<instruction type="sql">install.sql</instruction>
 		<instruction type="templateListener">templateListener.xml</instruction>
+		<instruction type="userProfileMenu">userProfileMenu.xml</instruction>
 	</instructions>
 </package>
