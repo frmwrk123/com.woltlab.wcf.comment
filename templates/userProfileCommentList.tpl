@@ -125,8 +125,6 @@
 	}
 </style>
 
-<div id="commentList" class="border tabMenuContent">
-	<ul class="border commentList" data-objectID="{@$user->userID}" data-objectTypeID="{@$commentObjectTypeID}">
-		{include file='commentList' sandbox=false}
-	</ul>
-</div>
+<ul class="border commentList" data-objectID="{@$user->userID}" data-objectTypeID="{@$commentObjectTypeID}">
+	{include file='commentList' sandbox=false}
+</ul>
