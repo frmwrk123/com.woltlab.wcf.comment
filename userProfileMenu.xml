@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <data xmlns="http://www.woltlab.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.woltlab.com http://www.woltlab.com/XSD/userProfileMenu.xsd">
 	<import>
-		<userprofilemenuitem name="comments">
+		<userprofilemenuitem name="wcf.user.profile.menu.comment">
 			<showorder>3</showorder>
 		</userprofilemenuitem>
 	</import>
