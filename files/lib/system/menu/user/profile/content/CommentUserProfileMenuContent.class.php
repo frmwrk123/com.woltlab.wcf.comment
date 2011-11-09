@@ -1,5 +1,8 @@
 <?php
 namespace wcf\system\menu\user\profile\content;
+use wcf\system\comment\CommentHandler;
+use wcf\system\SingletonFactory;
+use wcf\system\WCF;
 
 /**
  * Handles user profile comment content.
@@ -11,11 +14,39 @@ namespace wcf\system\menu\user\profile\content;
  * @subpackage	system.menu.user.profile.content
  * @category 	Community Framework
  */
-class CommentUserProfileMenuContent implements IUserProfileMenuContent {
+class CommentUserProfileMenuContent extends SingletonFactory implements IUserProfileMenuContent {
+	/**
+	 * comment manager object
+	 * @var	wcf\system\comment\manager\ICommentManager
+	 */
+	public $commentManager = null;
+	
+	/**
+	 * object type id
+	 * @var	integer
+	 */
+	public $objectTypeID = 0;
+	
+	protected function init() {
+		$this->objectTypeID = CommentHandler::getInstance()->getObjectTypeID('com.woltlab.wcf.user.profileComment');
+		$objectType = CommentHandler::getInstance()->getObjectType($this->objectTypeID);
+		$this->commentManager = $objectType->getProcessor();
+	}
+	
 	/**
 	 * @see	wcf\system\menu\user\profile\content\IUserProfileMenuContent::getContent()
 	 */
-	public function getContent() {
-		return 'IMPLEMENT ME: '.get_class($this);
+	public function getContent($userID) {
+		$commentList = CommentHandler::getInstance()->getCommentList($this->objectTypeID, $this->commentManager, $userID);
+		
+		WCF::getTPL()->assign(array(
+			'commentCanAdd' => $this->commentManager->canAdd(),
+			'commentsPerPage' => $this->commentManager->commentsPerPage(),
+			'commentList' => $commentList,
+			'commentObjectTypeID' => $this->objectTypeID,
+			'userID' => $userID
+		));
+		
+		return WCF::getTPL()->fetch('userProfileCommentList');
 	}
 }
