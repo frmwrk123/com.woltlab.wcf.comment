@@ -1,5 +1,5 @@
 {foreach from=$commentList item=comment}
-	<li data-commentID="{@$comment->commentID}" data-type="comment">
+	<li data-comment-id="{@$comment->commentID}" data-type="comment">
 		<div>
 			<a href="{link controller='User' id=$comment->userID}{/link}">
 				{if $comment->getUserProfile()->getAvatar()}

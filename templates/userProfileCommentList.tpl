@@ -125,6 +125,6 @@
 	}
 </style>
 
-<ul class="border commentList" data-objectID="{@$userID}" data-objectTypeID="{@$commentObjectTypeID}">
+<ul class="border commentList" data-object-id="{@$userID}" data-object-type-id="{@$commentObjectTypeID}">
 	{include file='commentList' sandbox=false}
 </ul>

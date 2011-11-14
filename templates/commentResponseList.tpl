@@ -1,5 +1,5 @@
 {foreach from=$responseList item=response}
-	<li data-responseID="{@$response->responseID}" data-type="response">
+	<li data-response-id="{@$response->responseID}" data-type="response">
 		<div>
 			<a href="{link controller='User' id=$response->userID}{/link}">
 				{if $response->getUserProfile()->getAvatar()}
