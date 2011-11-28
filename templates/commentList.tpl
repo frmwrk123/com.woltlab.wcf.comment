@@ -1,10 +1,10 @@
 {foreach from=$commentList item=comment}
 	<li data-comment-id="{@$comment->commentID}" data-type="comment">
 		<div>
-			<a href="{link controller='User' id=$comment->userID}{/link}">
+			<a href="{link controller='User' id=$comment->userID}{/link}" class="userAvatar">
 				{if $comment->getUserProfile()->getAvatar()}
 					{assign var=__dummy value=$comment->getUserProfile()->getAvatar()->setMaxSize(48, 48)}
-					<p>{@$comment->getUserProfile()->getAvatar()}</p>
+					{@$comment->getUserProfile()->getAvatar()}
 				{/if}
 			</a>
 
@@ -18,7 +18,7 @@
 				</ul>
 
 				<div class="border">
-					<ul class="commentResponseList" data-responses="{@$comment->responses}">
+					<ul data-responses="{@$comment->responses}" class="commentResponseList">
 						{if $comment|count}
 							{include file='commentResponseList' sandbox=false responseList=$comment}
 						{/if}

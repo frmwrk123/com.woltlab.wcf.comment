@@ -1,10 +1,10 @@
 {foreach from=$responseList item=response}
 	<li data-response-id="{@$response->responseID}" data-type="response">
 		<div>
-			<a href="{link controller='User' id=$response->userID}{/link}">
+			<a href="{link controller='User' id=$response->userID}{/link}" class="userAvatar">
 				{if $response->getUserProfile()->getAvatar()}
 					{assign var=__dummy value=$response->getUserProfile()->getAvatar()->setMaxSize(32, 32)}
-					<p>{@$response->getUserProfile()->getAvatar()}</p>
+					{@$response->getUserProfile()->getAvatar()}
 				{/if}
 			</a>
 
