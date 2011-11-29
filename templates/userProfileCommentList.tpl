@@ -21,6 +21,6 @@
 	//]]>
 </script>
 
-<ul data-object-id="{@$userID}" data-object-type-id="{@$commentObjectTypeID}" class="border commentList">
+<ul data-object-id="{@$userID}" data-object-type-id="{@$commentObjectTypeID}" class="commentList">
 	{include file='commentList' sandbox=false}
 </ul>
