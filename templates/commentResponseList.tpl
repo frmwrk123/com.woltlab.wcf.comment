@@ -9,11 +9,11 @@
 			</a>
 
 			<div class="commentContent">
-				<p class="userName"><a href="{link controller='User' id=$response->userID}{/link}">{$response->getUserProfile()->username}</a></p>
+				<p class="userName"><a href="{link controller='User' id=$response->userID}{/link}">{$response->getUserProfile()->username}</a> - {@$response->time|time}</p>
 				<p class="userResponse">{$response->message}</p>
 				
 				<ul class="commentOptions">
-					<li>{@$response->time|time}</li>
+					<li></li>
 				</ul>
 			</div>
 		</div>
