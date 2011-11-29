@@ -175,7 +175,7 @@ WCF.Comment.Add = WCF.Comment.Base.extend({
 	 */
 	_init: function() {
 		// create UI
-		var $listItem = $('<li><div><p>' + this.getUserAvatar() + '</p><div></div></div></li>');
+		var $listItem = $('<li><div><figure class="userAvatar">' + this.getUserAvatar() + '</figure><div></div></div></li>');
 		var $inputContainer = $listItem.find('div > div');
 		var $input = $('<input type="text" placeholder="' + WCF.Language.get('wcf.comment.add') + '" />').addClass('long').appendTo($inputContainer);
 		var $description = $('<small>' + WCF.Language.get('wcf.comment.description') + '</small>').hide().appendTo($inputContainer);
@@ -435,7 +435,7 @@ WCF.Comment.Editor = WCF.Comment.Base.extend({
 		// replace content with input field
 		$content.html($.proxy(function(index, oldhtml) {
 			this._data.edit = oldhtml;
-			var $input = $('<input type="text" value="' + message + '" class="long" /><small>' + WCF.Language.get('wcf.comment.edit.description') + '</small>').keydown($.proxy(this._keyDown, this)).keyup($.proxy(this._save, this));
+			var $input = $('<input type="text" value="' + message + '" class="long" /> <small>' + WCF.Language.get('wcf.comment.edit.description') + '</small>').keydown($.proxy(this._keyDown, this)).keyup($.proxy(this._save, this));
 
 			return $input;
 		}, this));
@@ -570,7 +570,7 @@ WCF.Comment.Response.Add = WCF.Comment.Base.extend({
 	 */
 	_init: function() {
 		// create UI
-		var $listItem = $('<div class="commentResponseAdd"><div><p>' + this.getUserAvatar() + '</p><div></div></div></div>');
+		var $listItem = $('<div class="commentResponseAdd"><div><figure class="userAvatar">' + this.getUserAvatar() + '</figure><div></div></div></div>');
 		var $inputContainer = $listItem.find('div > div');
 		var $input = $('<input type="text" placeholder="' + WCF.Language.get('wcf.comment.response.add') + '" />').addClass('long').data('containerID', this._containerID).appendTo($inputContainer);
 		var $description = $('<small>' + WCF.Language.get('wcf.comment.response.description') + '</small>').hide().appendTo($inputContainer);
