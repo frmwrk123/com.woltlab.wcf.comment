@@ -6,5 +6,11 @@
 			<definitionname>com.woltlab.wcf.comment.commentableContent</definitionname>
 			<classname>wcf\system\comment\manager\UserProfileCommentManager</classname>
 		</type>
+		
+		<type>
+			<name>com.woltlab.wcf.comment</name>
+			<definitionname>com.woltlab.wcf.like.likeableObject</definitionname>
+			<classname>wcf\data\comment\LikeableCommentProvider</classname>
+		</type>
 	</import>
 </data>

@@ -4,6 +4,7 @@ use wcf\data\comment\response\CommentResponseList;
 use wcf\data\comment\response\StructuredCommentResponse;
 use wcf\data\user\UserList;
 use wcf\data\user\UserProfile;
+use wcf\system\like\LikeHandler;
 
 /**
  * Provides a structured comment list fetching last responses for every comment.
@@ -99,5 +100,16 @@ class StructuredCommentList extends CommentList {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Fetches the like data.
+	 * 
+	 * @return array
+	 */
+	public function getLikeData() {
+		$objectType = LikeHandler::getInstance()->getObjectType('com.woltlab.wcf.comment');
+		LikeHandler::getInstance()->loadLikeObjects($objectType, $this->getObjectIDs());
+		return LikeHandler::getInstance()->getLikeObjects($objectType);
 	}
 }

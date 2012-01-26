@@ -17,6 +17,7 @@
 			{assign var=userAvatar value=$__wcf->getUserProfileHandler()->getAvatar()}
 		{/if}
 		new WCF.Comment.Handler({if $commentCanAdd}true{else}false{/if}, {@$commentsPerPage}, '{@$userAvatar}');
+		new WCF.Comment.Like();	
 	});
 	//]]>
 </script>

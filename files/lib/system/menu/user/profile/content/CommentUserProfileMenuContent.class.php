@@ -27,6 +27,9 @@ class CommentUserProfileMenuContent extends SingletonFactory implements IUserPro
 	 */
 	public $objectTypeID = 0;
 	
+	/**
+	 * @see	wcf\system\SingletonFactory::init()
+	 */
 	protected function init() {
 		$this->objectTypeID = CommentHandler::getInstance()->getObjectTypeID('com.woltlab.wcf.user.profileComment');
 		$objectType = CommentHandler::getInstance()->getObjectType($this->objectTypeID);
@@ -39,12 +42,14 @@ class CommentUserProfileMenuContent extends SingletonFactory implements IUserPro
 	public function getContent($userID) {
 		$commentList = CommentHandler::getInstance()->getCommentList($this->objectTypeID, $this->commentManager, $userID);
 		
+		// assign variables
 		WCF::getTPL()->assign(array(
 			'commentCanAdd' => $this->commentManager->canAdd(),
 			'commentsPerPage' => $this->commentManager->commentsPerPage(),
 			'commentList' => $commentList,
 			'commentObjectTypeID' => $this->objectTypeID,
-			'userID' => $userID
+			'userID' => $userID,
+			'likeData' => $commentList->getLikeData()
 		));
 		
 		return WCF::getTPL()->fetch('userProfileCommentList');

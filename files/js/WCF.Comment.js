@@ -965,3 +965,40 @@ WCF.Comment.Response.Loader = WCF.Comment.Base.extend({
 		return Math.ceil(this._responseList.data('responses') / 20);
 	}
 });
+
+/**
+ * Like support for comments
+ * 
+ * @see	WCF.Like
+ */
+WCF.Comment.Like = WCF.Like.extend({
+	/**
+	 * @see	WCF.Like._getContainers()
+	 */
+	_getContainers: function() {
+		return $('.commentList li');
+	},
+
+	/**
+	 * @see	WCF.Like._getObjectID()
+	 */
+	_getObjectID: function(containerID) {
+		return this._containers[containerID].data('commentID');
+	},
+
+	/**
+	 * @see	WCF.Like._getWidgetContainer()
+	 */
+	_getWidgetContainer: function(containerID) {
+		return this._containers[containerID].find('.commentContent');
+	},
+	
+	/**
+	 * @see	WCF.Like._addWidget()
+	 */
+	_addWidget: function(containerID, widget) {
+		var $widgetContainer = this._getWidgetContainer(containerID);
+		
+		$widgetContainer.find('.userMessage').before(widget);
+	}
+});
