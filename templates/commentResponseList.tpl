@@ -2,8 +2,7 @@
 	<li data-response-id="{@$response->responseID}" data-type="response">
 		<a href="{link controller='User' id=$response->userID}{/link}" title="{$response->getUserProfile()->username}" class="userAvatar">
 			{if $response->getUserProfile()->getAvatar()}
-				{assign var=__dummy value=$response->getUserProfile()->getAvatar()->setMaxSize(32, 32)}
-				{@$response->getUserProfile()->getAvatar()}
+				{@$response->getUserProfile()->getAvatar()->getImageTag(32)}
 			{/if}
 		</a>
 

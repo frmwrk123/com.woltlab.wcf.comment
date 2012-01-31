@@ -13,8 +13,7 @@
 		});
 		{assign var=userAvatar value=''}
 		{if $__wcf->getUserProfileHandler()->getAvatar()}
-			{assign var=__dummy value=$__wcf->getUserProfileHandler()->getAvatar()->setMaxSize(32, 32)}
-			{assign var=userAvatar value=$__wcf->getUserProfileHandler()->getAvatar()}
+			{assign var=userAvatar value=$__wcf->getUserProfileHandler()->getAvatar()->getImageTag(32)}
 		{/if}
 		new WCF.Comment.Handler({if $commentCanAdd}true{else}false{/if}, {@$commentsPerPage}, '{@$userAvatar}');
 		new WCF.Comment.Like();	
