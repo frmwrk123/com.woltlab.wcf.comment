@@ -6,11 +6,11 @@
 			{/if}
 		</a>
 
-		<div class="commentContent">
+		<div class="wcf-commentContent">
 			<p class="userName"><a href="{link controller='User' id=$response->userID}{/link}">{$response->getUserProfile()->username}</a> - {@$response->time|time}</p>
 			<p class="userResponse">{$response->message}</p>
 			
-			<ul class="commentOptions"></ul>
+			<ul class="wcf-commentOptions"></ul>
 		</div>
 	</li>
 {/foreach}
