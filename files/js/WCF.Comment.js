@@ -813,8 +813,8 @@ WCF.Comment.Response.Loader = WCF.Comment.Base.extend({
 
 		// create buttons
 		this._buttons = {
-			previous: $('<div class="commentResponsePrevious"><a class="button">Show previous responses</a></div>'),
-			recent: $('<div class="commentResponseRecent"><a class="button">Show recent responses</a></div>')
+			previous: $('<div class="commentResponsePrevious"><a class="wcf-button">Show previous responses</a></div>'),
+			recent: $('<div class="commentResponseRecent"><a class="wcf-button">Show recent responses</a></div>')
 		};
 		this._buttonState = {
 			previous: {
