@@ -1,5 +1,6 @@
 <?php
 namespace wcf\system\comment\manager;
+use wcf\data\DatabaseObject;
 
 /**
  * Default interface for comment managers.
@@ -12,6 +13,13 @@ namespace wcf\system\comment\manager;
  * @category 	Community Framework
  */
 interface ICommentManager {
+	/**
+	 * Initializes the comment manager.
+	 * 
+	 * @param	wcf\data\DatabaseObject		$object
+	 */
+	public function __construct(DatabaseObject $object = null);
+	
 	/**
 	 * Returns true, if current user may add comments or responses.
 	 * 

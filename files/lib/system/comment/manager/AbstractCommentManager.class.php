@@ -1,5 +1,6 @@
 <?php
 namespace wcf\system\comment\manager;
+use wcf\data\DatabaseObject;
 use wcf\system\event\EventHandler;
 
 /**
@@ -32,9 +33,16 @@ abstract class AbstractCommentManager implements ICommentManager {
 	protected $commentsPerPage = 10;
 	
 	/**
-	 * Initializes a new comment manager instance.
+	 * target object
+	 * @var	wcf\data\DatabaseObject
 	 */
-	public final function __construct() {
+	protected $object = null;
+	
+	/**
+	 * @see	wcf\system\comment\manager\ICommentManager::__construct()
+	 */
+	public final function __construct(DatabaseObject $object = null) {
+		$this->object = $object;
 		$this->setOptions();
 		
 		EventHandler::getInstance()->fireAction($this, 'didInit');
