@@ -28,7 +28,15 @@ interface ICommentManager {
 	public function canAdd();
 	
 	/**
-	 * Returns true, if current user may edit the comment or response.
+	 * Returns true, if given user may delete comments or responses.
+	 * 
+	 * @param	integer		$userID
+	 * @return	boolean
+	 */
+	public function canDelete($userID);
+	
+	/**
+	 * Returns true, if given user may edit the comment or response.
 	 * 
 	 * @param	integer		$userID
 	 * @param	integer		$time

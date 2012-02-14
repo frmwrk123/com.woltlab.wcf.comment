@@ -18,25 +18,31 @@ abstract class AbstractCommentManager implements ICommentManager {
 	 * set to true to allow creation of comments or responses
 	 * @var	boolean
 	 */	
-	protected $canAdd = false;
+	public $canAdd = false;
+	
+	/**
+	 * set to true to allow deletion of a specific comment or response
+	 * @var	boolean
+	 */
+	public $canDelete = false;
 	
 	/**
 	 * set to true to allow edit of a specific comment or response
 	 * @var	boolean
 	 */
-	protected $canEdit = false;
+	public $canEdit = false;
 	
 	/**
 	 * display comments per page on init
 	 * @var	integer
 	 */
-	protected $commentsPerPage = 10;
+	public $commentsPerPage = 10;
 	
 	/**
 	 * target object
 	 * @var	wcf\data\DatabaseObject
 	 */
-	protected $object = null;
+	public $object = null;
 	
 	/**
 	 * @see	wcf\system\comment\manager\ICommentManager::__construct()
@@ -58,7 +64,7 @@ abstract class AbstractCommentManager implements ICommentManager {
 	/**
 	 * @see	wcf\system\comment\manager\ICommentManager::canAdd()
 	 */
-	public final function canAdd() {
+	public function canAdd() {
 		return $this->canAdd;
 	}
 	
@@ -72,9 +78,18 @@ abstract class AbstractCommentManager implements ICommentManager {
 	}
 	
 	/**
+	 * @see	wcf\system\comment\manager\ICommentManager::canDelete()
+	 */
+	public function canDelete($userID) {
+		EventHandler::getInstance()->fireAction($this, 'canDelete');
+		
+		return $this->canDelete;
+	}
+	
+	/**
 	 * @see	wcf\system\comment\manager\ICommentManager::commentsPerPage()
 	 */
-	public final function commentsPerPage() {
+	public function commentsPerPage() {
 		return $this->commentsPerPage;
 	}
 }
