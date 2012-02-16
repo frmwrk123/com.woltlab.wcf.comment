@@ -1,5 +1,6 @@
 <?php
 namespace wcf\system\comment\manager;
+use wcf\data\DatabaseObject;
 
 /**
  * Default interface for comment managers.
@@ -13,6 +14,13 @@ namespace wcf\system\comment\manager;
  */
 interface ICommentManager {
 	/**
+	 * Initializes the comment manager.
+	 * 
+	 * @param	wcf\data\DatabaseObject		$object
+	 */
+	public function __construct(DatabaseObject $object = null);
+	
+	/**
 	 * Returns true, if current user may add comments or responses.
 	 * 
 	 * @return	boolean
@@ -20,7 +28,15 @@ interface ICommentManager {
 	public function canAdd();
 	
 	/**
-	 * Returns true, if current user may edit the comment or response.
+	 * Returns true, if given user may delete comments or responses.
+	 * 
+	 * @param	integer		$userID
+	 * @return	boolean
+	 */
+	public function canDelete($userID);
+	
+	/**
+	 * Returns true, if given user may edit the comment or response.
 	 * 
 	 * @param	integer		$userID
 	 * @param	integer		$time

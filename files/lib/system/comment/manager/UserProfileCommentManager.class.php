@@ -18,9 +18,11 @@ class UserProfileCommentManager extends AbstractCommentManager {
 	 */
 	protected function setOptions() {
 		$this->canAdd = true;
-		
+		$this->canDelete = true;
+				
 		if (!WCF::getUser()->userID) {
 			$this->canAdd = false;
+			$this->canDelete = false;
 		}
 	}
 	
@@ -34,6 +36,6 @@ class UserProfileCommentManager extends AbstractCommentManager {
 			$this->canEdit = false;
 		}
 		
-		parent::canEdit($userID, $time);
+		return parent::canEdit($userID, $time);
 	}
 }

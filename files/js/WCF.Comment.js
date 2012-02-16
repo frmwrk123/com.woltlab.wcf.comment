@@ -49,7 +49,7 @@ WCF.Comment.Handler.prototype = {
 		this._userAvatar = userAvatar;
 
 		// init containers
-		$('.commentList').each($.proxy(function(index, container) {
+		$('.wcf-commentList').each($.proxy(function(index, container) {
 			var $container = $(container);
 			var $containerID = $container.wcfIdentify();
 
@@ -175,7 +175,7 @@ WCF.Comment.Add = WCF.Comment.Base.extend({
 	 */
 	_init: function() {
 		// create UI
-		var $listItem = $('<li class="commentAdd"><div><img src="' + RELATIVE_WCF_DIR + 'icon/edit1.svg" alt="" width="24" height="24" /><div></div></div></li>');
+		var $listItem = $('<li class="wcf-commentAdd"><div><img src="' + RELATIVE_WCF_DIR + 'icon/write1.svg" alt="" width="24" height="24" /><div></div></div></li>');
 		var $inputContainer = $listItem.find('div > div');
 		var $input = $('<input type="text" placeholder="' + WCF.Language.get('wcf.comment.add') + '" />').addClass('long').appendTo($inputContainer);
 		var $description = $('<small>' + WCF.Language.get('wcf.comment.description') + '</small>').hide().appendTo($inputContainer);
@@ -375,9 +375,9 @@ WCF.Comment.Editor = WCF.Comment.Base.extend({
 	 * Inserts an edit link.
 	 */
 	_insert: function() {
-		var $optionList = this._container.find('ul.commentOptions:eq(0)');
+		var $optionList = this._container.find('ul.wcf-commentOptions:eq(0)');
 
-		$('<li><a>' + WCF.Language.get('wcf.comment.edit') + '</a></li>').addClass('commentEdit').appendTo($optionList).click($.proxy(this._prepare, this));
+		$('<li><a>' + WCF.Language.get('wcf.comment.edit') + '</a></li>').addClass('wcf-commentEdit').appendTo($optionList).click($.proxy(this._prepare, this));
 	},
 
 	/**
@@ -430,7 +430,7 @@ WCF.Comment.Editor = WCF.Comment.Base.extend({
 	 * @param	string		message
 	 */
 	_beginEdit: function(message) {
-		var $content = this._container.find('div.commentContent:eq(0) > p');
+		var $content = this._container.find('div.wcf-commentContent:eq(0) > p');
 		
 		// replace content with input field
 		$content.html($.proxy(function(index, oldhtml) {
@@ -518,7 +518,7 @@ WCF.Comment.Editor = WCF.Comment.Base.extend({
 	 * @param	string		message
 	 */
 	_update: function(message) {
-		var $content = this._container.find('div.commentContent:eq(0) > p');
+		var $content = this._container.find('div.wcf-commentContent:eq(0) > p');
 
 		// restore original view
 		this._cancelEdit($content.children('input'));
@@ -570,13 +570,13 @@ WCF.Comment.Response.Add = WCF.Comment.Base.extend({
 	 */
 	_init: function() {
 		// create UI
-		var $listItem = $('<div class="commentResponseAdd"><div><img src="' + RELATIVE_WCF_DIR + 'icon/edit1.svg" alt="" width="24" height="24" /><div></div></div></div>');
+		var $listItem = $('<div class="wcf-commentResponseAdd"><div><img src="' + RELATIVE_WCF_DIR + 'icon/write1.svg" alt="" width="24" height="24" /><div></div></div></div>');
 		var $inputContainer = $listItem.find('div > div');
 		var $input = $('<input type="text" placeholder="' + WCF.Language.get('wcf.comment.response.add') + '" />').addClass('long').data('containerID', this._containerID).appendTo($inputContainer);
 		var $description = $('<small>' + WCF.Language.get('wcf.comment.response.description') + '</small>').hide().appendTo($inputContainer);
 
 		$input.focus($.proxy(this._expandInput, this)).blur($.proxy(this._foldInput, this)).keyup($.proxy(this._addResponse, this));
-		$listItem.insertBefore(this._container.find('ul.commentResponseList'));
+		$listItem.insertBefore(this._container.find('ul.wcf-commentResponseList'));
 
 		this._proxy = new WCF.Action.Proxy({
 			success: $.proxy(this._success, this)
@@ -631,7 +631,7 @@ WCF.Comment.Response.Add = WCF.Comment.Base.extend({
 		if (this._containerID != $containerID) return;
 
 		// get list
-		var $list = this._container.find('ul.commentResponseList');
+		var $list = this._container.find('ul.wcf-commentResponseList');
 
 		// get list items
 		var $listItems = $list.children('li');
@@ -702,7 +702,7 @@ WCF.Comment.Response.List = WCF.Comment.Base.extend({
 	 * @see	WCF.Comment.Base._init()
 	 */
 	_init: function() {
-		var $responses = this._container.find('ul.commentResponseList > li');
+		var $responses = this._container.find('ul.wcf-commentResponseList > li');
 		$responses.each($.proxy(function(index, response) {
 			var $container = $(response);
 			var $containerID = $container.wcfIdentify();
@@ -809,12 +809,12 @@ WCF.Comment.Response.Loader = WCF.Comment.Base.extend({
 			success: $.proxy(this._success, this)
 		});
 
-		this._responseList = this._container.find('.commentResponseList');
+		this._responseList = this._container.find('.wcf-commentResponseList');
 
 		// create buttons
 		this._buttons = {
-			previous: $('<div class="commentResponsePrevious"><a>Show previous responses</a></div>'),
-			recent: $('<div class="commentResponseRecent"><a>Show recent responses</a></div>')
+			previous: $('<div class="wcf-commentResponsePrevious"><a class="wcf-button">Show previous responses</a></div>'),
+			recent: $('<div class="wcf-commentResponseRecent"><a class="wcf-button">Show recent responses</a></div>')
 		};
 		this._buttonState = {
 			previous: {
@@ -976,7 +976,7 @@ WCF.Comment.Like = WCF.Like.extend({
 	 * @see	WCF.Like._getContainers()
 	 */
 	_getContainers: function() {
-		return $('.commentList li');
+		return $('.wcf-commentList li');
 	},
 
 	/**
@@ -990,7 +990,7 @@ WCF.Comment.Like = WCF.Like.extend({
 	 * @see	WCF.Like._getWidgetContainer()
 	 */
 	_getWidgetContainer: function(containerID) {
-		return this._containers[containerID].find('.commentContent');
+		return this._containers[containerID].find('.wcf-commentContent');
 	},
 	
 	/**

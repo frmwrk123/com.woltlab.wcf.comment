@@ -6,13 +6,13 @@
 			{/if}
 		</a>
 
-		<div class="commentContent">
-			<p class="userName"><a href="{link controller='User' id=$comment->userID}{/link}">{$comment->getUserProfile()->username}</a> - {@$comment->time|time}</p>
+		<div class="wcf-commentContent">
+			<p class="username"><a href="{link controller='User' id=$comment->userID}{/link}">{$comment->getUserProfile()->username}</a> - {@$comment->time|time}</p>
 			<p class="userMessage">{$comment->message}</p>
 			
-			<ul class="commentOptions"></ul>
+			<ul class="wcf-commentOptions"></ul>
 
-			<ul data-responses="{@$comment->responses}" class="commentResponseList">
+			<ul data-responses="{@$comment->responses}" class="wcf-commentResponseList">
 				{if $comment|count}
 					{include file='commentResponseList' sandbox=false responseList=$comment}
 				{/if}

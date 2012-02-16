@@ -1,4 +1,4 @@
-<script type="text/javascript" src="{@RELATIVE_WCF_DIR}js/WCF.Comment.js"></script>
+<script type="text/javascript" src="{@$__wcf->getPath('wcf')}js/WCF.Comment.js"></script>
 <script type="text/javascript">
 	//<![CDATA[
 	$(function() {
@@ -21,6 +21,6 @@
 	//]]>
 </script>
 
-<ul data-object-id="{@$userID}" data-object-type-id="{@$commentObjectTypeID}" class="commentList">
+<ul data-object-id="{@$userID}" data-object-type-id="{@$commentObjectTypeID}" class="wcf-commentList">
 	{include file='commentList' sandbox=false}
 </ul>
