@@ -3,7 +3,7 @@
 	<import>
 		<userprofilemenuitem name="wcf.user.profile.menu.comment">
 			<classname>wcf\system\menu\user\profile\content\CommentUserProfileMenuContent</classname>
-			<showorder>3</showorder>
+			<showorder>1</showorder>
 		</userprofilemenuitem>
 	</import>
 </data>
