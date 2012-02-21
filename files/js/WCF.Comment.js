@@ -976,7 +976,7 @@ WCF.Comment.Like = WCF.Like.extend({
 	 * @see	WCF.Like._getContainers()
 	 */
 	_getContainers: function() {
-		return $('.wcf-commentList li');
+		return $('.wcf-commentList > li:not(.wcf-commentAdd)');
 	},
 
 	/**
@@ -990,7 +990,7 @@ WCF.Comment.Like = WCF.Like.extend({
 	 * @see	WCF.Like._getWidgetContainer()
 	 */
 	_getWidgetContainer: function(containerID) {
-		return this._containers[containerID].find('.wcf-commentContent');
+		return this._containers[containerID].find('.wcf-commentContent:eq(0)');
 	},
 	
 	/**
@@ -999,6 +999,6 @@ WCF.Comment.Like = WCF.Like.extend({
 	_addWidget: function(containerID, widget) {
 		var $widgetContainer = this._getWidgetContainer(containerID);
 		
-		$widgetContainer.find('.userMessage').before(widget);
+		$widgetContainer.find('.wcf-commentOptions:eq(0)').before(widget);
 	}
 });
