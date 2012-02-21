@@ -175,8 +175,8 @@ WCF.Comment.Add = WCF.Comment.Base.extend({
 	 */
 	_init: function() {
 		// create UI
-		var $listItem = $('<li class="wcf-commentAdd"><div><img src="' + RELATIVE_WCF_DIR + 'icon/write1.svg" alt="" width="24" height="24" /><div></div></div></li>');
-		var $inputContainer = $listItem.find('div > div');
+		var $listItem = $('<li class="wcf-container wcf-commentAdd"><img src="' + RELATIVE_WCF_DIR + 'icon/write1.svg" alt="" width="24" height="24" class="wcf-containerIcon" /><div class="wcf-containerContent"></div></li>');
+		var $inputContainer = $listItem.find('div.wcf-containerContent');
 		var $input = $('<input type="text" placeholder="' + WCF.Language.get('wcf.comment.add') + '" />').addClass('long').appendTo($inputContainer);
 		var $description = $('<small>' + WCF.Language.get('wcf.comment.description') + '</small>').hide().appendTo($inputContainer);
 
@@ -570,8 +570,8 @@ WCF.Comment.Response.Add = WCF.Comment.Base.extend({
 	 */
 	_init: function() {
 		// create UI
-		var $listItem = $('<div class="wcf-commentResponseAdd"><div><img src="' + RELATIVE_WCF_DIR + 'icon/write1.svg" alt="" width="24" height="24" /><div></div></div></div>');
-		var $inputContainer = $listItem.find('div > div');
+		var $listItem = $('<div class="wcf-container wcf-commentResponseAdd"><img src="' + RELATIVE_WCF_DIR + 'icon/write1.svg" alt="" width="24" height="24" class="wcf-containerIcon" /><div class="wcf-containerContent"></div></div>');
+		var $inputContainer = $listItem.find('div.wcf-containerContent');
 		var $input = $('<input type="text" placeholder="' + WCF.Language.get('wcf.comment.response.add') + '" />').addClass('long').data('containerID', this._containerID).appendTo($inputContainer);
 		var $description = $('<small>' + WCF.Language.get('wcf.comment.response.description') + '</small>').hide().appendTo($inputContainer);
 
