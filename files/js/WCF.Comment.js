@@ -20,7 +20,7 @@ WCF.Comment.Handler.prototype = {
 	 * @var	boolean
 	 */
 	_canAdd: false,
-
+	
 	/**
 	 * comments displayed at once
 	 * @var	integer
@@ -175,7 +175,7 @@ WCF.Comment.Add = WCF.Comment.Base.extend({
 	 */
 	_init: function() {
 		// create UI
-		var $listItem = $('<li class="wcf-container wcf-commentAdd"><img src="' + RELATIVE_WCF_DIR + 'icon/write1.svg" alt="" width="24" height="24" class="wcf-containerIcon" /><div class="wcf-containerContent"></div></li>');
+		var $listItem = $('<li class="wcf-container wcf-commentAdd"><img src="' + WCF.Icon.get('wcf.icon.write') + '" alt="" width="24" height="24" class="wcf-containerIcon" /><div class="wcf-containerContent"></div></li>');
 		var $inputContainer = $listItem.find('div.wcf-containerContent');
 		var $input = $('<input type="text" placeholder="' + WCF.Language.get('wcf.comment.add') + '" />').addClass('long').appendTo($inputContainer);
 		var $description = $('<small>' + WCF.Language.get('wcf.comment.description') + '</small>').hide().appendTo($inputContainer);
@@ -377,7 +377,7 @@ WCF.Comment.Editor = WCF.Comment.Base.extend({
 	_insert: function() {
 		var $optionList = this._container.find('ul.wcf-commentOptions:eq(0)');
 
-		$('<li><a>' + WCF.Language.get('wcf.comment.edit') + '</a></li>').addClass('wcf-commentEdit').appendTo($optionList).click($.proxy(this._prepare, this));
+		$('<li><a>' + WCF.Language.get('wcf.global.button.edit') + '</a></li>').addClass('wcf-commentEdit').appendTo($optionList).click($.proxy(this._prepare, this));
 	},
 
 	/**
@@ -430,18 +430,20 @@ WCF.Comment.Editor = WCF.Comment.Base.extend({
 	 * @param	string		message
 	 */
 	_beginEdit: function(message) {
-		var $content = this._container.find('div.wcf-commentContent:eq(0) > p');
+		var $content = this._container.find('div.wcf-commentContent:eq(0) > p.userMessage');
 		
 		// replace content with input field
 		$content.html($.proxy(function(index, oldhtml) {
 			this._data.edit = oldhtml;
-			var $input = $('<input type="text" value="' + message + '" class="long" /> <small>' + WCF.Language.get('wcf.comment.edit.description') + '</small>').keydown($.proxy(this._keyDown, this)).keyup($.proxy(this._save, this));
+			var $input = $('<input type="text" value="' + message + '" class="long" /> <small>' + WCF.Language.get('wcf.comment.description') + '</small>').keydown($.proxy(this._keyDown, this)).keyup($.proxy(this._save, this));
 
 			return $input;
 		}, this));
 
-		// hide options
-		$content.next().hide();
+		// hide elements
+		$content.parent().find('.username:eq(0)').hide();
+		$content.parent().find('.wcf-commentOptions:eq(0)').hide();
+		$content.parent().find('.wcf-likesWidget:eq(0)').hide();
 
 		// set focus (not possible before returned above)
 		$content.children('input').focus();
@@ -470,8 +472,10 @@ WCF.Comment.Editor = WCF.Comment.Base.extend({
 		// discard events
 		input.unbind('keyup').unbind('keydown');
 
-		// restore options
-		input.parent().next().show();
+		// restore elements
+		input.parent().parent().find('.username:eq(0)').show();
+		input.parent().parent().find('.wcf-commentOptions:eq(0)').show();
+		input.parent().parent().find('.wcf-likesWidget:eq(0)').show();
 
 		// restore html
 		input.parent().html(this._data.edit);
@@ -518,13 +522,13 @@ WCF.Comment.Editor = WCF.Comment.Base.extend({
 	 * @param	string		message
 	 */
 	_update: function(message) {
-		var $content = this._container.find('div.wcf-commentContent:eq(0) > p');
+		var $content = this._container.find('div.wcf-commentContent:eq(0) > p.userMessage');
 
 		// restore original view
 		this._cancelEdit($content.children('input'));
 
 		// update message
-		$content.children('span').html(message);
+		$content.html(message);
 	},
 
 	/**
@@ -570,10 +574,10 @@ WCF.Comment.Response.Add = WCF.Comment.Base.extend({
 	 */
 	_init: function() {
 		// create UI
-		var $listItem = $('<div class="wcf-container wcf-commentResponseAdd"><img src="' + RELATIVE_WCF_DIR + 'icon/write1.svg" alt="" width="24" height="24" class="wcf-containerIcon" /><div class="wcf-containerContent"></div></div>');
+		var $listItem = $('<div class="wcf-container wcf-commentResponseAdd"><img src="' + WCF.Icon.get('wcf.icon.write') + '" alt="" width="24" height="24" class="wcf-containerIcon" /><div class="wcf-containerContent"></div></div>');
 		var $inputContainer = $listItem.find('div.wcf-containerContent');
 		var $input = $('<input type="text" placeholder="' + WCF.Language.get('wcf.comment.response.add') + '" />').addClass('long').data('containerID', this._containerID).appendTo($inputContainer);
-		var $description = $('<small>' + WCF.Language.get('wcf.comment.response.description') + '</small>').hide().appendTo($inputContainer);
+		var $description = $('<small>' + WCF.Language.get('wcf.comment.description') + '</small>').hide().appendTo($inputContainer);
 
 		$input.focus($.proxy(this._expandInput, this)).blur($.proxy(this._foldInput, this)).keyup($.proxy(this._addResponse, this));
 		$listItem.insertBefore(this._container.find('ul.wcf-commentResponseList'));
@@ -813,8 +817,8 @@ WCF.Comment.Response.Loader = WCF.Comment.Base.extend({
 
 		// create buttons
 		this._buttons = {
-			previous: $('<div class="wcf-commentResponsePrevious"><a class="wcf-button">Show previous responses</a></div>'),
-			recent: $('<div class="wcf-commentResponseRecent"><a class="wcf-button">Show recent responses</a></div>')
+			previous: $('<div class="wcf-commentResponsePrevious"><a class="wcf-button">'+WCF.Language.get('wcf.comment.response.previous')+'</a></div>'),
+			recent: $('<div class="wcf-commentResponseRecent"><a class="wcf-button">'+WCF.Language.get('wcf.comment.response.recent')+'</a></div>')
 		};
 		this._buttonState = {
 			previous: {

@@ -3,13 +3,14 @@
 	//<![CDATA[
 	$(function() {
 		WCF.Language.addObject({
-			'wcf.comment.add': 'Write a comment …',
-			'wcf.comment.description': 'Confirm with Enter to add your comment.',
-			'wcf.comment.edit': 'Edit',
-			'wcf.comment.edit.description': 'Push Esc to cancel or Enter to save',
-			'wcf.comment.response.add': 'Write a response …',
-			'wcf.comment.response.count': '\'Show all \' + data.returnValues.responses + \' comments\'',
-			'wcf.comment.response.description': 'Confirm with Enter to add your response.'
+			'wcf.comment.response.previous': '{lang}wcf.comment.response.previous{/lang}',
+			'wcf.comment.response.recent': '{lang}wcf.comment.response.recent{/lang}',
+			'wcf.comment.add': '{lang}wcf.comment.add{/lang}',
+			'wcf.comment.description': '{lang}wcf.comment.description{/lang}',
+			'wcf.comment.response.add': '{lang}wcf.comment.response.add{/lang}',
+		});
+		WCF.Icon.addObject({
+			'wcf.icon.write': '{icon size='M'}write1{/icon}',
 		});
 		{assign var=userAvatar value=''}
 		{if $__wcf->getUserProfileHandler()->getAvatar()}
