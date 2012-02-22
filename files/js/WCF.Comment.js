@@ -190,7 +190,7 @@ WCF.Comment.Add = WCF.Comment.Base.extend({
 	},
 
 	/**
-	 * Create a new comment if it not empty.
+	 * Create a new comment if input isn't empty.
 	 * 
 	 * @param	object		event
 	 */
