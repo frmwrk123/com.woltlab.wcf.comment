@@ -1,6 +1,7 @@
 <?php
 namespace wcf\data\comment;
 use wcf\data\DatabaseObject;
+use wcf\util\StringUtil;
 
 /**
  * Represents a comment.
@@ -39,5 +40,14 @@ class Comment extends DatabaseObject {
 		}
 		
 		return $lastResponseIDs;
+	}
+	
+	/**
+	 * Returns a formatted message.
+	 * 
+	 * @return string
+	 */
+	public function getFormattedMessage() {
+		return StringUtil::encodeHTML($this->message);
 	}
 }

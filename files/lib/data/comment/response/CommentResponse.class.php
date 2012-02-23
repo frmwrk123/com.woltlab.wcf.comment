@@ -1,6 +1,7 @@
 <?php
 namespace wcf\data\comment\response;
 use wcf\data\DatabaseObject;
+use wcf\util\StringUtil;
 
 /**
  * Represents a comment response.
@@ -22,4 +23,13 @@ class CommentResponse extends DatabaseObject {
 	 * @see	wcf\data\DatabaseObject::$databaseTableIndexName
 	 */
 	protected static $databaseTableIndexName = 'responseID';
+	
+	/**
+	 * Returns a formatted message.
+	 * 
+	 * @return string
+	 */
+	public function getFormattedMessage() {
+		return StringUtil::encodeHTML($this->message);
+	}
 }

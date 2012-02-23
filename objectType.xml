@@ -12,5 +12,17 @@
 			<definitionname>com.woltlab.wcf.like.likeableObject</definitionname>
 			<classname>wcf\data\comment\LikeableCommentProvider</classname>
 		</type>
+		
+		<type>
+			<name>com.woltlab.wcf.user.profileComment.recentActivityEvent</name>
+			<definitionname>com.woltlab.wcf.user.recentActivityEvent</definitionname>
+			<classname>wcf\system\user\activity\event\ProfileCommentUserActivityEvent</classname>
+		</type>
+		
+		<!-- <type>
+			<name>com.woltlab.wcf.user.profileComment.response.recentActivityEvent</name>
+			<definitionname>com.woltlab.wcf.user.recentActivityEvent</definitionname>
+			<classname>wcf\system\user\activity\event\ProfileCommentResponseUserActivityEvent</classname>
+		</type>-->
 	</import>
 </data>

@@ -1,5 +1,5 @@
 {foreach from=$responseList item=response}
-	<li data-response-id="{@$response->responseID}" data-user-id="{@$comment->userID}" data-type="response" class="wcf-container">
+	<li data-response-id="{@$response->responseID}" data-type="response" class="wcf-container">
 		<a href="{link controller='User' object=$response->getUserProfile()}{/link}" title="{$response->getUserProfile()->username}" class="wcf-containerIcon userAvatar">
 			{if $response->getUserProfile()->getAvatar()}
 				{@$response->getUserProfile()->getAvatar()->getImageTag(32)}
@@ -8,7 +8,7 @@
 
 		<div class="wcf-containerContent wcf-commentContent">
 			<p class="username"><a href="{link controller='User' object=$response->getUserProfile()}{/link}">{$response->getUserProfile()->username}</a> - {@$response->time|time}</p>
-			<p class="userResponse">{$response->message}</p>
+			<p class="userResponse">{@$response->getFormattedMessage()}</p>
 			
 			<ul class="wcf-commentOptions"></ul>
 		</div>

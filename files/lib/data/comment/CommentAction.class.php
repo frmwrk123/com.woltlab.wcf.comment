@@ -3,8 +3,10 @@ namespace wcf\data\comment;
 use wcf\data\comment\response\CommentResponse;
 use wcf\data\comment\response\CommentResponseEditor;
 use wcf\data\comment\response\StructuredCommentResponse;
+use wcf\data\object\type\ObjectTypeCache;
 use wcf\data\user\UserProfile;
 use wcf\data\AbstractDatabaseObjectAction;
+use wcf\system\user\activity\event\UserActivityEventHandler;
 use wcf\system\WCF;
 
 /**
@@ -39,6 +41,12 @@ class CommentAction extends AbstractDatabaseObjectAction {
 			'responses' => 0,
 			'lastResponseIDs' => serialize(array())
 		));
+		
+		// fire activity event
+		$objectType = ObjectTypeCache::getInstance()->getObjectType($this->parameters['data']['objectTypeID']);
+		if (UserActivityEventHandler::getInstance()->getObjectTypeID($objectType->objectType.'.recentActivityEvent')) {
+			UserActivityEventHandler::getInstance()->fireEvent($objectType->objectType.'.recentActivityEvent', $objectType->packageID, $comment->commentID);
+		}
 		
 		return array(
 			'containerID' => $this->parameters['data']['containerID'],
@@ -77,6 +85,12 @@ class CommentAction extends AbstractDatabaseObjectAction {
 			'lastResponseIDs' => serialize($lastResponseIDs),
 			'responses' => $responses
 		));
+		
+		// fire activity event
+		$objectType = ObjectTypeCache::getInstance()->getObjectType($this->comment->objectTypeID);
+		if (UserActivityEventHandler::getInstance()->getObjectTypeID($objectType->objectType.'.response.recentActivityEvent')) {
+			UserActivityEventHandler::getInstance()->fireEvent($objectType->objectType.'.response.recentActivityEvent', $objectType->packageID, $response->responseID);
+		}
 		
 		return array(
 			'containerID' => $this->parameters['data']['containerID'],
