@@ -7,7 +7,7 @@
 		</a>
 
 		<div class="wcf-containerContent wcf-commentContent">
-			<p class="username"><a href="{link controller='User' object=$comment->getUserProfile()}{/link}">{$comment->getUserProfile()->username}</a> - {@$comment->time|time}</p>
+			<p class="wcf-username"><a href="{link controller='User' object=$comment->getUserProfile()}{/link}">{$comment->getUserProfile()->username}</a> - {@$comment->time|time}</p>
 			<p class="userMessage">{$comment->message}</p>
 			
 			<ul class="wcf-commentOptions"></ul>
