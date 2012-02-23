@@ -441,7 +441,7 @@ WCF.Comment.Editor = WCF.Comment.Base.extend({
 		}, this));
 
 		// hide elements
-		$content.parent().find('.username:eq(0)').hide();
+		$content.parent().find('.wcf-username:eq(0)').hide();
 		$content.parent().find('.wcf-commentOptions:eq(0)').hide();
 		$content.parent().find('.wcf-likesWidget:eq(0)').hide();
 
@@ -473,7 +473,7 @@ WCF.Comment.Editor = WCF.Comment.Base.extend({
 		input.unbind('keyup').unbind('keydown');
 
 		// restore elements
-		input.parent().parent().find('.username:eq(0)').show();
+		input.parent().parent().find('.wcf-username:eq(0)').show();
 		input.parent().parent().find('.wcf-commentOptions:eq(0)').show();
 		input.parent().parent().find('.wcf-likesWidget:eq(0)').show();
 
