@@ -16,7 +16,6 @@
 		<requiredpackage minversion="2.0.0 Alpha 1">com.woltlab.wcf</requiredpackage>
 		<requiredpackage>com.woltlab.wcf.like</requiredpackage>
 		<requiredpackage>com.woltlab.wcf.user</requiredpackage>
-		<requiredpackage>com.woltlab.wcf.notification</requiredpackage>
 	</requiredpackages>
 
 	<instructions type="install">
