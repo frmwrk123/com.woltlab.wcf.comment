@@ -6,7 +6,7 @@ use wcf\data\DatabaseObject;
  * Default interface for comment managers.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2011 WoltLab GmbH
+ * @copyright	2001-2012 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf.comment
  * @subpackage	system.comment.manager
@@ -14,35 +14,32 @@ use wcf\data\DatabaseObject;
  */
 interface ICommentManager {
 	/**
-	 * Initializes the comment manager.
+	 * Returns true, if current user may add comments.
 	 * 
-	 * @param	wcf\data\DatabaseObject		$object
-	 */
-	public function __construct(DatabaseObject $object = null);
-	
-	/**
-	 * Returns true, if current user may add comments or responses.
-	 * 
+	 * @param	integer		$objectID
 	 * @return	boolean
 	 */
-	public function canAdd();
+	public function canAdd($objectID);
 	
 	/**
-	 * Returns true, if given user may delete comments or responses.
+	 * Returns true, if current user may delete the comment / response.
 	 * 
-	 * @param	integer		$userID
+	 * @param	integer		$objectID
+	 * @param	integer		$commentID
+	 * @param	integer		$responseID
 	 * @return	boolean
 	 */
-	public function canDelete($userID);
+	public function canDelete($objectID, $commentID = null, $responseID = null);
 	
 	/**
-	 * Returns true, if given user may edit the comment or response.
-	 * 
-	 * @param	integer		$userID
-	 * @param	integer		$time
+	 * Returns true, if current user may delete edit comment / response.
+	 *
+	 * @param	integer		$objectID
+	 * @param	integer		$commentID
+	 * @param	integer		$responseID
 	 * @return	boolean
 	 */
-	public function canEdit($userID, $time);
+	public function canEdit($objectID, $commentID = null, $responseID = null);
 	
 	/**
 	 * Returns the amount of comments per page.

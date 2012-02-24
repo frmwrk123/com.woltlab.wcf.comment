@@ -7,10 +7,10 @@
 				<optiontype>select</optiontype>
 				<showorder>1</showorder>
 				<visible>1</visible>
-				<selectoptions><![CDATA[0:wcf.user.access.registered
-1:wcf.user.access.following
-2:wcf.user.access.nobody]]></selectoptions>
-				<defaultvalue>0</defaultvalue>
+				<selectoptions><![CDATA[1:wcf.user.access.registered
+2:wcf.user.access.following
+3:wcf.user.access.nobody]]></selectoptions>
+				<defaultvalue>1</defaultvalue>
 			</option>
 		</options>
 	</import>
