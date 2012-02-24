@@ -998,15 +998,16 @@ WCF.Comment.Like = WCF.Like.extend({
 		
 		likeButton.appendTo(this._containers[containerID].find('.wcf-commentOptions:eq(0)'));
 		dislikeButton.appendTo(this._containers[containerID].find('.wcf-commentOptions:eq(0)'));
+		cumulativeLikes.removeClass('wcf-likesDisplay').addClass('wcf-badge');
 	},
 	
 	_updateBadge: function(containerID) {
 		this._super(containerID);
 		
 		if (this._containerData[containerID].cumulativeLikes) {
-			var $icon = WCF.Icon.get('wcf.icon.'+(this._containerData[containerID].cumulativeLikes > 0 ? 'like' : 'dislike')+'.active');
+			var $icon = WCF.Icon.get('wcf.icon.'+(this._containerData[containerID].cumulativeLikes > 0 ? 'like' : 'dislike'));
 			if (!this._containerData[containerID].badge.find('img').length) {
-				var $image = $('<img src="' + $icon + '" alt="" />');
+				var $image = $('<span> <img src="' + $icon + '" alt="" /></span>');
 				$image.appendTo(this._containerData[containerID].badge.find('a'));
 			}
 			else {
