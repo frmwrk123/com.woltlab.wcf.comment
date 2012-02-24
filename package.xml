@@ -26,5 +26,6 @@
 		<instruction type="sql">install.sql</instruction>
 		<instruction type="userProfileMenu">userProfileMenu.xml</instruction>
 		<instruction type="language">language/*.xml</instruction>
+		<instruction type="userOption">userOption.xml</instruction>
 	</instructions>
 </package>
