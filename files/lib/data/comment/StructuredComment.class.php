@@ -39,6 +39,12 @@ class StructuredComment extends DatabaseObjectDecorator implements \Countable, \
 	public $userProfile = null;
 	
 	/**
+	 * editable for current user
+	 * @var	boolean
+	 */
+	public $editable = false;
+	
+	/**
 	 * Adds an response
 	 * 
 	 * @param	wcf\data\comment\response\StructuredCommentResponse	$response
@@ -72,6 +78,24 @@ class StructuredComment extends DatabaseObjectDecorator implements \Countable, \
 	 */
 	public function getUserProfile() {
 		return $this->userProfile;
+	}
+	
+	/**
+	 * Sets editable state.
+	 * 
+	 * @param	boolean		$editable
+	 */
+	public function setIsEditable($editable) {
+		$this->editable = $editable;
+	}
+	
+	/**
+	 * Returns true, if comment is editable by current user.
+	 * 
+	 * @return	boolean
+	 */
+	public function isEditable() {
+		return $this->editable;
 	}
 	
 	/**

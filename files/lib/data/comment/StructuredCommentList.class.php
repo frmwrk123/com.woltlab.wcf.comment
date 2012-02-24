@@ -18,6 +18,18 @@ use wcf\system\like\LikeHandler;
  */
 class StructuredCommentList extends CommentList {
 	/**
+	 * object type id
+	 * @var	integer
+	 */
+	public $objectTypeID = 0;
+	
+	/**
+	 * object id
+	 * @var	integer
+	 */
+	public $objectID = 0;
+	
+	/**
 	 * @see	wcf\data\DatabaseObjectList::$sqlLimit
 	 */
 	public $sqlLimit = 10;
@@ -36,6 +48,9 @@ class StructuredCommentList extends CommentList {
 	public function __construct($objectTypeID, $objectID) {
 		parent::__construct();
 		
+		$this->objectTypeID = $objectTypeID;
+		$this->objectID = $objectID;
+		
 		$this->getConditionBuilder()->add("comment.objectTypeID = ?", array($objectTypeID));
 		$this->getConditionBuilder()->add("comment.objectID = ?", array($objectID));
 	}
@@ -45,6 +60,13 @@ class StructuredCommentList extends CommentList {
 	 */
 	public function readObjects() {
 		parent::readObjects();
+		
+		// get processor
+		$objectType = $objectType = ObjectTypeCache::getInstance()->getObjectType($this->objectTypeID);
+		if ($objectType === null) {
+			throw new SystemException("Invalid object type id given");
+		}
+		$processor = $objectType->getProcessor();
 		
 		// fetch last response ids
 		$responseIDs = array();
@@ -59,6 +81,7 @@ class StructuredCommentList extends CommentList {
 			$userIDs[] = $comment->userID;
 			
 			$comment = new StructuredComment($comment);
+			$comment->setIsEditable($processor->canEdit($this->objectID, $comment->commentID));
 		}
 		unset($comment);
 		
@@ -75,6 +98,7 @@ class StructuredCommentList extends CommentList {
 			
 			foreach ($responseList as $response) {
 				$response = new StructuredCommentResponse($response);
+				$response->setIsEditable($processor->canEdit($this->objectID, null, $response->responseID));
 				
 				$commentID = $responseIDs[$response->responseID];
 				$this->objects[$commentID]->addResponse($response);

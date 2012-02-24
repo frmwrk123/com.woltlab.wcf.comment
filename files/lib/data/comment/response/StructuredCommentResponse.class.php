@@ -20,6 +20,12 @@ class StructuredCommentResponse extends DatabaseObjectDecorator {
 	public static $baseClass = 'wcf\data\comment\response\CommentResponse';
 	
 	/**
+	 * editable for current user
+	 * @var	boolean
+	 */
+	public $editable = false;
+	
+	/**
 	 * user profile object
 	 * @var	wcf\data\user\UserProfile
 	 */
@@ -63,5 +69,23 @@ class StructuredCommentResponse extends DatabaseObjectDecorator {
 		$response->setUserProfile($userProfile);
 		
 		return $response;
+	}
+	
+	/**
+	 * Sets editable state.
+	 *
+	 * @param	boolean		$editable
+	 */
+	public function setIsEditable($editable) {
+		$this->editable = $editable;
+	}
+	
+	/**
+	 * Returns true, if response is editable by current user.
+	 *
+	 * @return	boolean
+	 */
+	public function isEditable() {
+		return $this->editable;
 	}
 }
