@@ -1,5 +1,9 @@
 <?php
 namespace wcf\data\comment;
+use wcf\util\StringUtil;
+
+use wcf\system\exception\ValidateActionException;
+
 use wcf\data\comment\response\CommentResponse;
 use wcf\data\comment\response\CommentResponseEditor;
 use wcf\data\comment\response\StructuredCommentResponse;
@@ -20,7 +24,16 @@ use wcf\system\WCF;
  * @category 	Community Framework
  */
 class CommentAction extends AbstractDatabaseObjectAction {
+	/**
+	 * comment object
+	 * @var	wcf\data\comment\Comment
+	 */
 	protected $comment = null;
+	
+	/**
+	 * response object
+	 * @var	wcf\data\comment\response\CommentResponse
+	 */
 	protected $response = null;
 	
 	/**
@@ -28,8 +41,35 @@ class CommentAction extends AbstractDatabaseObjectAction {
 	 */
 	protected $className = 'wcf\data\comment\CommentEditor';
 	
-	public function validateAddComment() { }
+	/**
+	 * Validates parameters to add a comment.
+	 */
+	public function validateAddComment() {
+		// validate container id
+		if (!isset($this->parameters['data']['containerID']) || empty($this->parameters['data']['containerID'])) {
+			throw new ValidateActionException("Invalid container id given");
+		}
+		
+		// validate object type id
+		if (!isset($this->parameters['data']['objectID']) || (ObjectTypeCache::getInstance()->getObjectType($this->parameters['data']['objectTypeID']) === null)) {
+			throw new ValidateActionException("Invalid object type id given");
+		}
+		
+		// TODO: validate object id based upon object type
+		
+		// validate message
+		if (!isset($this->parameters['data']['message']) || empty(StringUtil::trim($this->parameters['data']['message']))) {
+			throw new ValidateActionException("Invalid message given");
+		}
+		
+		// validate permissions
+	}
 	
+	/**
+	 * Adds a comment.
+	 * 
+	 * @return	array
+	 */
 	public function addComment() {
 		// create comment
 		$comment = CommentEditor::create(array(
@@ -54,16 +94,24 @@ class CommentAction extends AbstractDatabaseObjectAction {
 		);
 	}
 	
+	/**
+	 * Validates parameters to add a response.
+	 */
 	public function validateAddResponse() {
+		// validate comment id
 		if (isset($this->parameters['data']['commentID'])) {
 			$this->comment = new Comment($this->parameters['data']['commentID']);
 		}
-		
 		if ($this->comment === null || !$this->comment->commentID) {
-			// yada yada yada
+			throw new ValidateActionException("Invalid comment id given");
 		}
 	}
 	
+	/**
+	 * Adds a response.
+	 * 
+	 * @return	array
+	 */
 	public function addResponse() {
 		// create response
 		$response = CommentResponseEditor::create(array(

@@ -1,5 +1,7 @@
 <?php
 namespace wcf\data\comment\response;
+use wcf\system\exception\ValidateActionException;
+
 use wcf\data\comment\Comment;
 use wcf\data\comment\StructuredComment;
 use wcf\data\user\UserProfile;
@@ -17,6 +19,10 @@ use wcf\system\WCF;
  * @category 	Community Framework
  */
 class CommentResponseAction extends AbstractDatabaseObjectAction {
+	/**
+	 * comment object
+	 * @var	wcf\data\comment\Comment
+	 */
 	protected $comment = null;
 	
 	/**
@@ -24,16 +30,35 @@ class CommentResponseAction extends AbstractDatabaseObjectAction {
 	 */
 	protected $className = 'wcf\data\comment\response\CommentResponseEditor';
 	
+	/**
+	 * Validates parameters for response list.
+	 */
 	public function validateGetResponseList() {
+		// validate container id
+		if (!isset($this->parameters['data']['containerID']) || empty($this->parameters['data']['containerID'])) {
+			throw new ValidateActionException("Invalid container id given");
+		}
+		
+		// validate page no
+		$this->parameters['data']['pageNo'] = (isset($this->parameters['data']['pageNo'])) ? intval($this->parameters['data']['pageNo']) : 0;
+		if (!$this->parameters['data']['pageNo']) {
+			throw new ValidateActionException("Invalid page no given");
+		}
+		
+		// validate comment id
 		if (isset($this->parameters['data']['commentID'])) {
 			$this->comment = new Comment($this->parameters['data']['commentID']);
 		}
-		
 		if ($this->comment === null || !$this->comment->commentID) {
-			// yada yada yada
+			throw new ValidateActionException("Invalid comment id given");
 		}
 	}
 	
+	/**
+	 * Returns a structured response list.
+	 * 
+	 * @return	array
+	 */
 	public function getResponseList() {
 		// populate comment
 		$this->comment = new StructuredComment($this->comment);
