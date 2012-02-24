@@ -991,18 +991,32 @@ WCF.Comment.Like = WCF.Like.extend({
 	},
 
 	/**
+	 * @see	WCF.Like._buildWidget()
+	 */
+	_buildWidget: function(containerID, likeButton, dislikeButton, cumulativeLikes) {
+		this._containers[containerID].find('.wcf-username:eq(0)').after(cumulativeLikes);
+		
+		likeButton.appendTo(this._containers[containerID].find('.wcf-commentOptions:eq(0)'));
+		dislikeButton.appendTo(this._containers[containerID].find('.wcf-commentOptions:eq(0)'));
+	},
+	
+	_updateBadge: function(containerID) {
+		//this._super();
+		console.debug('test');
+		if (this._containerData[containerID].cumulativeLikes) {
+			if (!this._containerData[containerID].badge.find('img')) {
+				var image = $('<img src="' + WCF.Icon.get('wcf.icon.like.active') + '" alt="" />');
+			}
+		}
+	},
+	
+	/**
 	 * @see	WCF.Like._getWidgetContainer()
 	 */
-	_getWidgetContainer: function(containerID) {
-		return this._containers[containerID].find('.wcf-commentContent:eq(0)');
-	},
+	_getWidgetContainer: function(containerID) {},
 	
 	/**
 	 * @see	WCF.Like._addWidget()
 	 */
-	_addWidget: function(containerID, widget) {
-		var $widgetContainer = this._getWidgetContainer(containerID);
-		
-		$widgetContainer.find('.wcf-commentOptions:eq(0)').before(widget);
-	}
+	_addWidget: function(containerID, widget) {}
 });
