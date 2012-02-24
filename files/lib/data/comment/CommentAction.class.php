@@ -1,17 +1,15 @@
 <?php
 namespace wcf\data\comment;
-use wcf\util\StringUtil;
-
-use wcf\system\exception\ValidateActionException;
-
 use wcf\data\comment\response\CommentResponse;
 use wcf\data\comment\response\CommentResponseEditor;
 use wcf\data\comment\response\StructuredCommentResponse;
 use wcf\data\object\type\ObjectTypeCache;
 use wcf\data\user\UserProfile;
 use wcf\data\AbstractDatabaseObjectAction;
+use wcf\system\exception\ValidateActionException;
 use wcf\system\user\activity\event\UserActivityEventHandler;
 use wcf\system\WCF;
+use wcf\util\StringUtil;
 
 /**
  * Executes comment-related actions.
@@ -31,6 +29,12 @@ class CommentAction extends AbstractDatabaseObjectAction {
 	protected $comment = null;
 	
 	/**
+	 * comment processor
+	 * @var	wcf\system\comment\manager\ICommentManager
+	 */
+	protected $commentProcessor = null;
+	
+	/**
 	 * response object
 	 * @var	wcf\data\comment\response\CommentResponse
 	 */
@@ -45,24 +49,15 @@ class CommentAction extends AbstractDatabaseObjectAction {
 	 * Validates parameters to add a comment.
 	 */
 	public function validateAddComment() {
-		// validate container id
-		if (!isset($this->parameters['data']['containerID']) || empty($this->parameters['data']['containerID'])) {
-			throw new ValidateActionException("Invalid container id given");
+		$this->validateContainerID();
+		$this->validateMessage();
+		$objectType = $this->validateObjectType();
+		
+		// validate object id and permissions
+		$this->commentProcessor = $objectType->getProcessor();
+		if (!$this->commentProcessor->canAdd($this->parameters['data']['objectTypeID'])) {
+			throw new ValidateActionException("Insufficient permissions");
 		}
-		
-		// validate object type id
-		if (!isset($this->parameters['data']['objectID']) || (ObjectTypeCache::getInstance()->getObjectType($this->parameters['data']['objectTypeID']) === null)) {
-			throw new ValidateActionException("Invalid object type id given");
-		}
-		
-		// TODO: validate object id based upon object type
-		
-		// validate message
-		if (!isset($this->parameters['data']['message']) || empty(StringUtil::trim($this->parameters['data']['message']))) {
-			throw new ValidateActionException("Invalid message given");
-		}
-		
-		// validate permissions
 	}
 	
 	/**
@@ -99,11 +94,15 @@ class CommentAction extends AbstractDatabaseObjectAction {
 	 */
 	public function validateAddResponse() {
 		// validate comment id
-		if (isset($this->parameters['data']['commentID'])) {
-			$this->comment = new Comment($this->parameters['data']['commentID']);
-		}
-		if ($this->comment === null || !$this->comment->commentID) {
-			throw new ValidateActionException("Invalid comment id given");
+		$this->validateCommentID();
+		
+		// validate object type id
+		$objectType = $this->validateObjectType();
+		
+		// validate object id and permissions
+		$this->commentProcessor = $objectType->getProcessor();
+		if (!$this->commentProcessor->canAdd($this->parameters['data']['objectTypeID'])) {
+			throw new ValidateActionException("Insufficient permissions");
 		}
 	}
 	
@@ -147,18 +146,45 @@ class CommentAction extends AbstractDatabaseObjectAction {
 		);
 	}
 	
+	/**
+	 * Validates parameters to edit a comment or a response.
+	 */
 	public function validatePrepareEdit() {
-		if (isset($this->parameters['data']['commentID'])) {
-			$this->comment = new Comment($this->parameters['data']['commentID']);
+		$this->validateContainerID();
+		
+		// validate comment id or response id
+		try {
+			$this->validateCommentID();
 		}
-		else if (isset($this->parameters['data']['responseID'])) {
-			$this->response = new CommentResponse($this->parameters['data']['responseID']);
+		catch (ValidateActionException $e) {
+			try {
+				$this->validateResponseID();
+			}
+			catch (ValidateActionException $e) {
+				throw new ValidateActionException("Incomplete request");
+			}
+		}
+		
+		// validate object type id
+		$objectType = $this->validateObjectType();
+		
+		// validate object id and permissions
+		$this->commentProcessor = $objectType->getProcessor();
+		$commentID = ($this->comment === null) ?: $this->comment->commentID;
+		$responseID = ($this->response === null) ?: $this->response->responseID;
+		if (!$this->commentProcessor->canEdit($this->parameters['data']['objectTypeID'], $commentID, $responseID)) {
+			throw new ValidateActionException("Insufficient permissions");
 		}
 	}
 	
+	/**
+	 * Prepares editing of a comment or a response.
+	 * 
+	 * @return	array
+	 */
 	public function prepareEdit() {
 		$message = '';
-		if ($this->parameters['data']['type'] == 'comment') {
+		if ($this->comment !== null) {
 			$message = $this->comment->message;
 		}
 		else {
@@ -170,17 +196,27 @@ class CommentAction extends AbstractDatabaseObjectAction {
 			'containerID' => $this->parameters['data']['containerID'],
 			'message' => $message
 		);
-		if ($this->parameters['data']['type'] == 'response') {
+		if ($this->response !== null) {
 			$returnValues['responseID'] = $this->response->responseID;
 		}
 		
 		return $returnValues;
 	}
 	
+	/**
+	 * @see	wcf\data\comment\CommentAction::validatePrepareEdit()
+	 */
 	public function validateEdit() {
 		$this->validatePrepareEdit();
+		
+		$this->validateMessage();
 	}
 	
+	/**
+	 * Edits a comment or response.
+	 * 
+	 * @return	array
+	 */
 	public function edit() {
 		$returnValues = array(
 			'action' => 'saved',
@@ -207,6 +243,12 @@ class CommentAction extends AbstractDatabaseObjectAction {
 		return $returnValues;
 	}
 	
+	/**
+	 * Renders a comment.
+	 * 
+	 * @param	wcf\data\comment\Comment	$comment
+	 * @return	string
+	 */
 	protected function renderComment(Comment $comment) {
 		$comment = new StructuredComment($comment);
 		
@@ -220,6 +262,12 @@ class CommentAction extends AbstractDatabaseObjectAction {
 		return WCF::getTPL()->fetch('commentList');
 	}
 	
+	/**
+	 * Renders a response.
+	 * 
+	 * @param	wcf\data\comment\response\CommentResponse	$response
+	 * @return	string
+	 */
 	protected function renderResponse(CommentResponse $response) {
 		$response = new StructuredCommentResponse($response);
 		
@@ -232,5 +280,65 @@ class CommentAction extends AbstractDatabaseObjectAction {
 			'responseList' => array($response)
 		));
 		return WCF::getTPL()->fetch('commentResponseList');
+	}
+	
+	/**
+	 * Validates message parameter.
+	 */
+	protected function validateMessage() {
+		// validate message
+		if (!isset($this->parameters['data']['message']) || empty(StringUtil::trim($this->parameters['data']['message']))) {
+			throw new ValidateActionException("Invalid message given");
+		}
+	}
+	
+	/**
+	 * Validates container id parameter.
+	 */
+	protected function validateContainerID() {
+		if (!isset($this->parameters['data']['containerID']) || empty($this->parameters['data']['containerID'])) {
+			throw new ValidateActionException("Invalid container id given");
+		}
+	}
+	
+	/**
+	 * Validates object type id parameter.
+	 * 
+	 * @return	wcf\data\object\type\ObjectType
+	 */
+	protected function validateObjectType() {
+		if (!isset($this->parameters['data']['objectTypeID'])) {
+			throw new ValidateActionException("Invalid object type id given");
+		}
+		$objectType = ObjectTypeCache::getInstance()->getObjectType($this->parameters['data']['objectTypeID']);
+		if ($objectType === null) {
+			throw new ValidateActionException("Invalid object type id given");
+		}
+		
+		return $objectType;
+	}
+	
+	/**
+	 * Validates comment id parameter.
+	 */
+	protected function validateCommentID() {
+		if (isset($this->parameters['data']['commentID'])) {
+			$this->comment = new Comment($this->parameters['data']['commentID']);
+		}
+		if ($this->comment === null || !$this->comment->commentID) {
+			throw new ValidateActionException("Invalid comment id given");
+		}
+	}
+	
+	/**
+	 * Validates response id parameter.
+	 */
+	protected function validateResponseID() {
+		if (isset($this->parameters['data']['responseID'])) {
+			$this->response = new CommentResponse($this->parameters['data']['responseID']);
+		}
+		if ($this->response === null || !$this->response->responseID) {
+			throw new ValidateActionException("Invalid response id given");
+		}
 	}
 }

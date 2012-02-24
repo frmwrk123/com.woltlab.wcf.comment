@@ -42,8 +42,13 @@ class UserProfileCommentManager extends AbstractCommentManager {
 			return false;
 		}
 		
-		// check visibility
+		// check object id
 		$userProfile = UserProfile::getUserProfile($objectID);
+		if ($userProfile === null) {
+			return false;
+		}
+		
+		// check visibility
 		if ($userProfile->isProtected()) {
 			return false;
 		}
