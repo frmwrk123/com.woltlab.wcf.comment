@@ -430,7 +430,7 @@ WCF.Comment.Editor = WCF.Comment.Base.extend({
 	 * @param	string		message
 	 */
 	_beginEdit: function(message) {
-		var $content = this._container.find('div.wcf-commentContent:eq(0) > p.userMessage');
+		var $content = this._container.find('div.wcf-commentContent:eq(0) p.userMessage:eq(0)');
 		
 		// replace content with input field
 		$content.html($.proxy(function(index, oldhtml) {
@@ -443,7 +443,7 @@ WCF.Comment.Editor = WCF.Comment.Base.extend({
 		// hide elements
 		$content.parent().find('.wcf-username:eq(0)').hide();
 		$content.parent().find('.wcf-commentOptions:eq(0)').hide();
-		$content.parent().find('.wcf-likesWidget:eq(0)').hide();
+		$content.parent().find('.wcf-likesDisplay:eq(0)').hide();
 
 		// set focus (not possible before returned above)
 		$content.children('input').focus();
@@ -475,7 +475,7 @@ WCF.Comment.Editor = WCF.Comment.Base.extend({
 		// restore elements
 		input.parent().parent().find('.wcf-username:eq(0)').show();
 		input.parent().parent().find('.wcf-commentOptions:eq(0)').show();
-		input.parent().parent().find('.wcf-likesWidget:eq(0)').show();
+		input.parent().parent().find('.wcf-likesDisplay:eq(0)').show();
 
 		// restore html
 		input.parent().html(this._data.edit);
@@ -522,7 +522,7 @@ WCF.Comment.Editor = WCF.Comment.Base.extend({
 	 * @param	string		message
 	 */
 	_update: function(message) {
-		var $content = this._container.find('div.wcf-commentContent:eq(0) > p.userMessage');
+		var $content = this._container.find('div.wcf-commentContent:eq(0) p.userMessage:eq(0)');
 
 		// restore original view
 		this._cancelEdit($content.children('input'));
@@ -1001,11 +1001,16 @@ WCF.Comment.Like = WCF.Like.extend({
 	},
 	
 	_updateBadge: function(containerID) {
-		//this._super();
-		console.debug('test');
+		this._super(containerID);
+		
 		if (this._containerData[containerID].cumulativeLikes) {
-			if (!this._containerData[containerID].badge.find('img')) {
-				var image = $('<img src="' + WCF.Icon.get('wcf.icon.like.active') + '" alt="" />');
+			var $icon = WCF.Icon.get('wcf.icon.'+(this._containerData[containerID].cumulativeLikes > 0 ? 'like' : 'dislike')+'.active');
+			if (!this._containerData[containerID].badge.find('img').length) {
+				var $image = $('<img src="' + $icon + '" alt="" />');
+				$image.appendTo(this._containerData[containerID].badge.find('a'));
+			}
+			else {
+				this._containerData[containerID].badge.find('img').attr('src', $icon);
 			}
 		}
 	},

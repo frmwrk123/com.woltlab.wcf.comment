@@ -11,7 +11,7 @@
 				<p class="wcf-username"><a href="{link controller='User' object=$comment->getUserProfile()}{/link}">{$comment->getUserProfile()->username}</a> - {@$comment->time|time}</p>
 				<p class="userMessage">{@$comment->getFormattedMessage()}</p>
 				<ul class="wcf-commentOptions"></ul>
-			</div>
+			</div> 
 			
 			<ul data-responses="{@$comment->responses}" class="wcf-commentResponseList">
 				{if $comment|count}
