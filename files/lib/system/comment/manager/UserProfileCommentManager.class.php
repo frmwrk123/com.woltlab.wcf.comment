@@ -1,5 +1,6 @@
 <?php
 namespace wcf\system\comment\manager;
+use wcf\data\user\UserProfile;
 use wcf\system\WCF;
 
 /**
@@ -14,28 +15,44 @@ use wcf\system\WCF;
  */
 class UserProfileCommentManager extends AbstractCommentManager {
 	/**
-	 * @see	wcf\system\comment\manager\AbstractCommentManager::setOptions()
+	 * @see wcf\system\SingletonFactory::init()
 	 */
-	protected function setOptions() {
-		$this->canAdd = true;
-		$this->canDelete = true;
-				
-		if (!WCF::getUser()->userID) {
-			$this->canAdd = false;
-			$this->canDelete = false;
+	protected function init() {
+		if (WCF::getUser()->userID) {
+			// validate general permissions
+			if (WCF::getSession()->getPermission('user.profile.canAddComment')) {
+				$this->canAdd = true;
+			}
+			
+			if (WCF::getSession()->getPermission('user.profile.canDeleteComment')) {
+				$this->canDelete = true;
+			}
+			
+			if (WCF::getSession()->getPermission('user.profile.canEditComment')) {
+				$this->canEdit = true;
+			}
 		}
 	}
 	
 	/**
-	 * @see	wcf\system\comment\manager\ICommentManager::canEdit()
+	 * @see wcf\system\comment\manager\AbstractCommentManager::canAdd()
 	 */
-	public function canEdit($userID, $time) {
-		$this->canEdit = true;
-		
-		if (!WCF::getUser()->userID) {
-			$this->canEdit = false;
+	public function canAdd($objectID) {
+		if (!$this->canAdd) {
+			return false;
 		}
 		
-		return parent::canEdit($userID, $time);
+		// check visibility
+		$userProfile = UserProfile::getUserProfile($objectID);
+		if ($userProfile->isProtected()) {
+			return false;
+		}
+		
+		// check target user settings
+		if (!$userProfile->isAccessible('allowComments')) {
+			return false;
+		}
+		
+		return true;
 	}
 }

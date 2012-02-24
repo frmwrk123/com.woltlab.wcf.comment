@@ -1,33 +1,36 @@
 <?php
 namespace wcf\system\comment\manager;
+use wcf\data\comment\response\CommentResponse;
+use wcf\data\comment\Comment;
 use wcf\data\DatabaseObject;
-use wcf\system\event\EventHandler;
+use wcf\system\SingletonFactory;
+use wcf\system\WCF;
 
 /**
  * Default implementation for comment managers.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2011 WoltLab GmbH
+ * @copyright	2001-2012 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf.comment
  * @subpackage	system.comment.manager
  * @category 	Community Framework
  */
-abstract class AbstractCommentManager implements ICommentManager {
+abstract class AbstractCommentManager extends SingletonFactory implements ICommentManager {
 	/**
-	 * set to true to allow creation of comments or responses
+	 * current user can add comments
 	 * @var	boolean
-	 */	
+	 */
 	public $canAdd = false;
 	
 	/**
-	 * set to true to allow deletion of a specific comment or response
+	 * current user can delete comments
 	 * @var	boolean
 	 */
 	public $canDelete = false;
 	
 	/**
-	 * set to true to allow edit of a specific comment or response
+	 * current user can edit comments
 	 * @var	boolean
 	 */
 	public $canEdit = false;
@@ -39,51 +42,132 @@ abstract class AbstractCommentManager implements ICommentManager {
 	public $commentsPerPage = 10;
 	
 	/**
-	 * target object
-	 * @var	wcf\data\DatabaseObject
+	 * comment id
+	 * @var	integer
 	 */
-	public $object = null;
+	public $commentID = 0;
 	
 	/**
-	 * @see	wcf\system\comment\manager\ICommentManager::__construct()
+	 * object id
+	 * @var	integer
 	 */
-	public final function __construct(DatabaseObject $object = null) {
-		$this->object = $object;
-		$this->setOptions();
+	public $objectID = 0;
+	
+	/**
+	 * comment response id
+	 * @var	integer
+	 */
+	public $responseID = 0;
+	
+	/**
+	 * @see wcf\system\comment\manager\ICommentManager::canAdd()
+	 */
+	public function canAdd($objectID) {
+		$this->objectID = $objectID;
 		
-		EventHandler::getInstance()->fireAction($this, 'didInit');
+		return false;
 	}
 	
 	/**
-	 * Should be used to set options and validate permissions.
+	 * @see wcf\system\comment\manager\ICommentManager::canDelete()
+	 */
+	public function canDelete($objectID, $commentID = null, $responseID = null) {
+		if (!$this->canDelete) {
+			return false;
+		}
+		
+		// store ids
+		$this->objectID = $objectID;
+		$this->commentID = $commentID;
+		$this->responseID = $responseID;
+	
+		// check ownership
+		if (!$this->checkOwnership('delete')) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * @see wcf\system\comment\manager\ICommentManager::canEdit()
+	 */
+	public function canEdit($objectID, $commentID = null, $responseID = null) {
+		if (!$this->canEdit) {
+			return false;
+		}
+		
+		// store ids
+		$this->objectID = $objectID;
+		$this->commentID = $commentID;
+		$this->responseID = $responseID;
+		
+		// check ownership
+		if (!$this->checkOwnership('edit')) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Validates ownership.
+	 *
+	 * @param	string		$action
+	 * @return	boolean
+	 */
+	protected function checkOwnership($action) {
+		if ($this->commentID) {
+			$comment = new Comment($this->commentID);
+			if (!$this->validateObject($comment, 'commentID', $action)) {
+				return false;
+			}
+		}
+		else if ($this->responseID) {
+			$response = new CommentResponse($this->responseID);
+			if (!$this->validateObject($response, 'responseID', $action)) {
+				return false;
+			}
+		}
+		else {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Validates object access.
+	 *
+	 * @param	wcf\data\DatabaseObject	$object
+	 * @param	string			$field
+	 * @param	string			$action
+	 * @return	boolean
+	 */
+	protected function validateObject(DatabaseObject $object, $field, $action) {
+		if (!$object->$field) {
+			return false;
+		}
+		
+		if ($object->userID != WCF::getUser()->userID) {
+			if ($this->override($action)) {
+				return true;
+			}
+			
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Returns true, if you want to override previous validation.
 	 * 
-	 * @see	wcf\system\comment\manager\AbstractCommentManager::__construct()
+	 * @param	string		$action
+	 * @return	boolean
 	 */
-	abstract protected function setOptions();
-	
-	/**
-	 * @see	wcf\system\comment\manager\ICommentManager::canAdd()
-	 */
-	public function canAdd() {
-		return $this->canAdd;
-	}
-	
-	/**
-	 * @see	wcf\system\comment\manager\ICommentManager::canEdit()
-	 */
-	public function canEdit($userID, $time) {
-		EventHandler::getInstance()->fireAction($this, 'canEdit');
-		
-		return $this->canEdit;
-	}
-	
-	/**
-	 * @see	wcf\system\comment\manager\ICommentManager::canDelete()
-	 */
-	public function canDelete($userID) {
-		EventHandler::getInstance()->fireAction($this, 'canDelete');
-		
-		return $this->canDelete;
+	protected function override($action) {
+		return false;
 	}
 	
 	/**
