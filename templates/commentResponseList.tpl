@@ -1,5 +1,5 @@
 {foreach from=$responseList item=response}
-	<li data-response-id="{@$response->responseID}" data-type="response" class="wcf-container">
+	<li class="wcf-container" data-response-id="{@$response->responseID}" data-type="response" data-can-edit="{if $response->isEditable()}true{else}false{/if}">
 		<a href="{link controller='User' object=$response->getUserProfile()}{/link}" title="{$response->getUserProfile()->username}" class="wcf-containerIcon wcf-userAvatarFramed">
 			{if $response->getUserProfile()->getAvatar()}
 				{@$response->getUserProfile()->getAvatar()->getImageTag(32)}

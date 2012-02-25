@@ -44,7 +44,7 @@ class CommentUserProfileMenuContent extends SingletonFactory implements IUserPro
 		
 		// assign variables
 		WCF::getTPL()->assign(array(
-			'commentCanAdd' => $this->commentManager->canAdd(),
+			'commentCanAdd' => $this->commentManager->canAdd($userID),
 			'commentsPerPage' => $this->commentManager->commentsPerPage(),
 			'commentList' => $commentList,
 			'commentObjectTypeID' => $this->objectTypeID,
