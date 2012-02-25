@@ -2,8 +2,10 @@
 namespace wcf\data\comment;
 use wcf\data\comment\response\CommentResponseList;
 use wcf\data\comment\response\StructuredCommentResponse;
+use wcf\data\object\type\ObjectTypeCache;
 use wcf\data\user\UserList;
 use wcf\data\user\UserProfile;
+use wcf\system\exception\SystemException;
 use wcf\system\like\LikeHandler;
 
 /**

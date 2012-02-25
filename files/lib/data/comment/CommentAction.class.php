@@ -172,7 +172,7 @@ class CommentAction extends AbstractDatabaseObjectAction {
 		$this->commentProcessor = $objectType->getProcessor();
 		$commentID = ($this->comment === null) ?: $this->comment->commentID;
 		$responseID = ($this->response === null) ?: $this->response->responseID;
-		if (!$this->commentProcessor->canEdit($this->parameters['data']['objectTypeID'], $commentID, $responseID)) {
+		if (!$this->commentProcessor->canEdit($this->parameters['data']['objectID'], $commentID, $responseID)) {
 			throw new ValidateActionException("Insufficient permissions");
 		}
 	}
@@ -251,6 +251,7 @@ class CommentAction extends AbstractDatabaseObjectAction {
 	 */
 	protected function renderComment(Comment $comment) {
 		$comment = new StructuredComment($comment);
+		$comment->setIsEditable($this->commentProcessor->canEdit($this->parameters['data']['objectID'], $comment->commentID));
 		
 		// set user profile
 		$userProfile = UserProfile::getUserProfile($comment->userID);
@@ -270,6 +271,7 @@ class CommentAction extends AbstractDatabaseObjectAction {
 	 */
 	protected function renderResponse(CommentResponse $response) {
 		$response = new StructuredCommentResponse($response);
+		$response->setIsEditable($this->commentProcessor->canEdit($this->parameters['data']['objectID'], null, $response->responseID));
 		
 		// set user profile
 		$userProfile = UserProfile::getUserProfile($response->userID);

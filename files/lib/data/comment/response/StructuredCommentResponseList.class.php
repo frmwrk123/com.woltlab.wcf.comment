@@ -1,6 +1,9 @@
 <?php
 namespace wcf\data\comment\response;
+use wcf\data\comment\Comment;
+use wcf\data\object\type\ObjectTypeCache;
 use wcf\data\user\UserProfile;
+use wcf\system\exception\SystemException;
 
 
 /**
@@ -14,6 +17,18 @@ use wcf\data\user\UserProfile;
  * @category 	Community Framework
  */
 class StructuredCommentResponseList extends CommentResponseList {
+	/**
+	 * comment object
+	 * @var	wcf\data\comment\Comment;
+	 */
+	public $comment = null;
+	
+	/**
+	 * comment manager
+	 * @var	wcf\system\comment\manager\ICommentManager
+	 */
+	public $commentManager = null;
+	
 	/**
 	 * @see	wcf\data\DatabaseObjectList::$sqlLimit
 	 */
@@ -32,7 +47,14 @@ class StructuredCommentResponseList extends CommentResponseList {
 	public function __construct($commentID) {
 		parent::__construct();
 		
-		$this->getConditionBuilder()->add("comment_response.commentID = ?", array($commentID));
+		$this->comment = new Comment($commentID);
+		if (!$this->comment->commentID) {
+			throw new SystemException("Invalid comment id given");
+		}
+		$objectType = $objectType = ObjectTypeCache::getInstance()->getObjectType($this->comment->objectTypeID);
+		$this->commentManager = $objectType->getProcessor();
+		
+		$this->getConditionBuilder()->add("comment_response.commentID = ?", array($this->comment->commentID));
 	}
 	
 	/**
@@ -47,6 +69,7 @@ class StructuredCommentResponseList extends CommentResponseList {
 			$userIDs[] = $response->userID;
 			
 			$response = new StructuredCommentResponse($response);
+			$response->setIsEditable($this->commentManager->canEdit($this->comment->objectID, null, $response->responseID));
 		}
 		unset($response);
 		
