@@ -27,5 +27,6 @@
 		<instruction type="userProfileMenu">userProfileMenu.xml</instruction>
 		<instruction type="language">language/*.xml</instruction>
 		<instruction type="userOption">userOption.xml</instruction>
+		<instruction type="userGroupOption">userGroupOption.xml</instruction>
 	</instructions>
 </package>
