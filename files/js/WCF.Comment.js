@@ -178,7 +178,7 @@ WCF.Comment.Add = WCF.Comment.Base.extend({
 		var $listItem = $('<li class="wcf-container wcf-commentAdd"><img src="' + WCF.Icon.get('wcf.icon.write') + '" alt="" width="24" height="24" class="wcf-containerIcon" /><div class="wcf-containerContent"></div></li>');
 		var $inputContainer = $listItem.find('div.wcf-containerContent');
 		var $input = $('<input type="text" placeholder="' + WCF.Language.get('wcf.comment.add') + '" />').addClass('long').appendTo($inputContainer);
-		var $description = $('<small>' + WCF.Language.get('wcf.comment.description') + '</small>').hide().appendTo($inputContainer);
+		$('<small>' + WCF.Language.get('wcf.comment.description') + '</small>').hide().appendTo($inputContainer);
 
 		$input.focus($.proxy(this._expandInput, this)).blur($.proxy(this._foldInput, this)).keyup($.proxy(this._addComment, this));
 		$listItem.prependTo(this._container);
@@ -306,8 +306,10 @@ WCF.Comment.List = WCF.Comment.Base.extend({
 
 			if ($commentID !== null && !this._comments[$containerID]) {
 				this._comments[$containerID] = $comment;
-
-				new WCF.Comment.Editor($containerID, $comment);
+				
+				if ($comment.data('canEdit')) {
+					new WCF.Comment.Editor($containerID, $comment);
+				}
 				if (this.canAdd()) new WCF.Comment.Response.Add($containerID, $comment);
 				new WCF.Comment.Response.List($containerID, $comment);
 			}
@@ -577,7 +579,7 @@ WCF.Comment.Response.Add = WCF.Comment.Base.extend({
 		var $listItem = $('<div class="wcf-container wcf-commentResponseAdd"><img src="' + WCF.Icon.get('wcf.icon.write') + '" alt="" width="24" height="24" class="wcf-containerIcon" /><div class="wcf-containerContent"></div></div>');
 		var $inputContainer = $listItem.find('div.wcf-containerContent');
 		var $input = $('<input type="text" placeholder="' + WCF.Language.get('wcf.comment.response.add') + '" />').addClass('long').data('containerID', this._containerID).appendTo($inputContainer);
-		var $description = $('<small>' + WCF.Language.get('wcf.comment.description') + '</small>').hide().appendTo($inputContainer);
+		$('<small>' + WCF.Language.get('wcf.comment.description') + '</small>').hide().appendTo($inputContainer);
 
 		$input.focus($.proxy(this._expandInput, this)).blur($.proxy(this._foldInput, this)).keyup($.proxy(this._addResponse, this));
 		$listItem.insertBefore(this._container.find('ul.wcf-commentResponseList'));
@@ -715,7 +717,9 @@ WCF.Comment.Response.List = WCF.Comment.Base.extend({
 			if ($responseID !== null && !this._responses[$containerID]) {
 				this._responses[$containerID] = $container;
 				
-				new WCF.Comment.Response.Editor($containerID, $container);
+				if ($container.data('canEdit')) {
+					new WCF.Comment.Response.Editor($containerID, $container);
+				}
 			}
 		}, this));
 
@@ -899,7 +903,7 @@ WCF.Comment.Response.Loader = WCF.Comment.Base.extend({
 	 * @param	object		event
 	 */
 	_recent: function(event) {
-		this._pageNo--
+		this._pageNo--;
 
 		this._showRecent();
 	},
