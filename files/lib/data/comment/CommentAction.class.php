@@ -55,7 +55,7 @@ class CommentAction extends AbstractDatabaseObjectAction {
 		
 		// validate object id and permissions
 		$this->commentProcessor = $objectType->getProcessor();
-		if (!$this->commentProcessor->canAdd($this->parameters['data']['objectTypeID'])) {
+		if (!$this->commentProcessor->canAdd($this->parameters['data']['objectID'])) {
 			throw new ValidateActionException("Insufficient permissions");
 		}
 	}
@@ -289,7 +289,11 @@ class CommentAction extends AbstractDatabaseObjectAction {
 	 */
 	protected function validateMessage() {
 		// validate message
-		if (!isset($this->parameters['data']['message']) || empty(StringUtil::trim($this->parameters['data']['message']))) {
+		if (!isset($this->parameters['data']['message'])) {
+			throw new ValidateActionException("Invalid message given");
+		}
+		$this->parameters['data']['message'] = StringUtil::trim($this->parameters['data']['message']);
+		if (empty($this->parameters['data']['message'])) {
 			throw new ValidateActionException("Invalid message given");
 		}
 	}
