@@ -1,6 +1,3 @@
-// DEBUG ONLY - REMOVE LATER
-if (!WCF) var WCF = {};
-
 /**
  * Namespace for comments
  */
@@ -386,9 +383,11 @@ WCF.Comment.Editor = WCF.Comment.Base.extend({
 	 * Prepares editing by fetching raw message from server.
 	 */
 	_prepare: function() {
+		var $commentContainer = this._container.closest('.wcf-commentList');
 		var $data = {
 			containerID: this._containerID,
-			type: this._getType()
+			objectID: $commentContainer.data('objectID'),
+			objectTypeID: $commentContainer.data('objectTypeID')
 		};
 		$data = this._addObjectID($data);
 		
@@ -501,10 +500,13 @@ WCF.Comment.Editor = WCF.Comment.Base.extend({
 		if ($message === '') {
 			return;
 		}
-
+		
+		var $commentContainer = this._container.closest('.wcf-commentList');
 		var $data = {
 			containerID: this._containerID,
-			message: $message
+			message: $message,
+			objectID: $commentContainer.data('objectID'),
+			objectTypeID: $commentContainer.data('objectTypeID')
 		};
 		$data = this._addObjectID($data);
 		
@@ -542,15 +544,6 @@ WCF.Comment.Editor = WCF.Comment.Base.extend({
 	_addObjectID: function(data) {
 		data.commentID = this._container.data('commentID');
 		return data;
-	},
-
-	/**
-	 * Returns object type.
-	 * 
-	 * @return	string
-	 */
-	_getType: function() {
-		return 'comment';
 	}
 });
 
@@ -608,6 +601,7 @@ WCF.Comment.Response.Add = WCF.Comment.Base.extend({
 			return;
 		}
 		
+		var $commentContainer = this._container.closest('.wcf-commentList');
 		this._proxy.setOption('data', {
 			actionName: 'addResponse',
 			className: 'wcf\\data\\comment\\CommentAction',
@@ -615,7 +609,9 @@ WCF.Comment.Response.Add = WCF.Comment.Base.extend({
 				data: {
 					commentID: this._container.data('commentID'),
 					containerID: this._containerID,
-					message: $value
+					message: $value,
+					objectID: $commentContainer.data('objectID'),
+					objectTypeID: $commentContainer.data('objectTypeID')
 				}
 			}
 		});
@@ -751,13 +747,6 @@ WCF.Comment.Response.Editor = WCF.Comment.Editor.extend({
 	_addObjectID: function(data) {
 		data.responseID = this._container.data('responseID');
 		return data;
-	},
-
-	/**
-	 * @see	WCF.Comment.Editor._getType()
-	 */
-	_getType: function() {
-		return 'response';
 	}
 });
 

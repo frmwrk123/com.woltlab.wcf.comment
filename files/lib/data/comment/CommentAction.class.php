@@ -101,7 +101,7 @@ class CommentAction extends AbstractDatabaseObjectAction {
 		
 		// validate object id and permissions
 		$this->commentProcessor = $objectType->getProcessor();
-		if (!$this->commentProcessor->canAdd($this->parameters['data']['objectTypeID'])) {
+		if (!$this->commentProcessor->canAdd($this->parameters['data']['objectID'])) {
 			throw new ValidateActionException("Insufficient permissions");
 		}
 	}
