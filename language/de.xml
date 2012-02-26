@@ -9,7 +9,7 @@
 	<category name="wcf.comment">
 		<item name="wcf.comment.response.previous"><![CDATA[Vorherige Antworten anzeigen]]></item>
 		<item name="wcf.comment.response.recent"><![CDATA[Neuere Antworten anzeigen]]></item>
-		<item name="wcf.comment.add"><![CDATA[Kommantar schreiben …]]></item>
+		<item name="wcf.comment.add"><![CDATA[Kommentar schreiben …]]></item>
 		<item name="wcf.comment.description"><![CDATA[Drücken Sie die Eingabetaste um abzusenden oder Escape um abzubrechen.]]></item>
 		<item name="wcf.comment.response.add"><![CDATA[Antworten …]]></item>
 	</category>
