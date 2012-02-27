@@ -376,7 +376,7 @@ WCF.Comment.Editor = WCF.Comment.Base.extend({
 	_insert: function() {
 		var $optionList = this._container.find('ul.wcf-commentOptions:eq(0)');
 
-		$('<li><a>' + WCF.Language.get('wcf.global.button.edit') + '</a></li>').addClass('wcf-commentEdit').appendTo($optionList).click($.proxy(this._prepare, this));
+		$('<li><a class="jsTooltip" title="' + WCF.Language.get('wcf.global.button.edit') + '"><img src="' + WCF.Icon.get('wcf.icon.edit') + '" alt="" /></a></li>').addClass('wcf-commentEdit').appendTo($optionList).click($.proxy(this._prepare, this));
 	},
 
 	/**
