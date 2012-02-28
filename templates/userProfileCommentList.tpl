@@ -17,7 +17,7 @@
 			{assign var=userAvatar value=$__wcf->getUserProfileHandler()->getAvatar()->getImageTag(32)}
 		{/if}
 		new WCF.Comment.Handler({if $commentCanAdd}true{else}false{/if}, {@$commentsPerPage}, '{@$userAvatar}');
-		new WCF.Comment.Like();	
+		{if MODULE_LIKE && $__wcf->getSession()->getPermission('user.like.canViewLike')}new WCF.Comment.Like({if $__wcf->getUser()->userID && $__wcf->getSession()->getPermission('user.like.canLike')}1{else}0{/if});{/if}	
 	});
 	//]]>
 </script>

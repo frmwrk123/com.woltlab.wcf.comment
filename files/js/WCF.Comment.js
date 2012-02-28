@@ -987,10 +987,13 @@ WCF.Comment.Like = WCF.Like.extend({
 	 * @see	WCF.Like._buildWidget()
 	 */
 	_buildWidget: function(containerID, likeButton, dislikeButton, cumulativeLikes) {
-		this._containers[containerID].find('.wcf-username:eq(0)').after(cumulativeLikes).after($('<span> - </span>'));
+		this._containers[containerID].find('.wcf-username:eq(0)').after(cumulativeLikes);
+		cumulativeLikes.find('img').before($('<span> - </span>'));
 		
-		dislikeButton.appendTo(this._containers[containerID].find('.wcf-commentOptions:eq(0)'));
-		likeButton.appendTo(this._containers[containerID].find('.wcf-commentOptions:eq(0)'));
+		if (this._canLike) {
+			dislikeButton.appendTo(this._containers[containerID].find('.wcf-commentOptions:eq(0)'));
+			likeButton.appendTo(this._containers[containerID].find('.wcf-commentOptions:eq(0)'));
+		}
 	},
 	
 	/**
