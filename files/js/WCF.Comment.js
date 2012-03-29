@@ -444,7 +444,7 @@ WCF.Comment.Editor = WCF.Comment.Base.extend({
 		// hide elements
 		$content.parent().find('hgroup:eq(0)').hide();
 		$content.parent().find('.commentOptions:eq(0)').hide();
-		$content.parent().find('.likesDisplay:eq(0)').hide();
+		//$content.parent().find('.likesDisplay:eq(0)').hide();
 
 		// set focus (not possible before returned above)
 		$content.children('input').focus();
@@ -476,7 +476,7 @@ WCF.Comment.Editor = WCF.Comment.Base.extend({
 		// restore elements
 		input.parent().parent().find('hgroup:eq(0)').show();
 		input.parent().parent().find('.commentOptions:eq(0)').show();
-		input.parent().parent().find('.likesDisplay:eq(0)').show();
+		//input.parent().parent().find('.likesDisplay:eq(0)').show();
 
 		// restore html
 		input.parent().html(this._data.edit);
@@ -987,8 +987,7 @@ WCF.Comment.Like = WCF.Like.extend({
 	 * @see	WCF.Like._buildWidget()
 	 */
 	_buildWidget: function(containerID, likeButton, dislikeButton, cumulativeLikes) {
-		this._containers[containerID].find('hgroup:eq(0)').after(cumulativeLikes);
-		cumulativeLikes.find('img').before($('<span> - </span>'));
+		this._containers[containerID].find('hgroup:eq(0) > h1').append(cumulativeLikes);
 		
 		if (this._canLike) {
 			dislikeButton.appendTo(this._containers[containerID].find('.commentOptions:eq(0)'));
