@@ -49,7 +49,7 @@ class CommentUserProfileMenuContent extends SingletonFactory implements IUserPro
 			'commentList' => $commentList,
 			'commentObjectTypeID' => $this->objectTypeID,
 			'userID' => $userID,
-			'likeData' => $commentList->getLikeData()
+			'likeData' => (MODULE_LIKE ? $commentList->getLikeData() : array())
 		));
 		
 		return WCF::getTPL()->fetch('userProfileCommentList');

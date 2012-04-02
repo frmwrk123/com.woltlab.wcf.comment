@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <language xmlns="http://www.woltlab.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.woltlab.com http://www.woltlab.com/XSD/maelstrom/language.xsd" languagecode="en">
-	<category name="wcf.user">
+	<category name="wcf.user.profile">
 		<item name="wcf.user.profile.menu.comment"><![CDATA[Wall]]></item>
 		<item name="wcf.user.profile.recentActivity.profileComment"><![CDATA[Posted a comment on <a href="{link controller='User' object=$user}{/link}#wcf_user_profile_menu_comment">{$user->username}'s wall</a>.]]></item>
 		<item name="wcf.user.profile.recentActivity.profileCommentResponse"><![CDATA[Replied to a comment by <a href="{link controller='User' object=$commentAuthor}{/link}">{$commentAuthor->username}</a> on <a href="{link controller='User' object=$user}{/link}#wcf_user_profile_menu_comment">{$user->username}'s wall</a>.]]></item>
@@ -10,7 +10,7 @@
 		<item name="wcf.comment.response.previous"><![CDATA[Show previous responses]]></item>
 		<item name="wcf.comment.response.recent"><![CDATA[Show recent responses]]></item>
 		<item name="wcf.comment.add"><![CDATA[Write a comment …]]></item>
-		<item name="wcf.comment.description"><![CDATA[Confirm with Enter to save or Esc to cancel.]]></item>
+		<item name="wcf.comment.description"><![CDATA[Confirm with Enter to save, or Escape to cancel.]]></item>
 		<item name="wcf.comment.response.add"><![CDATA[Write a response …]]></item>	
 	</category>
 </language>
