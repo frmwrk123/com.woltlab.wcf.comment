@@ -16,7 +16,7 @@ class CommentUserNotificationObject extends DatabaseObjectDecorator implements I
 	/**
 	 * @see wcf\data\DatabaseObjectDecorator::$baseClass
 	 */
-	protected static $baseClass = 'wcf\data\user\comment\Comment';
+	protected static $baseClass = 'wcf\data\comment\Comment';
 	
 	/**
 	 * @see wcf\system\user\notification\object\IUserNotificationObject::getObjectID()

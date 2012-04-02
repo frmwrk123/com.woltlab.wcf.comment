@@ -1,5 +1,7 @@
 <?php
 namespace wcf\system\user\notification\object\type;
+use wcf\system\WCF;
+
 use wcf\data\comment\Comment;
 use wcf\data\comment\CommentList;
 use wcf\data\object\type\AbstractObjectTypeProcessor;
@@ -16,7 +18,7 @@ use wcf\system\user\notification\object\CommentUserNotificationObject;
  * @subpackage	system.user.notification.object.type
  * @category 	Community Framework
  */
-class UserProfileCommentUserNotificationObjectType extends AbstractObjectTypeProcessor implements IUserNotificationObjectType {
+class UserProfileCommentUserNotificationObjectType extends AbstractObjectTypeProcessor implements ICommentUserNotificationObjectType, IUserNotificationObjectType {
 	/**
 	 * @see wcf\system\user\notification\object\type\IUserNotificationObjectType::getObjectByID()
 	 */
@@ -51,5 +53,19 @@ class UserProfileCommentUserNotificationObjectType extends AbstractObjectTypePro
 		}
 		
 		return $objects;
+	}
+	
+	/**
+	 * @see	wcf\system\user\notification\object\type\ICommentUserNotificationObjectType::getOwnerID()
+	 */
+	public function getOwnerID($objectID) {
+		$sql = "SELECT	objectID
+			FROM	wcf".WCF_N."_comment
+			WHERE	commentID = ?";
+		$statement = WCF::getDB()->prepareStatement($sql);
+		$statement->execute(array($objectID));
+		$row = $statement->fetchArray();
+		
+		return ($row ? $row['objectID'] : 0);
 	}
 }
