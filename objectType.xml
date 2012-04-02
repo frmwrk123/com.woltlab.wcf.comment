@@ -24,5 +24,10 @@
 			<definitionname>com.woltlab.wcf.user.recentActivityEvent</definitionname>
 			<classname>wcf\system\user\activity\event\ProfileCommentResponseUserActivityEvent</classname>
 		</type>
+		<type>
+			<name>com.woltlab.wcf.user.profileComment.notification</name>
+			<definitionname>com.woltlab.wcf.notification.objectType</definitionname>
+			<classname>wcf\system\user\notification\object\type\UserProfileCommentUserNotificationObjectType</classname>
+		</type>
 	</import>
 </data>

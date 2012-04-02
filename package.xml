@@ -28,5 +28,6 @@
 		<instruction type="language">language/*.xml</instruction>
 		<instruction type="userOption">userOption.xml</instruction>
 		<instruction type="userGroupOption">userGroupOption.xml</instruction>
+		<instruction type="userNotificationEvent">userNotificationEvent.xml</instruction>
 	</instructions>
 </package>
