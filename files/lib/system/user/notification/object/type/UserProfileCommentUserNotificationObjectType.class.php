@@ -16,7 +16,7 @@ use wcf\system\user\notification\object\CommentUserNotificationObject;
  * @subpackage	system.user.notification.object.type
  * @category 	Community Framework
  */
-class UserProfileCommentNotificationObjectType extends AbstractObjectTypeProcessor implements IUserNotificationObjectType {
+class UserProfileCommentUserNotificationObjectType extends AbstractObjectTypeProcessor implements IUserNotificationObjectType {
 	/**
 	 * @see wcf\system\user\notification\object\type\IUserNotificationObjectType::getObjectByID()
 	 */
