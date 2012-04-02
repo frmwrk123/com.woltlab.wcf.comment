@@ -1,5 +1,11 @@
 <?php
 namespace wcf\data\comment;
+use wcf\system\user\notification\object\CommentResponseUserNotificationObject;
+
+use wcf\system\user\notification\object\CommentUserNotificationObject;
+
+use wcf\data\user\notification\UserNotification;
+
 use wcf\data\comment\response\CommentResponse;
 use wcf\data\comment\response\CommentResponseEditor;
 use wcf\data\comment\response\StructuredCommentResponse;
@@ -8,6 +14,7 @@ use wcf\data\user\UserProfile;
 use wcf\data\AbstractDatabaseObjectAction;
 use wcf\system\exception\ValidateActionException;
 use wcf\system\user\activity\event\UserActivityEventHandler;
+use wcf\system\user\notification\UserNotificationHandler;
 use wcf\system\WCF;
 use wcf\util\StringUtil;
 
@@ -83,6 +90,15 @@ class CommentAction extends AbstractDatabaseObjectAction {
 			UserActivityEventHandler::getInstance()->fireEvent($objectType->objectType.'.recentActivityEvent', $objectType->packageID, $comment->commentID);
 		}
 		
+		// fire notification event
+		if (UserNotificationHandler::getInstance()->getObjectTypeID($objectType->objectType.'.notification')) {
+			$notificationObjectType = UserNotificationHandler::getInstance()->getObjectTypeProcessor($objectType.'.notification');
+			$userID = $notificationObjectType->getOwnerID($this->parameters['data']['objectID']);
+			$notificationObject = new CommentUserNotificationObject($comment);
+			
+			UserNotificationHandler::getInstance()->fireEvent('comment', $objectType->objectType.'.notification', $notificationObject, array($userID));
+		}
+		
 		return array(
 			'containerID' => $this->parameters['data']['containerID'],
 			'template' => $this->renderComment($comment)
@@ -137,6 +153,20 @@ class CommentAction extends AbstractDatabaseObjectAction {
 		$objectType = ObjectTypeCache::getInstance()->getObjectType($this->comment->objectTypeID);
 		if (UserActivityEventHandler::getInstance()->getObjectTypeID($objectType->objectType.'.response.recentActivityEvent')) {
 			UserActivityEventHandler::getInstance()->fireEvent($objectType->objectType.'.response.recentActivityEvent', $objectType->packageID, $response->responseID);
+		}
+		
+		// fire notification event
+		if (UserNotificationHandler::getInstance()->getObjectTypeID($objectType->objectType.'.response.notification')) {
+			$notificationObject = new CommentResponseUserNotificationObject($response);
+			UserNotificationHandler::getInstance()->fireEvent('commentResponse', $objectType->objectType.'.response.notification', $notificationObject, array($this->comment->userID));
+			
+			// notify the container owner
+			if (UserNotificationHandler::getInstance()->getObjectTypeID($objectType->objectType.'.notification')) {
+				$notificationObjectType = UserNotificationHandler::getInstance()->getObjectTypeProcessor($objectType.'.notification');
+				$userID = $notificationObjectType->getOwnerID($this->comment->commentID);
+				
+				UserNotificationHandler::getInstance()->fireEvent('commentResponseOwner', $objectType->objectType.'.response.notificationOwner', $notificationObject, array($userID));
+			}
 		}
 		
 		return array(
