@@ -69,7 +69,6 @@ class CommentResponseAction extends AbstractDatabaseObjectAction {
 		$responseList = new StructuredCommentResponseList($this->comment->commentID);
 		$responseList->sqlOffset = (($this->parameters['data']['pageNo'] - 1) * 20);
 		$responseList->sqlLimit = 20;
-		$responseCount = $responseList->countObjects();
 		$responseList->readObjects();
 		
 		WCF::getTPL()->assign(array(
