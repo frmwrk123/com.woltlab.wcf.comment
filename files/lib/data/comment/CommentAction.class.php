@@ -373,4 +373,31 @@ class CommentAction extends AbstractDatabaseObjectAction {
 			throw new ValidateActionException("Invalid response id given");
 		}
 	}
+	
+	/**
+	 * Returns the comment object.
+	 * 
+	 * @return	wcf\data\comment\Comment
+	 */
+	public function getComment() {
+		return $this->comment;
+	}
+	
+	/**
+	 * Returns the comment response object.
+	 * 
+	 * @return	wcf\data\comment\response\CommentResponse
+	 */
+	public function getResponse() {
+		return $this->response;
+	}
+	
+	/**
+	 * Returns the comment manager.
+	 * 
+	 * @return	wcf\system\comment\manager\ICommentManager
+	 */
+	public function getCommentManager() {
+		return $this->commentProcessor;
+	}
 }
