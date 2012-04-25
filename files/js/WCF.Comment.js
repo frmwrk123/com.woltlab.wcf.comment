@@ -172,12 +172,12 @@ WCF.Comment.Add = WCF.Comment.Base.extend({
 	 */
 	_init: function() {
 		// create UI
-		var $listItem = $('<li class="box24 commentAdd"><img src="' + WCF.Icon.get('wcf.icon.write') + '" alt="" class="icon24" /><div></div></li>');
+		var $listItem = $('<li class="box32 commentAdd"><span class="framed">'+this.getUserAvatar()+'</span><div></div></li>');
 		var $inputContainer = $listItem.find('div');
 		var $input = $('<input type="text" placeholder="' + WCF.Language.get('wcf.comment.add') + '" />').addClass('long').appendTo($inputContainer);
-		$('<small>' + WCF.Language.get('wcf.comment.description') + '</small>').hide().appendTo($inputContainer);
+		$('<small>' + WCF.Language.get('wcf.comment.description') + '</small>').appendTo($inputContainer);
 
-		$input.focus($.proxy(this._expandInput, this)).blur($.proxy(this._foldInput, this)).keyup($.proxy(this._addComment, this));
+		$input.keyup($.proxy(this._addComment, this));
 		$listItem.prependTo(this._container);
 
 		// init proxy
@@ -235,27 +235,6 @@ WCF.Comment.Add = WCF.Comment.Base.extend({
 		if (this._containerID != $containerID) return;
 
 		$('' + data.returnValues.template).insertAfter(this._container.children('li:eq(0)')).wcfBlindIn();
-	},
-
-	/**
-	 * Expands container to display a description.
-	 * 
-	 * @param	object		event
-	 */
-	_expandInput: function(event) {
-		$(event.target).next().show();
-	},
-
-	/**
-	 * Folds container if input is empty, restores previous state.
-	 * 
-	 * @param	object		event
-	 */
-	_foldInput: function(event) {
-		var $input = $(event.target);
-		if ($input.val() == '') {
-			$input.next().hide();
-		}
 	},
 
 	/**
@@ -569,12 +548,12 @@ WCF.Comment.Response.Add = WCF.Comment.Base.extend({
 	 */
 	_init: function() {
 		// create UI
-		var $listItem = $('<div class="box24 commentResponseAdd"><img src="' + WCF.Icon.get('wcf.icon.write') + '" alt="" class="icon24" /><div></div></div>');
+		var $listItem = $('<div class="box32 commentResponseAdd"><span class="framed">'+this.getUserAvatar()+'</span><div></div></div>');
 		var $inputContainer = $listItem.find('div:not(.box24)');
 		var $input = $('<input type="text" placeholder="' + WCF.Language.get('wcf.comment.response.add') + '" />').addClass('long').data('containerID', this._containerID).appendTo($inputContainer);
-		$('<small>' + WCF.Language.get('wcf.comment.description') + '</small>').hide().appendTo($inputContainer);
+		$('<small>' + WCF.Language.get('wcf.comment.description') + '</small>').appendTo($inputContainer);
 
-		$input.focus($.proxy(this._expandInput, this)).blur($.proxy(this._foldInput, this)).keyup($.proxy(this._addResponse, this));
+		$input.keyup($.proxy(this._addResponse, this));
 		$listItem.insertBefore(this._container.find('ul.commentResponseList'));
 
 		this._proxy = new WCF.Action.Proxy({
@@ -651,27 +630,6 @@ WCF.Comment.Response.Add = WCF.Comment.Base.extend({
 
 		// insert new response
 		$(data.returnValues.template).hide().prependTo($list).wcfBlindIn();
-	},
-
-	/**
-	 * Expands container to show a description.
-	 * 
-	 * @param	object		event
-	 */
-	_expandInput: function(event) {
-		$(event.target).next().show();
-	},
-
-	/**
-	 * Folds a container, restoring previous state.
-	 * 
-	 * @param	object		event
-	 */
-	_foldInput: function(event) {
-		var $input = $(event.target);
-		if ($input.val() == '') {
-			$input.next().hide();
-		}
 	},
 
 	/**
