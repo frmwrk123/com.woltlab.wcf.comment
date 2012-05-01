@@ -944,8 +944,8 @@ WCF.Comment.Like = WCF.Like.extend({
 	/**
 	 * @see	WCF.Like._buildWidget()
 	 */
-	_buildWidget: function(containerID, likeButton, dislikeButton, cumulativeLikes) {
-		this._containers[containerID].find('hgroup:eq(0) > h1').append(cumulativeLikes);
+	_buildWidget: function(containerID, likeButton, dislikeButton, badge, summary) {
+		this._containers[containerID].find('hgroup:eq(0) > h1').append(badge);
 		
 		if (this._canLike) {
 			dislikeButton.appendTo(this._containers[containerID].find('.commentOptions:eq(0)'));
