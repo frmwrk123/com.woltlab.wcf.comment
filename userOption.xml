@@ -2,10 +2,9 @@
 <data xmlns="http://www.woltlab.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.woltlab.com http://www.woltlab.com/XSD/maelstrom/userOption.xsd">
 	<import>
 		<options>
-			<option name="allowComments">
-				<categoryname>settings.community.profile</categoryname>
+			<option name="canWriteProfileComments">
+				<categoryname>settings.privacy.messaging</categoryname>
 				<optiontype>select</optiontype>
-				<showorder>1</showorder>
 				<visible>1</visible>
 				<selectoptions><![CDATA[1:wcf.user.access.registered
 2:wcf.user.access.following

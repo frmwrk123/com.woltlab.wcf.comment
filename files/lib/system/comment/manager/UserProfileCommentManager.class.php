@@ -54,7 +54,7 @@ class UserProfileCommentManager extends AbstractCommentManager {
 		}
 		
 		// check target user settings
-		if (!$userProfile->isAccessible('allowComments')) {
+		if (!$userProfile->isAccessible('canWriteProfileComments')) {
 			return false;
 		}
 		
