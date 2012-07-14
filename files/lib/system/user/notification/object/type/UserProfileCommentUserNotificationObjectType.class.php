@@ -1,12 +1,10 @@
 <?php
 namespace wcf\system\user\notification\object\type;
-use wcf\system\WCF;
-
 use wcf\data\comment\Comment;
 use wcf\data\comment\CommentList;
 use wcf\data\object\type\AbstractObjectTypeProcessor;
-use wcf\system\user\notification\object\type\AbstractUserNotificationObjectType;
 use wcf\system\user\notification\object\CommentUserNotificationObject;
+use wcf\system\WCF;
 
 /**
  * Represents a comment notification object type.

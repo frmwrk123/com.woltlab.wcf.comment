@@ -1,11 +1,10 @@
 <?php
 namespace wcf\data\comment\response;
-use wcf\system\exception\ValidateActionException;
-
 use wcf\data\comment\Comment;
 use wcf\data\comment\StructuredComment;
 use wcf\data\user\UserProfile;
 use wcf\data\AbstractDatabaseObjectAction;
+use wcf\system\exception\ValidateActionException;
 use wcf\system\WCF;
 
 /**
