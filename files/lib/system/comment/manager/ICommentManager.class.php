@@ -1,6 +1,5 @@
 <?php
 namespace wcf\system\comment\manager;
-use wcf\data\DatabaseObject;
 
 /**
  * Default interface for comment managers.
