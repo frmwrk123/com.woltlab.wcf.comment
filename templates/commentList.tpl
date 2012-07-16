@@ -19,7 +19,7 @@
 				
 				<ul data-responses="{@$comment->responses}" class="commentResponseList">
 					{if $comment|count}
-						{include file='commentResponseList' sandbox=false responseList=$comment}
+						{include file='commentResponseList' responseList=$comment}
 					{/if}
 				</ul>
 			</div>
