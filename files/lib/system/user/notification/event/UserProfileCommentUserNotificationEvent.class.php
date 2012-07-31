@@ -16,23 +16,16 @@ use wcf\system\WCF;
  */
 class UserProfileCommentUserNotificationEvent extends AbstractUserNotificationEvent {
 	/**
-	 * @see	wcf\system\user\notification\event\IUserNotificationEvent::getMessage()
+	 * @see	wcf\system\user\notification\event\IUserNotificationEvent::getTitle()
 	 */
-	public function getMessage(IUserNotificationType $notificationType) {
-		return '';
-	}
-	
-	/**
-	 * @see	wcf\system\user\notification\event\IUserNotificationEvent::getShortOutput()
-	 */
-	public function getShortOutput() {
+	public function getTitle() {
 		return WCF::getLanguage()->get('wcf.user.notification.comment.shortOutput');
 	}
 	
 	/**
-	 * @see	wcf\system\user\notification\event\IUserNotificationEvent::getOutput()
+	 * @see	wcf\system\user\notification\event\IUserNotificationEvent::getMessage()
 	 */
-	public function getOutput() {
+	public function getMessage() {
 		return WCF::getLanguage()->getDynamicVariable('wcf.user.notification.comment.output', array('author' => $this->author));
 	}
 	
@@ -43,24 +36,10 @@ class UserProfileCommentUserNotificationEvent extends AbstractUserNotificationEv
 		WCF::getTPL()->assign(array(
 			'author' => $this->author,
 			'buttons' => $this->getActions(),
-			'message' => $this->getOutput(),
+			'message' => $this->getMessage(),
 			'time' => $this->userNotificationObject->time
 		));
 		
 		return WCF::getTPL()->fetch('userNotificationDetails');
-	}
-	
-	/**
-	 * @see	wcf\system\user\notification\event\IUserNotificationEvent::getTitle()
-	 */
-	public function getTitle() {
-		return '';
-	}
-	
-	/**
-	 * @see	wcf\system\user\notification\event\IUserNotificationEvent::getDescription()
-	 */
-	public function getDescription() {
-		return '';
 	}
 }
