@@ -8,12 +8,12 @@
 		</event>
 		<event>
 			<name>commentResponse</name>
-			<objecttype>com.woltlab.wcf.user.profileComment.notification</objecttype>
+			<objecttype>com.woltlab.wcf.user.profileComment.response.notification</objecttype>
 			<classname>wcf\system\user\notification\event\UserProfileCommentResponseUserNotificationEvent</classname>
 		</event>
 		<event>
 			<name>commentResponseOwner</name>
-			<objecttype>com.woltlab.wcf.user.profileComment.notification</objecttype>
+			<objecttype>com.woltlab.wcf.user.profileComment.response.notification</objecttype>
 			<classname>wcf\system\user\notification\event\UserProfileCommentResponseOwnerUserNotificationEvent</classname>
 		</event>
 	</import>

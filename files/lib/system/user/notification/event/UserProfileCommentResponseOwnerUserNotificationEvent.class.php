@@ -1,5 +1,7 @@
 <?php
 namespace wcf\system\user\notification\event;
+use wcf\data\comment\Comment;
+use wcf\data\user\User;
 use wcf\system\user\notification\event\AbstractUserNotificationEvent;
 use wcf\system\user\notification\type\IUserNotificationType;
 use wcf\system\WCF;
@@ -26,7 +28,13 @@ class UserProfileCommentResponseOwnerUserNotificationEvent extends AbstractUserN
 	 * @see	wcf\system\user\notification\event\IUserNotificationEvent::getMessage()
 	 */
 	public function getMessage() {
-		return WCF::getLanguage()->getDynamicVariable('wcf.user.notification.commentResponseOwner.output', array('author' => $this->author));
+		$comment = new Comment($this->userNotificationObject->commentID);
+		$commentAuthor = new User($comment->userID);
+		
+		return WCF::getLanguage()->getDynamicVariable('wcf.user.notification.commentResponseOwner.output', array(
+			'author' => $this->author,
+			'commentAuthor' => $commentAuthor
+		));
 	}
 	
 	/**
