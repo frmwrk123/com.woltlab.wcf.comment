@@ -15,7 +15,7 @@ use wcf\system\like\LikeHandler;
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf.comment
  * @subpackage	data.comment
- * @category 	Community Framework
+ * @category	Community Framework
  */
 class StructuredCommentList extends CommentList {
 	/**
@@ -130,7 +130,7 @@ class StructuredCommentList extends CommentList {
 	/**
 	 * Fetches the like data.
 	 * 
-	 * @return array
+	 * @return	array
 	 */
 	public function getLikeData() {
 		if (!count($this->getObjectIDs())) return array();

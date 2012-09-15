@@ -12,7 +12,7 @@ use wcf\system\WCF;
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf.comment
  * @subpackage	system.event.listener
- * @category 	Community Framework
+ * @category	Community Framework
  */
 class UserProfileCommentListener implements IEventListener {
 	/**
@@ -34,7 +34,7 @@ class UserProfileCommentListener implements IEventListener {
 	public $objectTypeID = 0;
 	
 	/**
-	 * @see wcf\system\event\IEventListener::execute()
+	 * @see	wcf\system\event\IEventListener::execute()
 	 */
 	public function execute($eventObj, $className, $eventName) {
 		switch ($eventName) {

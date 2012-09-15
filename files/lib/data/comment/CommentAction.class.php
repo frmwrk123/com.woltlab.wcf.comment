@@ -22,7 +22,7 @@ use wcf\util\StringUtil;
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf.comment
  * @subpackage	data.comment
- * @category 	Community Framework
+ * @category	Community Framework
  */
 class CommentAction extends AbstractDatabaseObjectAction {
 	/**
@@ -44,7 +44,7 @@ class CommentAction extends AbstractDatabaseObjectAction {
 	protected $response = null;
 	
 	/**
-	 * @see wcf\data\AbstractDatabaseObjectAction::$className
+	 * @see	wcf\data\AbstractDatabaseObjectAction::$className
 	 */
 	protected $className = 'wcf\data\comment\CommentEditor';
 	

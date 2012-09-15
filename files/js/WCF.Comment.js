@@ -23,15 +23,16 @@ WCF.Comment.Handler.prototype = {
 	 * @var	integer
 	 */
 	_commentsPerPage: 0,
-
+	
 	/**
 	 * list of comment containers
 	 * @var	object
 	 */
 	_containers: { },
-
+	
 	/**
 	 * current user's avatar
+	 * @var	string
 	 */
 	_userAvatar: '',
 	
@@ -44,21 +45,21 @@ WCF.Comment.Handler.prototype = {
 		this._canAdd = canAdd;
 		this._commentsPerPage = commentsPerPage;
 		this._userAvatar = userAvatar;
-
+		
 		// init containers
 		$('.commentList').each($.proxy(function(index, container) {
 			var $container = $(container);
 			var $containerID = $container.wcfIdentify();
-
+			
 			// store API
 			$container.data('WCF-Comment-Handler-API', this);
-
+			
 			this._containers[$containerID] = $container;
 			if (this._canAdd) new WCF.Comment.Add($containerID, $container);
 			new WCF.Comment.List($containerID, $container);
 		}, this));
 	},
-
+	
 	/**
 	 * Returns a comment container identified by its id.
 	 * 
@@ -69,10 +70,10 @@ WCF.Comment.Handler.prototype = {
 		if (this._containers[containerID]) {
 			return this._containers[containerID];
 		}
-
+		
 		return null;
 	},
-
+	
 	/**
 	 * Returns the user's avatar.
 	 * 
@@ -81,7 +82,7 @@ WCF.Comment.Handler.prototype = {
 	getUserAvatar: function() {
 		return this._userAvatar;
 	},
-
+	
 	/**
 	 * Returns true, if user can add comments and responses.
 	 * 
@@ -90,7 +91,7 @@ WCF.Comment.Handler.prototype = {
 	canAdd: function() {
 		return this._canAdd;
 	},
-
+	
 	/**
 	 * Returns comments per page.
 	 * 
@@ -116,7 +117,7 @@ WCF.Comment.Base = Class.extend({
 	 * @var	string
 	 */
 	_containerID: '',
-
+	
 	/**
 	 * Initializes a new container-based object.
 	 * 
@@ -126,16 +127,16 @@ WCF.Comment.Base = Class.extend({
 	init: function(containerID, container) {
 		this._containerID = containerID;
 		this._container = container;
-
+		
 		this._init();
 	},
-
+	
 	/**
 	 * Empty method, will be called after class was initialized. You should
 	 * override this method in your class.
 	 */
 	_init: function() { },
-
+	
 	/**
 	 * Returns the associated container.
 	 * 
@@ -144,7 +145,7 @@ WCF.Comment.Base = Class.extend({
 	getContainer: function() {
 		return this._container;
 	},
-
+	
 	/**
 	 * Returns the container id.
 	 * 
@@ -166,7 +167,7 @@ WCF.Comment.Add = WCF.Comment.Base.extend({
 	 * @var	WCF.Action.Proxy
 	 */
 	_proxy: null,
-
+	
 	/**
 	 * @see	WCF.Comment.Base._init()
 	 */
@@ -176,16 +177,16 @@ WCF.Comment.Add = WCF.Comment.Base.extend({
 		var $inputContainer = $listItem.find('div');
 		var $input = $('<input type="text" placeholder="' + WCF.Language.get('wcf.comment.add') + '" />').addClass('long').appendTo($inputContainer);
 		$('<small>' + WCF.Language.get('wcf.comment.description') + '</small>').appendTo($inputContainer);
-
+		
 		$input.keyup($.proxy(this._addComment, this));
 		$listItem.prependTo(this._container);
-
+		
 		// init proxy
 		this._proxy = new WCF.Action.Proxy({
 			success: $.proxy(this._success, this)
 		});
 	},
-
+	
 	/**
 	 * Create a new comment if input isn't empty.
 	 * 
@@ -196,10 +197,10 @@ WCF.Comment.Add = WCF.Comment.Base.extend({
 		if ((event.keyCode || event.which) != 13) {
 			return;
 		}
-
+		
 		var $input = $(event.target);
 		var $value = $.trim($input.val());
-
+		
 		// ignore empty comments
 		if ($value == '') {
 			return;
@@ -218,11 +219,11 @@ WCF.Comment.Add = WCF.Comment.Base.extend({
 			}
 		});
 		this._proxy.sendRequest();
-
+		
 		// reset input
 		$input.val('').blur();
 	},
-
+	
 	/**
 	 * Insert previously created comment.
 	 * 
@@ -233,10 +234,10 @@ WCF.Comment.Add = WCF.Comment.Base.extend({
 	_success: function(data, textStatus, jqXHR) {
 		var $containerID = data.returnValues.containerID;
 		if (this._containerID != $containerID) return;
-
+		
 		$('' + data.returnValues.template).insertAfter(this._container.children('li:eq(0)')).wcfBlindIn();
 	},
-
+	
 	/**
 	 * Returns user's avatar.
 	 * 
@@ -258,19 +259,19 @@ WCF.Comment.List = WCF.Comment.Base.extend({
 	 * @var	boolean
 	 */
 	_canAdd: null,
-
+	
 	/**
 	 * list of comments
 	 * @var	object
 	 */
 	_comments: { },
-
+	
 	/**
 	 * initialization status
 	 * @var	boolean
 	 */
 	_didInit: false,
-
+	
 	/**
 	 * @see	WCF.Comment.Base._init()
 	 */
@@ -279,7 +280,7 @@ WCF.Comment.List = WCF.Comment.Base.extend({
 			var $comment = $(comment);
 			var $containerID = $comment.wcfIdentify();
 			var $commentID = $comment.data('commentID') || null;
-
+			
 			if ($commentID !== null && !this._comments[$containerID]) {
 				this._comments[$containerID] = $comment;
 				
@@ -290,20 +291,20 @@ WCF.Comment.List = WCF.Comment.Base.extend({
 				new WCF.Comment.Response.List($containerID, $comment);
 			}
 		}, this));
-
+		
 		if (!this._didInit) {
 			WCF.DOMNodeInsertedHandler.addCallback('WCF.Comment.List', $.proxy(this._domNodeInserted, this));
 			this._didInit = true;
 		}
 	},
-
+	
 	/**
 	 * Enables options and responses for dynamically inserted comments.
 	 */
 	_domNodeInserted: function() {
 		this._init();
 	},
-
+	
 	/**
 	 * Returns true, if user can add comments and responses.
 	 * 
@@ -313,7 +314,7 @@ WCF.Comment.List = WCF.Comment.Base.extend({
 		if (this._canAdd === null) {
 			this._canAdd = this._container.data('WCF-Comment-Handler-API').canAdd();
 		}
-
+		
 		return this._canAdd;
 	}
 });
@@ -331,13 +332,13 @@ WCF.Comment.Editor = WCF.Comment.Base.extend({
 	_data: {
 		edit: ''
 	},
-
+	
 	/**
 	 * proxy object
 	 * @var	WCF.Action.Proxy
 	 */
 	_proxy: null,
-
+	
 	/**
 	 * @see	WCF.Comment.Base._init()
 	 */
@@ -345,19 +346,19 @@ WCF.Comment.Editor = WCF.Comment.Base.extend({
 		this._proxy = new WCF.Action.Proxy({
 			success: $.proxy(this._success, this)
 		});
-
+		
 		this._insert();
 	},
-
+	
 	/**
 	 * Inserts an edit link.
 	 */
 	_insert: function() {
 		var $optionList = this._container.find('ul.commentOptions:eq(0)');
-
+		
 		$('<li><a class="jsTooltip" title="' + WCF.Language.get('wcf.global.button.edit') + '"><img src="' + WCF.Icon.get('wcf.icon.edit') + '" alt="" /></a></li>').addClass('commentEdit').appendTo($optionList).click($.proxy(this._prepare, this));
 	},
-
+	
 	/**
 	 * Prepares editing by fetching raw message from server.
 	 */
@@ -380,7 +381,7 @@ WCF.Comment.Editor = WCF.Comment.Base.extend({
 		});
 		this._proxy.sendRequest();
 	},
-
+	
 	/**
 	 * Prepares an item for edit or updates it.
 	 * 
@@ -391,19 +392,19 @@ WCF.Comment.Editor = WCF.Comment.Base.extend({
 	_success: function(data, textStatus, jqXHR) {
 		var $containerID = data.returnValues.containerID;
 		if (this._containerID != $containerID) return;
-
+		
 		// determine action type
 		switch (data.returnValues.action) {
 			case 'prepare':
 				this._beginEdit(data.returnValues.message);
 			break;
-
+			
 			case 'saved':
 				this._update(data.returnValues.message);
 			break;
 		}
 	},
-
+	
 	/**
 	 * Toggles UI to show an edit input.
 	 * 
@@ -416,19 +417,19 @@ WCF.Comment.Editor = WCF.Comment.Base.extend({
 		$content.html($.proxy(function(index, oldhtml) {
 			this._data.edit = oldhtml;
 			var $input = $('<input type="text" value="' + message + '" class="long" /> <small>' + WCF.Language.get('wcf.comment.description') + '</small>').keydown($.proxy(this._keyDown, this)).keyup($.proxy(this._save, this));
-
+			
 			return $input;
 		}, this));
-
+		
 		// hide elements
 		$content.parent().find('hgroup:eq(0)').hide();
 		$content.parent().find('.commentOptions:eq(0)').hide();
 		//$content.parent().find('.likesDisplay:eq(0)').hide();
-
+		
 		// set focus (not possible before returned above)
 		$content.children('input').focus();
 	},
-
+	
 	/**
 	 * Cancels editing once the user pushes [Esc].
 	 * 
@@ -439,10 +440,10 @@ WCF.Comment.Editor = WCF.Comment.Base.extend({
 		if ((event.keyCode || event.which) != 27) {
 			return;
 		}
-
+		
 		this._cancelEdit($(event.target));
 	},
-
+	
 	/**
 	 * Cancels editing for request element.
 	 * 
@@ -451,16 +452,16 @@ WCF.Comment.Editor = WCF.Comment.Base.extend({
 	_cancelEdit: function(input) {
 		// discard events
 		input.unbind('keyup').unbind('keydown');
-
+		
 		// restore elements
 		input.parent().parent().find('hgroup:eq(0)').show();
 		input.parent().parent().find('.commentOptions:eq(0)').show();
 		//input.parent().parent().find('.likesDisplay:eq(0)').show();
-
+		
 		// restore html
 		input.parent().html(this._data.edit);
 	},
-
+	
 	/**
 	 * Send a save request to server once editing is completed.
 	 * 
@@ -471,10 +472,10 @@ WCF.Comment.Editor = WCF.Comment.Base.extend({
 		if ((event.keyCode || event.which) != 13) {
 			return;
 		}
-
+		
 		var $input = $(event.target);
 		var $message = $.trim($input.val());
-
+		
 		// ignore empty message
 		if ($message === '') {
 			return;
@@ -498,7 +499,7 @@ WCF.Comment.Editor = WCF.Comment.Base.extend({
 		});
 		this._proxy.sendRequest();
 	},
-
+	
 	/**
 	 * Updates the currently display message with the previously entered one.
 	 * 
@@ -506,14 +507,14 @@ WCF.Comment.Editor = WCF.Comment.Base.extend({
 	 */
 	_update: function(message) {
 		var $content = this._container.find('div.commentContent:eq(0) p.userMessage:eq(0)');
-
+		
 		// restore original view
 		this._cancelEdit($content.children('input'));
-
+		
 		// update message
 		$content.html(message);
 	},
-
+	
 	/**
 	 * Adds the type-specific object id to data collection.
 	 * 
@@ -542,7 +543,7 @@ WCF.Comment.Response.Add = WCF.Comment.Base.extend({
 	 * @var	WCF.Action.Proxy
 	 */
 	_proxy: null,
-
+	
 	/**
 	 * @see	WCF.Comment.Base._init()
 	 */
@@ -552,15 +553,15 @@ WCF.Comment.Response.Add = WCF.Comment.Base.extend({
 		var $inputContainer = $listItem.find('div:not(.box24)');
 		var $input = $('<input type="text" placeholder="' + WCF.Language.get('wcf.comment.response.add') + '" />').addClass('long').data('containerID', this._containerID).appendTo($inputContainer);
 		$('<small>' + WCF.Language.get('wcf.comment.description') + '</small>').appendTo($inputContainer);
-
+		
 		$input.keyup($.proxy(this._addResponse, this));
 		$listItem.insertBefore(this._container.find('ul.commentResponseList'));
-
+		
 		this._proxy = new WCF.Action.Proxy({
 			success: $.proxy(this._success, this)
 		});
 	},
-
+	
 	/**
 	 * Adds a new response.
 	 * 
@@ -571,10 +572,10 @@ WCF.Comment.Response.Add = WCF.Comment.Base.extend({
 		if ((event.keyCode || event.which) != 13) {
 			return;
 		}
-
+		
 		var $input = $(event.target);
 		var $value = $.trim($input.val());
-
+		
 		// ignore empty comments
 		if ($value == '') {
 			return;
@@ -595,11 +596,11 @@ WCF.Comment.Response.Add = WCF.Comment.Base.extend({
 			}
 		});
 		this._proxy.sendRequest();
-
+		
 		// reset input
 		$input.val('').blur();
 	},
-
+	
 	/**
 	 * Inserts the previously created response.
 	 * 
@@ -610,13 +611,13 @@ WCF.Comment.Response.Add = WCF.Comment.Base.extend({
 	_success: function(data, textStatus, jqXHR) {
 		var $containerID = data.returnValues.containerID;
 		if (this._containerID != $containerID) return;
-
+		
 		// get list
 		var $list = this._container.find('ul.commentResponseList');
-
+		
 		// get list items
 		var $listItems = $list.children('li');
-
+		
 		if ($listItems.length === 3) {
 			// remove last comment
 			var $lastResponse = $listItems.last();
@@ -624,14 +625,14 @@ WCF.Comment.Response.Add = WCF.Comment.Base.extend({
 				$lastResponse.empty().remove();
 			}, this));
 		}
-
+		
 		// update response count
 		$list.data('responses', data.returnValues.responses);
-
+		
 		// insert new response
 		$(data.returnValues.template).hide().prependTo($list).wcfBlindIn();
 	},
-
+	
 	/**
 	 * Returns the user's avatar.
 	 * 
@@ -651,13 +652,13 @@ WCF.Comment.Response.List = WCF.Comment.Base.extend({
 	 * @var	boolean
 	 */
 	_didInit: false,
-
+	
 	/**
 	 * list of responses
 	 * @var	object
 	 */
 	_responses: { },
-
+	
 	/**
 	 * @see	WCF.Comment.Base._init()
 	 */
@@ -667,7 +668,7 @@ WCF.Comment.Response.List = WCF.Comment.Base.extend({
 			var $container = $(response);
 			var $containerID = $container.wcfIdentify();
 			var $responseID = $container.data('responseID') || null;
-
+			
 			if ($responseID !== null && !this._responses[$containerID]) {
 				this._responses[$containerID] = $container;
 				
@@ -676,15 +677,15 @@ WCF.Comment.Response.List = WCF.Comment.Base.extend({
 				}
 			}
 		}, this));
-
+		
 		if (!this._didInit) {
 			new WCF.Comment.Response.Loader(this._containerID, this._container);
-
+			
 			WCF.DOMNodeInsertedHandler.addCallback('WCF.Comment.Response.List.' + this._containerID, $.proxy(this._domNodeInserted, this));
 			this._didInit = true;
 		}
 	},
-
+	
 	/**
 	 * Enables options for dynamically inserted responses.
 	 */
@@ -719,19 +720,19 @@ WCF.Comment.Response.Loader = WCF.Comment.Base.extend({
 	 * @var	object
 	 */
 	_buttons: { },
-
+	
 	/**
 	 * button states
 	 * @var	object
 	 */
 	_buttonState: { },
-
+	
 	/**
 	 * response list cache
 	 * @var	object
 	 */
 	_cache: { },
-
+	
 	/**
 	 * current page number, whereas 0 is the default view
 	 * @var	integer
@@ -743,19 +744,19 @@ WCF.Comment.Response.Loader = WCF.Comment.Base.extend({
 	 * @var	integer
 	 */
 	_responses: 0,
-
+	
 	/**
 	 * response list element
 	 * @var	jQuery
 	 */
 	_responseList: null,
-
+	
 	/**
 	 * proxy object
 	 * @var	WCF.Action.Proxy
 	 */
 	_proxy: null,
-
+	
 	/**
 	 * @see	WCF.Comment.Base._init()
 	 */
@@ -763,9 +764,9 @@ WCF.Comment.Response.Loader = WCF.Comment.Base.extend({
 		this._proxy = new WCF.Action.Proxy({
 			success: $.proxy(this._success, this)
 		});
-
+		
 		this._responseList = this._container.find('.commentResponseList');
-
+		
 		// create buttons
 		this._buttons = {
 			previous: $('<div class="commentResponsePrevious"><a class="button">'+WCF.Language.get('wcf.comment.response.previous')+'</a></div>'),
@@ -779,13 +780,13 @@ WCF.Comment.Response.Loader = WCF.Comment.Base.extend({
 				visible: false
 			}
 		};
-
+		
 		// show previous button if applicable
 		if (this._responseList.data('responses') > 3) {
 			this._showPreviousButton();
 		}
 	},
-
+	
 	/**
 	 * Triggers previous responses.
 	 * 
@@ -793,7 +794,7 @@ WCF.Comment.Response.Loader = WCF.Comment.Base.extend({
 	 */
 	_previous: function(event) {
 		this._pageNo++;
-
+		
 		// populate cache and display list afterwards
 		if (!this._cache[this._pageNo]) {
 			this._load();
@@ -802,7 +803,7 @@ WCF.Comment.Response.Loader = WCF.Comment.Base.extend({
 			this._showPrevious();
 		}
 	},
-
+	
 	/**
 	 * Fetches response list from server.
 	 */
@@ -820,7 +821,7 @@ WCF.Comment.Response.Loader = WCF.Comment.Base.extend({
 		});
 		this._proxy.sendRequest();
 	},
-
+	
 	/**
 	 * Shows a list of previous responses.
 	 */
@@ -830,12 +831,12 @@ WCF.Comment.Response.Loader = WCF.Comment.Base.extend({
 			this._responseList.next().remove();
 			this._buttonState.previous.visible = false;
 		}
-
+		
 		// add recent button
 		if (this._pageNo > 1) {
 			this._showRecentButton();
 		}
-
+		
 		// some more or less fancy list exchange
 		var $responseList = this._responseList.wrap('<div />').wcfBlindOut('vertical', $.proxy(function() {
 			$responseList.html(this._cache[this._pageNo]).wcfBlindIn('vertical', function() {
@@ -843,7 +844,7 @@ WCF.Comment.Response.Loader = WCF.Comment.Base.extend({
 			}, 600);
 		}, this), 600);
 	},
-
+	
 	/**
 	 * Triggers display of more recent responses.
 	 * 
@@ -851,10 +852,10 @@ WCF.Comment.Response.Loader = WCF.Comment.Base.extend({
 	 */
 	_recent: function(event) {
 		this._pageNo--;
-
+		
 		this._showRecent();
 	},
-
+	
 	/**
 	 * Shows a list of more recent responses.
 	 */
@@ -864,10 +865,10 @@ WCF.Comment.Response.Loader = WCF.Comment.Base.extend({
 			this._responseList.prev().remove();
 			this._buttonState.recent.visible = false;
 		}
-
+		
 		// add previous button
 		this._showPreviousButton();
-
+		
 		// once again some more or less fancy list exchange
 		var $responseList = this._responseList.wrap('<div />').wcfBlindOut('vertical', $.proxy(function() {
 			$responseList.html(this._cache[this._pageNo]).wcfBlindIn('vertical', function() {
@@ -875,7 +876,7 @@ WCF.Comment.Response.Loader = WCF.Comment.Base.extend({
 			}, 600);
 		}, this), 600);
 	},
-
+	
 	/**
 	 * Evaluates server response and populates response list cache.
 	 * 
@@ -885,12 +886,12 @@ WCF.Comment.Response.Loader = WCF.Comment.Base.extend({
 	 */
 	_success: function(data, textStatus, jqXHR) {
 		if (data.returnValues.containerID != this._containerID) return;
-
+		
 		this._cache[this._pageNo] = data.returnValues.template;
 		
 		this._showPrevious();
 	},
-
+	
 	/**
 	 * Display the previous button if applicable.
 	 */
@@ -900,7 +901,7 @@ WCF.Comment.Response.Loader = WCF.Comment.Base.extend({
 			this._buttonState.previous.visible = true;
 		}
 	},
-
+	
 	/**
 	 * Displays the recent button if applicable.
 	 */
@@ -910,7 +911,7 @@ WCF.Comment.Response.Loader = WCF.Comment.Base.extend({
 			this._buttonState.recent.visible = true;
 		}
 	},
-
+	
 	/**
 	 * Counts the total amount of pages.
 	 * 
@@ -933,14 +934,14 @@ WCF.Comment.Like = WCF.Like.extend({
 	_getContainers: function() {
 		return $('.commentList > li:not(.commentAdd)');
 	},
-
+	
 	/**
 	 * @see	WCF.Like._getObjectID()
 	 */
 	_getObjectID: function(containerID) {
 		return this._containers[containerID].data('commentID');
 	},
-
+	
 	/**
 	 * @see	WCF.Like._buildWidget()
 	 */

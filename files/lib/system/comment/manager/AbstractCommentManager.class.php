@@ -14,7 +14,7 @@ use wcf\system\WCF;
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf.comment
  * @subpackage	system.comment.manager
- * @category 	Community Framework
+ * @category	Community Framework
  */
 abstract class AbstractCommentManager extends SingletonFactory implements ICommentManager {
 	/**
@@ -60,7 +60,7 @@ abstract class AbstractCommentManager extends SingletonFactory implements IComme
 	public $responseID = 0;
 	
 	/**
-	 * @see wcf\system\comment\manager\ICommentManager::canAdd()
+	 * @see	wcf\system\comment\manager\ICommentManager::canAdd()
 	 */
 	public function canAdd($objectID) {
 		$this->objectID = $objectID;
@@ -69,7 +69,7 @@ abstract class AbstractCommentManager extends SingletonFactory implements IComme
 	}
 	
 	/**
-	 * @see wcf\system\comment\manager\ICommentManager::canDelete()
+	 * @see	wcf\system\comment\manager\ICommentManager::canDelete()
 	 */
 	public function canDelete($objectID, $commentID = null, $responseID = null) {
 		if (!$this->canDelete) {
@@ -80,7 +80,7 @@ abstract class AbstractCommentManager extends SingletonFactory implements IComme
 		$this->objectID = $objectID;
 		$this->commentID = $commentID;
 		$this->responseID = $responseID;
-	
+		
 		// check ownership
 		if (!$this->checkOwnership('delete')) {
 			return false;
@@ -90,7 +90,7 @@ abstract class AbstractCommentManager extends SingletonFactory implements IComme
 	}
 	
 	/**
-	 * @see wcf\system\comment\manager\ICommentManager::canEdit()
+	 * @see	wcf\system\comment\manager\ICommentManager::canEdit()
 	 */
 	public function canEdit($objectID, $commentID = null, $responseID = null) {
 		if (!$this->canEdit) {

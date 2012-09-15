@@ -5,7 +5,6 @@ use wcf\data\object\type\ObjectTypeCache;
 use wcf\data\user\UserProfile;
 use wcf\system\exception\SystemException;
 
-
 /**
  * Provides a structured comment response list.
  * 
@@ -14,7 +13,7 @@ use wcf\system\exception\SystemException;
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf.comment
  * @subpackage	data.comment.response
- * @category 	Community Framework
+ * @category	Community Framework
  */
 class StructuredCommentResponseList extends CommentResponseList {
 	/**

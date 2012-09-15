@@ -10,11 +10,11 @@ use wcf\data\like\object\AbstractLikeObject;
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf.comment
  * @subpackage	data.comment
- * @category 	Community Framework
+ * @category	Community Framework
  */
 class LikeableComment extends AbstractLikeObject {
 	/**
-	 * @see wcf\data\DatabaseObjectDecorator::$baseClass
+	 * @see	wcf\data\DatabaseObjectDecorator::$baseClass
 	 */
 	protected static $baseClass = 'wcf\data\comment\Comment';
 	

@@ -16,7 +16,7 @@ use wcf\system\WCF;
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf.comment
  * @subpackage	system.user.activity.event
- * @category 	Community Framework
+ * @category	Community Framework
  */
 class ProfileCommentResponseUserActivityEvent extends SingletonFactory implements IUserActivityEvent {
 	/**

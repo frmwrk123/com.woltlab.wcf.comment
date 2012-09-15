@@ -9,7 +9,7 @@ namespace wcf\system\user\notification\object\type;
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf.comment
  * @subpackage	system.user.notification.object.type
- * @category 	Community Framework
+ * @category	Community Framework
  */
 interface ICommentUserNotificationObjectType {
 	/**

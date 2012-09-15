@@ -11,7 +11,7 @@ use wcf\util\StringUtil;
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf.comment
  * @subpackage	data.comment.response
- * @category 	Community Framework
+ * @category	Community Framework
  */
 class CommentResponse extends DatabaseObject {
 	/**
@@ -27,7 +27,7 @@ class CommentResponse extends DatabaseObject {
 	/**
 	 * Returns a formatted message.
 	 * 
-	 * @return string
+	 * @return	string
 	 */
 	public function getFormattedMessage() {
 		return StringUtil::encodeHTML($this->message);
