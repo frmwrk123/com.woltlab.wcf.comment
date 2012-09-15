@@ -11,7 +11,7 @@ use wcf\util\StringUtil;
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf.comment
  * @subpackage	data.comment
- * @category 	Community Framework
+ * @category	Community Framework
  */
 class Comment extends DatabaseObject {
 	/**
@@ -27,7 +27,7 @@ class Comment extends DatabaseObject {
 	/**
 	 * Returns a list of last response ids.
 	 * 
-	 * @return array<integer>
+	 * @return	array<integer>
 	 */
 	public function getLastResponseIDs() {
 		if ($this->lastResponseIDs === null || $this->lastResponseIDs == '') {
@@ -45,7 +45,7 @@ class Comment extends DatabaseObject {
 	/**
 	 * Returns a formatted message.
 	 * 
-	 * @return string
+	 * @return	string
 	 */
 	public function getFormattedMessage() {
 		return StringUtil::encodeHTML($this->message);

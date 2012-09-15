@@ -6,7 +6,7 @@
 					{@$comment->getUserProfile()->getAvatar()->getImageTag(48)}
 				{/if}
 			</a>
-	
+			
 			<div>
 				<div class="commentContent">
 					<hgroup class="containerHeadline">

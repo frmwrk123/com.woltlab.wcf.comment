@@ -11,11 +11,11 @@ use wcf\system\WCF;
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf.comment
  * @subpackage	system.comment.manager
- * @category 	Community Framework
+ * @category	Community Framework
  */
 class UserProfileCommentManager extends AbstractCommentManager {
 	/**
-	 * @see wcf\system\SingletonFactory::init()
+	 * @see	wcf\system\SingletonFactory::init()
 	 */
 	protected function init() {
 		if (WCF::getUser()->userID) {
@@ -35,7 +35,7 @@ class UserProfileCommentManager extends AbstractCommentManager {
 	}
 	
 	/**
-	 * @see wcf\system\comment\manager\AbstractCommentManager::canAdd()
+	 * @see	wcf\system\comment\manager\AbstractCommentManager::canAdd()
 	 */
 	public function canAdd($objectID) {
 		if (!$this->canAdd) {

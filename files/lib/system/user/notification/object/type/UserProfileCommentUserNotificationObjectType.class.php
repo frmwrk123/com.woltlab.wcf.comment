@@ -8,17 +8,17 @@ use wcf\system\WCF;
 
 /**
  * Represents a comment notification object type.
- *
+ * 
  * @author	Alexander Ebert
  * @copyright	2001-2012 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf.user
  * @subpackage	system.user.notification.object.type
- * @category 	Community Framework
+ * @category	Community Framework
  */
 class UserProfileCommentUserNotificationObjectType extends AbstractObjectTypeProcessor implements ICommentUserNotificationObjectType, IUserNotificationObjectType {
 	/**
-	 * @see wcf\system\user\notification\object\type\IUserNotificationObjectType::getObjectByID()
+	 * @see	wcf\system\user\notification\object\type\IUserNotificationObjectType::getObjectByID()
 	 */
 	public function getObjectByID($objectID) {
 		$object = new Comment($objectID);
@@ -31,7 +31,7 @@ class UserProfileCommentUserNotificationObjectType extends AbstractObjectTypePro
 	}
 
 	/**
-	 * @see wcf\system\user\notification\object\type\IUserNotificationObjectType::getObjectsByIDs()
+	 * @see	wcf\system\user\notification\object\type\IUserNotificationObjectType::getObjectsByIDs()
 	 */
 	public function getObjectsByIDs(array $objectIDs) {
 		$objectList = new CommentList();

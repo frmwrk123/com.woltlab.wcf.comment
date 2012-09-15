@@ -16,7 +16,7 @@
 		new {if $commentHandlerClass|isset}{@$commentHandlerClass}{else}WCF.Comment.Handler{/if}({if $commentCanAdd}true{else}false{/if}, {@$commentsPerPage}, '{@$userAvatar}');
 		{if MODULE_LIKE && $__wcf->getSession()->getPermission('user.like.canViewLike')}
 			new WCF.Comment.Like({if $__wcf->getUser()->userID && $__wcf->getSession()->getPermission('user.like.canLike')}1{else}0{/if}, {@LIKE_ENABLE_DISLIKE}, false);
-		{/if}	
+		{/if}
 	});
 	//]]>
 </script>

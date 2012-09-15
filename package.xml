@@ -17,7 +17,7 @@
 		<requiredpackage>com.woltlab.wcf.like</requiredpackage>
 		<requiredpackage>com.woltlab.wcf.user</requiredpackage>
 	</requiredpackages>
-
+	
 	<instructions type="install">
 		<instruction type="file">files.tar</instruction>
 		<instruction type="template">templates.tar</instruction>
