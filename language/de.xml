@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <language xmlns="http://www.woltlab.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.woltlab.com http://www.woltlab.com/XSD/maelstrom/language.xsd" languagecode="de">
 	<category name="wcf.user.profile">
+		<item name="wcf.user.profile.content.wall.noEntries"><![CDATA[Es wurden noch keine Einträge an der Pinnwand verfasst.]]></item>
 		<item name="wcf.user.profile.menu.wall"><![CDATA[Pinnwand]]></item>
 		<item name="wcf.user.profile.recentActivity.profileComment"><![CDATA[Hat einen Kommentar an die <a href="{link controller='User' object=$user}{/link}#wcf_user_profile_menu_comment">Pinnwand von {$user->username}</a> geschrieben.]]></item>
 		<item name="wcf.user.profile.recentActivity.profileCommentResponse"><![CDATA[Hat auf einen Kommentar von <a href="{link controller='User' object=$commentAuthor}{/link}">{$commentAuthor->username}</a> an der <a href="{link controller='User' object=$user}{/link}#wcf_user_profile_menu_comment">Pinnwand von {$user->username}</a> geantwortet.]]></item>
