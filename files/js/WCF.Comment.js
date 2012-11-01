@@ -7,11 +7,10 @@ WCF.Comment = {};
  * Comment support for WCF
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2011 WoltLab GmbH
+ * @copyright	2001-2012 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  */
-WCF.Comment.Handler = function(canAdd, commentsPerPage, userAvatar) { this.init(canAdd, commentsPerPage, userAvatar); };
-WCF.Comment.Handler.prototype = {
+WCF.Comment.Handler = Class.extend({
 	/**
 	 * user can add comments and responses
 	 * @var	boolean
@@ -100,7 +99,7 @@ WCF.Comment.Handler.prototype = {
 	commentsPerPage: function() {
 		return this._commentsPerPage;
 	}
-};
+});
 
 /**
  * Base implementation for all comment classes, providing a consistent API
@@ -193,12 +192,19 @@ WCF.Comment.Add = WCF.Comment.Base.extend({
 	 * @param	object		event
 	 */
 	_addComment: function(event) {
-		// ignore every key except for 13 = [Enter]
-		if ((event.keyCode || event.which) != 13) {
+		// ignore every key except for [Enter] and [Esc]
+		if (event.which !== 13 && event.which !== 27) {
 			return;
 		}
 		
-		var $input = $(event.target);
+		var $input = $(event.currentTarget);
+		
+		// cancel input
+		if (event.which === 27) {
+			$input.val('').blur();
+			return;
+		}
+		
 		var $value = $.trim($input.val());
 		
 		// ignore empty comments
@@ -288,7 +294,7 @@ WCF.Comment.List = WCF.Comment.Base.extend({
 					new WCF.Comment.Editor($containerID, $comment);
 				}
 				if (this.canAdd()) new WCF.Comment.Response.Add($containerID, $comment);
-				new WCF.Comment.Response.List($containerID, $comment);
+				$comment.data('responseList', new WCF.Comment.Response.List($containerID, $comment));
 			}
 		}, this));
 		
@@ -547,7 +553,7 @@ WCF.Comment.Response.Add = WCF.Comment.Base.extend({
 	/**
 	 * @see	WCF.Comment.Base._init()
 	 */
-	_init: function() {
+	_init: function($containerID, $comment, $this) {
 		// create UI
 		var $listItem = $('<div class="box32 commentResponseAdd"><span class="framed">'+this.getUserAvatar()+'</span><div></div></div>');
 		var $inputContainer = $listItem.find('div:not(.box24)');
@@ -568,12 +574,19 @@ WCF.Comment.Response.Add = WCF.Comment.Base.extend({
 	 * @param	object		event
 	 */
 	_addResponse: function(event) {
-		// ignore every key except for 13 = [Enter]
-		if ((event.keyCode || event.which) != 13) {
+		// ignore every key except for [Enter] and [Esc]
+		if (event.which !== 13 && event.which !== 27) {
 			return;
 		}
 		
-		var $input = $(event.target);
+		var $input = $(event.currentTarget);
+		
+		// cancel input
+		if (event.which === 27) {
+			$input.val('').blur();
+			return;
+		}
+		
 		var $value = $.trim($input.val());
 		
 		// ignore empty comments
@@ -621,8 +634,15 @@ WCF.Comment.Response.Add = WCF.Comment.Base.extend({
 		if ($listItems.length === 3) {
 			// remove last comment
 			var $lastResponse = $listItems.last();
+			var self = this;
 			$lastResponse.wcfBlindOut('vertical', $.proxy(function() {
 				$lastResponse.empty().remove();
+				
+				// add 'show previous' button
+				var $responseLoader = self._container.data('responseList').getResponseLoader();
+				$responseLoader.showPreviousButton();
+				var $responseList = $responseLoader.getResponseList();
+				$responseList.data('responses', $responseList.data('responses') + 1);
 			}, this));
 		}
 		
@@ -660,6 +680,12 @@ WCF.Comment.Response.List = WCF.Comment.Base.extend({
 	_responses: { },
 	
 	/**
+	 * response loader object
+	 * @var	WCF.Comment.Response.Loader
+	 */
+	_responseLoader: null,
+	
+	/**
 	 * @see	WCF.Comment.Base._init()
 	 */
 	_init: function() {
@@ -679,7 +705,7 @@ WCF.Comment.Response.List = WCF.Comment.Base.extend({
 		}, this));
 		
 		if (!this._didInit) {
-			new WCF.Comment.Response.Loader(this._containerID, this._container);
+			this._responseLoader = new WCF.Comment.Response.Loader(this._containerID, this._container);
 			
 			WCF.DOMNodeInsertedHandler.addCallback('WCF.Comment.Response.List.' + this._containerID, $.proxy(this._domNodeInserted, this));
 			this._didInit = true;
@@ -691,6 +717,15 @@ WCF.Comment.Response.List = WCF.Comment.Base.extend({
 	 */
 	_domNodeInserted: function() {
 		this._init();
+	},
+	
+	/**
+	 * Returns response loader object.
+	 * 
+	 * @return	WCF.Comment.Response.Loader
+	 */
+	getResponseLoader: function() {
+		return this._responseLoader;
 	}
 });
 
@@ -783,7 +818,7 @@ WCF.Comment.Response.Loader = WCF.Comment.Base.extend({
 		
 		// show previous button if applicable
 		if (this._responseList.data('responses') > 3) {
-			this._showPreviousButton();
+			this.showPreviousButton();
 		}
 	},
 	
@@ -867,7 +902,7 @@ WCF.Comment.Response.Loader = WCF.Comment.Base.extend({
 		}
 		
 		// add previous button
-		this._showPreviousButton();
+		this.showPreviousButton();
 		
 		// once again some more or less fancy list exchange
 		var $responseList = this._responseList.wrap('<div />').wcfBlindOut('vertical', $.proxy(function() {
@@ -895,7 +930,7 @@ WCF.Comment.Response.Loader = WCF.Comment.Base.extend({
 	/**
 	 * Display the previous button if applicable.
 	 */
-	_showPreviousButton: function() {
+	showPreviousButton: function() {
 		if (!this._buttonState.previous.visible) {
 			this._buttons.previous.click($.proxy(this._previous, this)).insertAfter(this._responseList);
 			this._buttonState.previous.visible = true;
@@ -919,6 +954,15 @@ WCF.Comment.Response.Loader = WCF.Comment.Base.extend({
 	 */
 	_countPages: function() {
 		return Math.ceil(this._responseList.data('responses') / 20);
+	},
+	
+	/**
+	 * Returns response list object.
+	 * 
+	 * @return	jQuery
+	 */
+	getResponseList: function() {
+		return this._responseList();
 	}
 });
 
