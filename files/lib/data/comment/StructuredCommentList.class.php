@@ -133,7 +133,7 @@ class StructuredCommentList extends CommentList {
 	 * @return	array
 	 */
 	public function getLikeData() {
-		if (!count($this->getObjectIDs())) return array();
+		if (empty($this->objectIDs)) return array();
 		 
 		$objectType = LikeHandler::getInstance()->getObjectType('com.woltlab.wcf.comment');
 		LikeHandler::getInstance()->loadLikeObjects($objectType, $this->getObjectIDs());
