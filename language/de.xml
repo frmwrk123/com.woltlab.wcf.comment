@@ -19,8 +19,8 @@
 		<item name="wcf.user.notification.comment.output"><![CDATA[Hat einen Kommentar an <a href="{link controller='User' object=$__wcf->getUser()}#wall{/link}">Ihrer Pinnwand</a> verfasst.]]></item>
 		<item name="wcf.user.notification.comment.shortOutput"><![CDATA[Neuer Kommentar (Pinnwand)]]></item>
 		<item name="wcf.user.notification.commentResponse.output"><![CDATA[Hat eine Antwort zu Ihrem Kommentar an der <a href="{link controller='User' object=$owner}#wall{/link}">Pinnwand von {$owner->username}</a> verfasst.]]></item>
-		<item name="wcf.user.notification.commentResponse.shortOutput"><![CDATA[Neuer Antwort (Pinnwand)]]></item>
+		<item name="wcf.user.notification.commentResponse.shortOutput"><![CDATA[Neue Antwort (Pinnwand)]]></item>
 		<item name="wcf.user.notification.commentResponseOwner.output"><![CDATA[Hat eine Antwort zum Kommentar von {$commentAuthor->username} an <a href="{link controller='User' object=$__wcf->getUser()}#wall{/link}">Ihrer Pinnwand</a> verfasst.]]></item>
-		<item name="wcf.user.notification.commentResponseOwner.shortOutput"><![CDATA[Neuer Antwort (Pinnwand)]]></item>
+		<item name="wcf.user.notification.commentResponseOwner.shortOutput"><![CDATA[Neue Antwort (Pinnwand)]]></item>
 	</category>
 </language>
