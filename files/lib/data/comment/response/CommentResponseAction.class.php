@@ -4,7 +4,7 @@ use wcf\data\comment\Comment;
 use wcf\data\comment\StructuredComment;
 use wcf\data\user\UserProfile;
 use wcf\data\AbstractDatabaseObjectAction;
-use wcf\system\exception\ValidateActionException;
+use wcf\system\exception\UserInputException;
 use wcf\system\WCF;
 
 /**
@@ -35,13 +35,13 @@ class CommentResponseAction extends AbstractDatabaseObjectAction {
 	public function validateGetResponseList() {
 		// validate container id
 		if (!isset($this->parameters['data']['containerID']) || empty($this->parameters['data']['containerID'])) {
-			throw new ValidateActionException("Invalid container id given");
+			throw new UserInputException('containerID');
 		}
 		
 		// validate page no
 		$this->parameters['data']['pageNo'] = (isset($this->parameters['data']['pageNo'])) ? intval($this->parameters['data']['pageNo']) : 0;
 		if (!$this->parameters['data']['pageNo']) {
-			throw new ValidateActionException("Invalid page no given");
+			throw new UserInputException('pageNo');
 		}
 		
 		// validate comment id
@@ -49,7 +49,7 @@ class CommentResponseAction extends AbstractDatabaseObjectAction {
 			$this->comment = new Comment($this->parameters['data']['commentID']);
 		}
 		if ($this->comment === null || !$this->comment->commentID) {
-			throw new ValidateActionException("Invalid comment id given");
+			throw new UserInputException('commentID');
 		}
 	}
 	

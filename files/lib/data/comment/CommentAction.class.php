@@ -6,7 +6,8 @@ use wcf\data\comment\response\StructuredCommentResponse;
 use wcf\data\object\type\ObjectTypeCache;
 use wcf\data\user\UserProfile;
 use wcf\data\AbstractDatabaseObjectAction;
-use wcf\system\exception\ValidateActionException;
+use wcf\system\exception\PermissionDeniedException;
+use wcf\system\exception\UserInputException;
 use wcf\system\user\activity\event\UserActivityEventHandler;
 use wcf\system\user\notification\UserNotificationHandler;
 use wcf\system\user\notification\object\CommentResponseUserNotificationObject;
@@ -59,7 +60,7 @@ class CommentAction extends AbstractDatabaseObjectAction {
 		// validate object id and permissions
 		$this->commentProcessor = $objectType->getProcessor();
 		if (!$this->commentProcessor->canAdd($this->parameters['data']['objectID'])) {
-			throw new ValidateActionException("Insufficient permissions");
+			throw new PermissionDeniedException();
 		}
 	}
 	
@@ -116,7 +117,7 @@ class CommentAction extends AbstractDatabaseObjectAction {
 		// validate object id and permissions
 		$this->commentProcessor = $objectType->getProcessor();
 		if (!$this->commentProcessor->canAdd($this->parameters['data']['objectID'])) {
-			throw new ValidateActionException("Insufficient permissions");
+			throw new PermissionDeniedException();
 		}
 	}
 	
@@ -187,12 +188,12 @@ class CommentAction extends AbstractDatabaseObjectAction {
 		try {
 			$this->validateCommentID();
 		}
-		catch (ValidateActionException $e) {
+		catch (UserInputException $e) {
 			try {
 				$this->validateResponseID();
 			}
-			catch (ValidateActionException $e) {
-				throw new ValidateActionException("Incomplete request");
+			catch (UserInputException $e) {
+				throw new UserInputException('objectIDs');
 			}
 		}
 		
@@ -204,7 +205,7 @@ class CommentAction extends AbstractDatabaseObjectAction {
 		$commentID = ($this->comment === null) ?: $this->comment->commentID;
 		$responseID = ($this->response === null) ?: $this->response->responseID;
 		if (!$this->commentProcessor->canEdit($this->parameters['data']['objectID'], $commentID, $responseID)) {
-			throw new ValidateActionException("Insufficient permissions");
+			throw new PermissionDeniedException();
 		}
 	}
 	
@@ -321,11 +322,11 @@ class CommentAction extends AbstractDatabaseObjectAction {
 	protected function validateMessage() {
 		// validate message
 		if (!isset($this->parameters['data']['message'])) {
-			throw new ValidateActionException("Invalid message given");
+			throw new UserInputException('message');
 		}
 		$this->parameters['data']['message'] = StringUtil::trim($this->parameters['data']['message']);
 		if (empty($this->parameters['data']['message'])) {
-			throw new ValidateActionException("Invalid message given");
+			throw new UserInputException('message');
 		}
 	}
 	
@@ -334,7 +335,7 @@ class CommentAction extends AbstractDatabaseObjectAction {
 	 */
 	protected function validateContainerID() {
 		if (!isset($this->parameters['data']['containerID']) || empty($this->parameters['data']['containerID'])) {
-			throw new ValidateActionException("Invalid container id given");
+			throw new UserInputException('containerID');
 		}
 	}
 	
@@ -345,11 +346,11 @@ class CommentAction extends AbstractDatabaseObjectAction {
 	 */
 	protected function validateObjectType() {
 		if (!isset($this->parameters['data']['objectTypeID'])) {
-			throw new ValidateActionException("Invalid object type id given");
+			throw new UserInputException('objectTypeID');
 		}
 		$objectType = ObjectTypeCache::getInstance()->getObjectType($this->parameters['data']['objectTypeID']);
 		if ($objectType === null) {
-			throw new ValidateActionException("Invalid object type id given");
+			throw new UserInputException('objectTypeID');
 		}
 		
 		return $objectType;
@@ -363,7 +364,7 @@ class CommentAction extends AbstractDatabaseObjectAction {
 			$this->comment = new Comment($this->parameters['data']['commentID']);
 		}
 		if ($this->comment === null || !$this->comment->commentID) {
-			throw new ValidateActionException("Invalid comment id given");
+			throw new UserInputException('commentID');
 		}
 	}
 	
@@ -375,7 +376,7 @@ class CommentAction extends AbstractDatabaseObjectAction {
 			$this->response = new CommentResponse($this->parameters['data']['responseID']);
 		}
 		if ($this->response === null || !$this->response->responseID) {
-			throw new ValidateActionException("Invalid response id given");
+			throw new UserInputException('responseID');
 		}
 	}
 	
