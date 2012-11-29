@@ -22,6 +22,10 @@
 		<item name="wcf.user.notification.commentResponse.shortOutput"><![CDATA[Neue Antwort (Pinnwand)]]></item>
 		<item name="wcf.user.notification.commentResponseOwner.output"><![CDATA[Hat eine Antwort zum Kommentar von {$commentAuthor->username} an <a href="{link controller='User' object=$__wcf->getUser()}#wall{/link}">Ihrer Pinnwand</a> verfasst.]]></item>
 		<item name="wcf.user.notification.commentResponseOwner.shortOutput"><![CDATA[Neue Antwort (Pinnwand)]]></item>
+		<item name="wcf.user.notification.com.woltlab.wcf.user.profileComment"><![CDATA[Pinnwand-Kommentare]]></item>
+		<item name="wcf.user.notification.com.woltlab.wcf.user.profileComment.comment"><![CDATA[Neuer Kommentar auf Ihrer Pinnwand]]></item>
+		<item name="wcf.user.notification.com.woltlab.wcf.user.profileComment.commentResponse"><![CDATA[Neue Antwort auf einen Kommentar auf Ihrer Pinnwand]]></item>
+		<item name="wcf.user.notification.com.woltlab.wcf.user.profileComment.commentResponseOwner"><![CDATA[Neue Antwort auf einen Kommentar von Ihnen]]></item>
 	</category>
 	
 	<category name="wcf.user.option">

@@ -3,7 +3,6 @@ namespace wcf\system\user\notification\event;
 use wcf\data\comment\Comment;
 use wcf\data\user\User;
 use wcf\system\user\notification\event\AbstractUserNotificationEvent;
-use wcf\system\user\notification\type\IUserNotificationType;
 use wcf\system\WCF;
 
 /**
@@ -35,19 +34,5 @@ class UserProfileCommentResponseOwnerUserNotificationEvent extends AbstractUserN
 			'author' => $this->author,
 			'commentAuthor' => $commentAuthor
 		));
-	}
-	
-	/**
-	 * @see	wcf\system\user\notification\event\IUserNotificationEvent::getRenderedOutput()
-	 */
-	public function getRenderedOutput() {
-		WCF::getTPL()->assign(array(
-			'author' => $this->author,
-			'buttons' => $this->getActions(),
-			'message' => $this->getMessage(),
-			'time' => $this->userNotificationObject->time
-		));
-		
-		return WCF::getTPL()->fetch('userNotificationDetails');
 	}
 }

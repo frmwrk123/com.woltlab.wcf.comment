@@ -29,11 +29,13 @@
 			<name>com.woltlab.wcf.user.profileComment.notification</name>
 			<definitionname>com.woltlab.wcf.notification.objectType</definitionname>
 			<classname>wcf\system\user\notification\object\type\UserProfileCommentUserNotificationObjectType</classname>
+			<category>com.woltlab.wcf.user.profileComment</category>
 		</type>
 		<type>
 			<name>com.woltlab.wcf.user.profileComment.response.notification</name>
 			<definitionname>com.woltlab.wcf.notification.objectType</definitionname>
 			<classname>wcf\system\user\notification\object\type\UserProfileCommentResponseUserNotificationObjectType</classname>
+			<category>com.woltlab.wcf.user.profileComment</category>
 		</type>
 	</import>
 </data>

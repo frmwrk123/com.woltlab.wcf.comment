@@ -1,7 +1,6 @@
 <?php
 namespace wcf\system\user\notification\event;
 use wcf\system\user\notification\event\AbstractUserNotificationEvent;
-use wcf\system\user\notification\type\IUserNotificationType;
 use wcf\system\WCF;
 
 /**
@@ -27,19 +26,5 @@ class UserProfileCommentUserNotificationEvent extends AbstractUserNotificationEv
 	 */
 	public function getMessage() {
 		return WCF::getLanguage()->getDynamicVariable('wcf.user.notification.comment.output', array('author' => $this->author));
-	}
-	
-	/**
-	 * @see	wcf\system\user\notification\event\IUserNotificationEvent::getRenderedOutput()
-	 */
-	public function getRenderedOutput() {
-		WCF::getTPL()->assign(array(
-			'author' => $this->author,
-			'buttons' => $this->getActions(),
-			'message' => $this->getMessage(),
-			'time' => $this->userNotificationObject->time
-		));
-		
-		return WCF::getTPL()->fetch('userNotificationDetails');
 	}
 }
