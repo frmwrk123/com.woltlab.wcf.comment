@@ -2,6 +2,7 @@
 namespace wcf\system\user\notification\object\type;
 use wcf\data\comment\response\CommentResponseList;
 use wcf\data\comment\response\CommentResponse;
+use wcf\data\comment\Comment;
 use wcf\data\object\type\AbstractObjectTypeProcessor;
 use wcf\system\user\notification\object\CommentResponseUserNotificationObject;
 
