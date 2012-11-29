@@ -20,15 +20,15 @@ class UserProfileCommentManager extends AbstractCommentManager {
 	protected function init() {
 		if (WCF::getUser()->userID) {
 			// validate general permissions
-			if (WCF::getSession()->getPermission('user.community.profileComment.canAddComment')) {
+			if (WCF::getSession()->getPermission('user.profileComment.canAddComment')) {
 				$this->canAdd = true;
 			}
 			
-			if (WCF::getSession()->getPermission('user.community.profileComment.canDeleteComment')) {
+			if (WCF::getSession()->getPermission('user.profileComment.canDeleteComment')) {
 				$this->canDelete = true;
 			}
 			
-			if (WCF::getSession()->getPermission('user.community.profileComment.canEditComment')) {
+			if (WCF::getSession()->getPermission('user.profileComment.canEditComment')) {
 				$this->canEdit = true;
 			}
 		}
