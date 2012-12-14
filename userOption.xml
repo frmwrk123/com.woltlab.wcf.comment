@@ -5,7 +5,7 @@
 			<option name="canWriteProfileComments">
 				<categoryname>settings.privacy.messaging</categoryname>
 				<optiontype>select</optiontype>
-				<visible>1</visible>
+				<editable>3</editable>
 				<selectoptions><![CDATA[1:wcf.user.access.registered
 2:wcf.user.access.following
 3:wcf.user.access.nobody]]></selectoptions>
