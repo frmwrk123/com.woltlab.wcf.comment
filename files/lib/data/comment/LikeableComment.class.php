@@ -38,11 +38,4 @@ class LikeableComment extends AbstractLikeObject {
 	public function getUserID() {
 		return $this->userID;
 	}
-	
-	/**
-	 * @see	wcf\data\like\object\ILikeObject::getObjectID()
-	 */
-	public function getObjectID() {
-		return $this->commentID;
-	}
 }
