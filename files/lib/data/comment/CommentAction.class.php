@@ -90,7 +90,7 @@ class CommentAction extends AbstractDatabaseObjectAction {
 		// fire notification event
 		if (UserNotificationHandler::getInstance()->getObjectTypeID($objectType->objectType.'.notification')) {
 			$notificationObjectType = UserNotificationHandler::getInstance()->getObjectTypeProcessor($objectType->objectType.'.notification');
-			$userID = $notificationObjectType->getOwnerID($this->parameters['data']['objectID']);
+			$userID = $notificationObjectType->getOwnerID($comment->commentID);
 			if ($userID != WCF::getUser()->userID) {
 				$notificationObject = new CommentUserNotificationObject($comment);
 				
