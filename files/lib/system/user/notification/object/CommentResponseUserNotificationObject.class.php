@@ -19,13 +19,6 @@ class CommentResponseUserNotificationObject extends DatabaseObjectDecorator impl
 	protected static $baseClass = 'wcf\data\comment\response\CommentResponse';
 	
 	/**
-	 * @see	wcf\system\user\notification\object\IUserNotificationObject::getObjectID()
-	 */
-	public function getObjectID() {
-		return $this->responseID;
-	}
-	
-	/**
 	 * @see	wcf\system\user\notification\object\IUserNotificationObject::getTitle()
 	 */
 	public function getTitle() {
