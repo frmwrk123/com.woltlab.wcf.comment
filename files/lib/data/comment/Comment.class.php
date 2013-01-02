@@ -1,6 +1,7 @@
 <?php
 namespace wcf\data\comment;
 use wcf\data\DatabaseObject;
+use wcf\system\bbcode\SimpleMessageParser;
 use wcf\util\StringUtil;
 
 /**
@@ -48,6 +49,6 @@ class Comment extends DatabaseObject {
 	 * @return	string
 	 */
 	public function getFormattedMessage() {
-		return StringUtil::encodeHTML($this->message);
+		return SimpleMessageParser::getInstance()->parse($this->message);
 	}
 }

@@ -15,6 +15,7 @@
 	<requiredpackages>
 		<requiredpackage minversion="2.0.0 Alpha 1">com.woltlab.wcf</requiredpackage>
 		<requiredpackage>com.woltlab.wcf.like</requiredpackage>
+		<requiredpackage minversion="1.0.0 Alpha 1">com.woltlab.wcf.bbcode</requiredpackage>
 		<requiredpackage>com.woltlab.wcf.user</requiredpackage>
 	</requiredpackages>
 	
