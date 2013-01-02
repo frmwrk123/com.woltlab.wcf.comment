@@ -19,6 +19,11 @@ use wcf\system\WCF;
  */
 class CommentResponseAction extends AbstractDatabaseObjectAction {
 	/**
+	 * @see	wcf\data\AbstractDatabaseObjectAction::$allowGuestAccess
+	 */
+	protected $allowGuestAccess = array('getResponseList');
+	
+	/**
 	 * comment object
 	 * @var	wcf\data\comment\Comment
 	 */
