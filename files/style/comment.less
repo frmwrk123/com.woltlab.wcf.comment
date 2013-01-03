@@ -45,10 +45,6 @@
 	opacity: 1;
 }
 
-.commentContent:not(.commentResponseContent) {
-	margin-bottom: @wcfGapMedium;
-}
-
 .commentResponse {
 	border-top: 1px solid @wcfContainerBorderColor;
 	padding: @wcfGapSmall;
@@ -56,20 +52,25 @@
 
 .commentResponseAdd {
 	border-top: 1px solid @wcfContainerBorderColor;
+	margin-top: @wcfGapMedium;
 	padding: 7px 7px 0;
 }
 
-.commentResponseAdd + .commentResponseList > .commentResponse:first-child {
+.commentResponseList .commentResponse:first-child {
+	margin-top: @wcfGapMedium;
+}
+
+.commentResponseAdd + .commentResponseList .commentResponse:first-child {
 	margin-top: 7px;
 }
 
-.commentList > li:nth-child(2n) .commentResponseList > li:nth-child(2n+1) {
+.commentList > li:nth-child(2n) .commentResponseList .commentResponse:nth-child(2n+1) {
 	background-color: @wcfContainerBackgroundColor;
 	
 	.transition(background-color, .1s);
 }
 
-.commentList > li:nth-child(2n+1) .commentResponseList > li:nth-child(2n+1) {
+.commentList > li:nth-child(2n+1) .commentResponseList .commentResponse:nth-child(2n+1) {
 	background-color: @wcfContainerAccentBackgroundColor;
 	
 	.transition(background-color, .1s);
@@ -103,9 +104,10 @@
 	margin-top: 7px;
 	
 	a {
-		border-radius: 3px;
 		display: inline-block;
 		padding: 3px 13px;
 		white-space: nowrap;
+		
+		.borderRadius(3px);
 	}
 }
