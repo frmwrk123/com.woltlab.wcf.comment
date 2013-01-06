@@ -46,9 +46,6 @@ class ProfileCommentUserActivityEvent extends SingletonFactory implements IUserA
 		$userList->readObjects();
 		$users = $userList->getObjects();
 		
-		// get icon
-		// $icon = StyleHandler::getInstance()->getStyle()->getIconPath('comment1', 'S');
-		
 		// set message
 		foreach ($events as $event) {
 			if (isset($comments[$event->objectID])) {
@@ -61,9 +58,6 @@ class ProfileCommentUserActivityEvent extends SingletonFactory implements IUserA
 					
 					// output
 					$event->setDescription($comment->getFormattedMessage());
-					
-					// icon
-					// $event->setIcon($icon);
 				}
 			}
 		}

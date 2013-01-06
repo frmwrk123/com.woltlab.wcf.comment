@@ -3,7 +3,6 @@ namespace wcf\system\user\activity\event;
 use wcf\data\comment\response\CommentResponseList;
 use wcf\data\comment\CommentList;
 use wcf\data\user\UserList;
-use wcf\system\style\StyleHandler;
 use wcf\system\user\activity\event\IUserActivityEvent;
 use wcf\system\SingletonFactory;
 use wcf\system\WCF;
@@ -59,9 +58,6 @@ class ProfileCommentResponseUserActivityEvent extends SingletonFactory implement
 		$userList->readObjects();
 		$users = $userList->getObjects();
 		
-		// get icon
-		// $icon = StyleHandler::getInstance()->getStyle()->getIconPath('comment1', 'S');
-		
 		// set message
 		foreach ($events as $event) {
 			if (isset($responses[$event->objectID])) {
@@ -78,9 +74,6 @@ class ProfileCommentResponseUserActivityEvent extends SingletonFactory implement
 						
 						// description
 						$event->setDescription($response->getFormattedMessage());
-						
-						// icon
-						// $event->setIcon($icon);
 					}
 				}
 			}
