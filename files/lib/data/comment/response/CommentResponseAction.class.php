@@ -1,17 +1,25 @@
 <?php
 namespace wcf\data\comment\response;
+use wcf\data\comment\CommentEditor;
+
+use wcf\data\comment\CommentList;
+
 use wcf\data\comment\Comment;
 use wcf\data\comment\StructuredComment;
+use wcf\data\object\type\ObjectTypeCache;
 use wcf\data\user\UserProfile;
 use wcf\data\AbstractDatabaseObjectAction;
+use wcf\system\database\util\PreparedStatementConditionBuilder;
+use wcf\system\exception\PermissionDeniedException;
 use wcf\system\exception\UserInputException;
+use wcf\system\user\activity\event\UserActivityEventHandler;
 use wcf\system\WCF;
 
 /**
  * Executes comment response-related actions.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2011 WoltLab GmbH
+ * @copyright	2001-2013 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf.comment
  * @subpackage	data.comment.response
@@ -21,13 +29,7 @@ class CommentResponseAction extends AbstractDatabaseObjectAction {
 	/**
 	 * @see	wcf\data\AbstractDatabaseObjectAction::$allowGuestAccess
 	 */
-	protected $allowGuestAccess = array('getResponseList');
-	
-	/**
-	 * comment object
-	 * @var	wcf\data\comment\Comment
-	 */
-	protected $comment = null;
+	protected $allowGuestAccess = array('loadResponses');
 	
 	/**
 	 * @see	wcf\data\AbstractDatabaseObjectAction::$className
@@ -35,52 +37,129 @@ class CommentResponseAction extends AbstractDatabaseObjectAction {
 	protected $className = 'wcf\data\comment\response\CommentResponseEditor';
 	
 	/**
-	 * Validates parameters for response list.
+	 * comment object
+	 * @var	wcf\data\comment\Comment
 	 */
-	public function validateGetResponseList() {
-		// validate container id
-		if (!isset($this->parameters['data']['containerID']) || empty($this->parameters['data']['containerID'])) {
-			throw new UserInputException('containerID');
+	public $comment = null;
+	
+	/**
+	 * comment manager object
+	 * @var	wcf\system\comment\manager\ICommentManager
+	 */
+	public $commentManager = null;
+	
+	/**
+	 * @see	wcf\data\AbstractDatabaseObjectAction::delete()
+	 */
+	public function delete() {
+		if (empty($this->objects)) {
+			$this->readObjects();
 		}
 		
-		// validate page no
-		$this->parameters['data']['pageNo'] = (isset($this->parameters['data']['pageNo'])) ? intval($this->parameters['data']['pageNo']) : 0;
-		if (!$this->parameters['data']['pageNo']) {
-			throw new UserInputException('pageNo');
+		if (empty($this->objects)) {
+			return 0;
 		}
 		
-		// validate comment id
-		if (isset($this->parameters['data']['commentID'])) {
-			$this->comment = new Comment($this->parameters['data']['commentID']);
+		// read object type ids for comments
+		$commentIDs = array();
+		foreach ($this->objects as $response) {
+			$commentIDs[] = $response->commentID;
 		}
-		if ($this->comment === null || !$this->comment->commentID) {
+		
+		$commentList = new CommentList();
+		$commentList->getConditionBuilder()->add("comment.commentID IN (?)", array($commentIDs));
+		$commentList->readObjects();
+		$comments = $commentList->getObjects();
+		
+		// update counters
+		$processors = $responseIDs = $updateComments = array();
+		foreach ($this->objects as $response) {
+			$objectTypeID = $comments[$response->commentID]->objectTypeID;
+			
+			if (!isset($processors[$objectTypeID])) {
+				$objectType = ObjectTypeCache::getInstance()->getObjectType($objectTypeID);
+				$processors[$objectTypeID] = $objectType->getProcessor();
+				$responseIDs[$objectTypeID] = array();
+			}
+			
+			$processors[$objectTypeID]->updateCounter($comments[$response->commentID]->objectID, -1);
+			$responseIDs[$objectTypeID][] = $response->responseIDs;
+			
+			if (!isset($updateComments[$response->commentID])) {
+				$updateComments[$response->commentID] = 0;
+			}
+			
+			$updateComments[$response->commentID]++;
+		}
+		
+		// remove responses
+		$count = parent::delete();
+		
+		// update comment responses and cached response ids
+		foreach ($comments as $comment) {
+			$commentEditor = new CommentEditor($comment);
+			$commentEditor->updateLastResponseIDs();
+			$commentEditor->updateCounters(array(
+				'responses' => -1 * $updateComments[$comment->commentID]
+			));
+		}
+		
+		// remove activity events
+		foreach ($responseIDs as $objectTypeID => $objectIDs) {
+			$objectType = ObjectTypeCache::getInstance()->getObjectType($objectTypeID);
+			if (UserActivityEventHandler::getInstance()->getObjectTypeID($objectType->objectType.'.response.recentActivityEvent')) {
+				UserActivityEventHandler::getInstance()->removeEvents($objectType->objectType.'.response.recentActivityEvent', $objectType->packageID, $objectIDs);
+			}
+		}
+		
+		return $count;
+	}
+	
+	/**
+	 * Validates parameters to load responses for a given comment id.
+	 */
+	public function validateLoadResponses() {
+		$this->readInteger('commentID', false, 'data');
+		$this->readInteger('lastResponseTime', false, 'data');
+		
+		$this->comment = new Comment($this->parameters['data']['commentID']);
+		if (!$this->comment->commentID) {
 			throw new UserInputException('commentID');
+		}
+		
+		$this->commentManager = ObjectTypeCache::getInstance()->getObjectType($this->comment->objectTypeID)->getProcessor();
+		if (!$this->commentManager->isAccessible($this->comment->objectID)) {
+			throw new PermissionDeniedException();
 		}
 	}
 	
 	/**
-	 * Returns a structured response list.
-	 * 
+	 * Returns parsed responses for given comment id.
+	 *
 	 * @return	array
 	 */
-	public function getResponseList() {
-		// populate comment
-		$this->comment = new StructuredComment($this->comment);
-		$userProfile = UserProfile::getUserProfile($this->comment->userID);
-		$this->comment->setUserProfile($userProfile);
-		
+	public function loadResponses() {
 		// get response list
-		$responseList = new StructuredCommentResponseList($this->comment->commentID);
-		$responseList->sqlOffset = (($this->parameters['data']['pageNo'] - 1) * 20);
-		$responseList->sqlLimit = 20;
+		$responseList = new StructuredCommentResponseList($this->commentManager, $this->comment);
+		$responseList->getConditionBuilder()->add("comment_response.time < ?", array($this->parameters['data']['lastResponseTime']));
 		$responseList->readObjects();
+		
+		$lastResponseTime = 0;
+		foreach ($responseList as $response) {
+			if (!$lastResponseTime) {
+				$lastResponseTime = $response->time;
+			}
+			
+			$lastResponseTime = min($lastResponseTime, $response->time);
+		}
 		
 		WCF::getTPL()->assign(array(
 			'responseList' => $responseList
 		));
 		
 		return array(
-			'containerID' => $this->parameters['data']['containerID'],
+			'commentID' => $this->comment->commentID,
+			'lastResponseTime' => $lastResponseTime,
 			'template' => WCF::getTPL()->fetch('commentResponseList')
 		);
 	}

@@ -3,13 +3,14 @@ namespace wcf\system\comment;
 use wcf\data\comment\StructuredCommentList;
 use wcf\data\object\type\ObjectTypeCache;
 use wcf\system\comment\manager\ICommentManager;
+use wcf\system\exception\SystemException;
 use wcf\system\SingletonFactory;
 
 /**
  * Provides methods for comment object handling.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2011 WoltLab GmbH
+ * @copyright	2001-2013 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf.comment
  * @subpackage	system.comment
@@ -67,17 +68,35 @@ class CommentHandler extends SingletonFactory {
 	}
 	
 	/**
+	 * Returns comment manager object for given object type.
+	 * 
+	 * @param	string		$objectType
+	 * @return	wcf\system\comment\manager\ICommentManager
+	 */
+	public function getCommentManager($objectType) {
+		$objectTypeID = $this->getObjectTypeID($objectType);
+		if ($objectTypeID === null) {
+			throw new SystemException("Unable to find object type for '".$objectType."'");
+		}
+		
+		return $this->getObjectType($objectTypeID)->getProcessor();
+		
+	}
+	
+	/**
 	 * Returns a comment list for a given object type and object id.
 	 * 
-	 * @param	integer						$objectTypeID
 	 * @param	wcf\data\comment\manager\ICommentManager	$commentManager
+	 * @param	integer						$objectTypeID
 	 * @param	integer						$objectID
+	 * @param	boolean						$readObjects
 	 * @return	wcf\data\comment\StructuredCommentList
 	 */
-	public function getCommentList($objectTypeID, ICommentManager $commentManager, $objectID) {
-		$commentList = new StructuredCommentList($objectTypeID, $objectID);
-		$commentList->sqlLimit = $commentManager->commentsPerPage();
-		$commentList->readObjects();
+	public function getCommentList(ICommentManager $commentManager, $objectTypeID, $objectID, $readObjects = true) {
+		$commentList = new StructuredCommentList($commentManager, $objectTypeID, $objectID);
+		if ($readObjects) {
+			$commentList->readObjects();
+		}
 		
 		return $commentList;
 	}

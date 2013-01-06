@@ -8,7 +8,7 @@ use wcf\system\WCF;
  * Handles user profile comments.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2011 WoltLab GmbH
+ * @copyright	2001-2013 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf.comment
  * @subpackage	system.event.listener
@@ -66,18 +66,27 @@ class UserProfileCommentListener implements IEventListener {
 	 * Fetches comment list data.
 	 */
 	protected function readData($eventObj) {
-		$this->commentList = CommentHandler::getInstance()->getCommentList($this->objectTypeID, $this->commentManager, $eventObj->userID);
+		$this->commentList = CommentHandler::getInstance()->getCommentList($this->commentManager, $this->objectTypeID, $eventObj->userID);
 	}
 	
 	/**
 	 * Assigns comment data to template.
 	 */
 	protected function assignVariables() {
+		$lastCommentTime = 0;
+		foreach ($this->commentList as $comment) {
+			if (!$lastCommentTime) {
+				$lastCommentTime = $comment->time;
+			}
+			
+			$lastCommentTime = min($lastCommentTime, $comment->time);
+		}
+		
 		WCF::getTPL()->assign(array(
 			'commentCanAdd' => $this->commentManager->canAdd(),
-			'commentsPerPage' => $this->commentManager->commentsPerPage(),
 			'commentList' => $this->commentList,
-			'commentObjectTypeID' => $this->objectTypeID
+			'commentObjectTypeID' => $this->objectTypeID,
+			'lastCommentTime' => $lastCommentTime
 		));
 	}
 }

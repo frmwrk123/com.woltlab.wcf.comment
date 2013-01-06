@@ -1,15 +1,14 @@
 <?php
 namespace wcf\data\comment\response;
 use wcf\data\comment\Comment;
-use wcf\data\object\type\ObjectTypeCache;
 use wcf\data\user\UserProfile;
-use wcf\system\exception\SystemException;
+use wcf\system\comment\manager\ICommentManager;
 
 /**
  * Provides a structured comment response list.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2011 WoltLab GmbH
+ * @copyright	2001-2013 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf.comment
  * @subpackage	data.comment.response
@@ -29,11 +28,6 @@ class StructuredCommentResponseList extends CommentResponseList {
 	public $commentManager = null;
 	
 	/**
-	 * @see	wcf\data\DatabaseObjectList::$sqlLimit
-	 */
-	public $sqlLimit = 20;
-	
-	/**
 	 * @see	wcf\data\DatabaseObjectList::$sqlOrderBy
 	 */
 	public $sqlOrderBy = 'comment_response.time DESC';
@@ -41,19 +35,17 @@ class StructuredCommentResponseList extends CommentResponseList {
 	/**
 	 * Creates a new structured comment response list.
 	 * 
-	 * @param	integer		$commentID
+	 * @param	wcf\system\comment\manager\ICommentManager	$commentManager
+	 * @param	wcf\data\comment\Comment			$comment
 	 */
-	public function __construct($commentID) {
+	public function __construct(ICommentManager $commentManager, Comment $comment) {
 		parent::__construct();
 		
-		$this->comment = new Comment($commentID);
-		if (!$this->comment->commentID) {
-			throw new SystemException("Invalid comment id given");
-		}
-		$objectType = $objectType = ObjectTypeCache::getInstance()->getObjectType($this->comment->objectTypeID);
-		$this->commentManager = $objectType->getProcessor();
+		$this->comment = $comment;
+		$this->commentManager = $commentManager;
 		
 		$this->getConditionBuilder()->add("comment_response.commentID = ?", array($this->comment->commentID));
+		$this->sqlLimit = $this->commentManager->getCommentsPerPage();
 	}
 	
 	/**
@@ -68,7 +60,8 @@ class StructuredCommentResponseList extends CommentResponseList {
 			$userIDs[] = $response->userID;
 			
 			$response = new StructuredCommentResponse($response);
-			$response->setIsEditable($this->commentManager->canEdit($this->comment->objectID, null, $response->responseID));
+			$response->setIsDeletable($this->commentManager->canDeleteResponse($response->getDecoratedObject()));
+			$response->setIsEditable($this->commentManager->canEditResponse($response->getDecoratedObject()));
 		}
 		unset($response);
 		

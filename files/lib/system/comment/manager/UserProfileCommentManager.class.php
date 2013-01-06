@@ -1,13 +1,12 @@
 <?php
 namespace wcf\system\comment\manager;
 use wcf\data\user\UserProfile;
-use wcf\system\WCF;
 
 /**
  * User profile comment manager implementation.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2011 WoltLab GmbH
+ * @copyright	2001-2013 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf.comment
  * @subpackage	system.comment.manager
@@ -15,33 +14,34 @@ use wcf\system\WCF;
  */
 class UserProfileCommentManager extends AbstractCommentManager {
 	/**
-	 * @see	wcf\system\SingletonFactory::init()
+	 * @see	wcf\system\comment\manager\AbstractCommentManager::$permissionAdd
 	 */
-	protected function init() {
-		if (WCF::getUser()->userID) {
-			// validate general permissions
-			if (WCF::getSession()->getPermission('user.profileComment.canAddComment')) {
-				$this->canAdd = true;
-			}
-			
-			if (WCF::getSession()->getPermission('user.profileComment.canDeleteComment')) {
-				$this->canDelete = true;
-			}
-			
-			if (WCF::getSession()->getPermission('user.profileComment.canEditComment')) {
-				$this->canEdit = true;
-			}
-		}
-	}
+	protected $permissionAdd = 'user.profileComment.canAddComment';
 	
 	/**
-	 * @see	wcf\system\comment\manager\AbstractCommentManager::canAdd()
+	 * @see	wcf\system\comment\manager\AbstractCommentManager::$permissionDelete
 	 */
-	public function canAdd($objectID) {
-		if (!$this->canAdd) {
-			return false;
-		}
-		
+	protected $permissionDelete = 'user.profileComment.canDeleteComment';
+	
+	/**
+	 * @see	wcf\system\comment\manager\AbstractCommentManager::$permissionEdit
+	 */
+	protected $permissionEdit = 'user.profileComment.canEditComment';
+	
+	/**
+	 * @see	wcf\system\comment\manager\AbstractCommentManager::$permissionModDelete
+	 */
+	protected $permissionModDelete = '';
+	
+	/**
+	 * @see	wcf\system\comment\manager\AbstractCommentManager::$permissionModEdit
+	 */
+	protected $permissionModEdit = '';
+	
+	/**
+	 * @see	wcf\system\comment\manager\ICommentManager::isAccessible()
+	 */
+	public function isAccessible($objectID) {
 		// check object id
 		$userProfile = UserProfile::getUserProfile($objectID);
 		if ($userProfile === null) {
@@ -60,4 +60,9 @@ class UserProfileCommentManager extends AbstractCommentManager {
 		
 		return true;
 	}
+	
+	/**
+	 * @see	wcf\system\comment\manager\ICommentManager::updateCounter()
+	 */
+	public function updateCounter($objectID, $value) { }
 }

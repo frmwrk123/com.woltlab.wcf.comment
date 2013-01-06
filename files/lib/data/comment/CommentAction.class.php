@@ -1,6 +1,9 @@
 <?php
 namespace wcf\data\comment;
+use wcf\system\comment\CommentHandler;
+
 use wcf\data\comment\response\CommentResponse;
+use wcf\data\comment\response\CommentResponseAction;
 use wcf\data\comment\response\CommentResponseEditor;
 use wcf\data\comment\response\StructuredCommentResponse;
 use wcf\data\object\type\ObjectTypeCache;
@@ -8,6 +11,7 @@ use wcf\data\user\UserProfile;
 use wcf\data\AbstractDatabaseObjectAction;
 use wcf\system\exception\PermissionDeniedException;
 use wcf\system\exception\UserInputException;
+use wcf\system\like\LikeHandler;
 use wcf\system\user\activity\event\UserActivityEventHandler;
 use wcf\system\user\notification\UserNotificationHandler;
 use wcf\system\user\notification\object\CommentResponseUserNotificationObject;
@@ -19,13 +23,23 @@ use wcf\util\StringUtil;
  * Executes comment-related actions.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2011 WoltLab GmbH
+ * @copyright	2001-2013 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf.comment
  * @subpackage	data.comment
  * @category	Community Framework
  */
 class CommentAction extends AbstractDatabaseObjectAction {
+	/**
+	 * @see	wcf\data\AbstractDatabaseObjectAction::$allowGuestAccess
+	 */
+	protected $allowGuestAccess = array('loadComments');
+	
+	/**
+	 * @see	wcf\data\AbstractDatabaseObjectAction::$className
+	 */
+	protected $className = 'wcf\data\comment\CommentEditor';
+	
 	/**
 	 * comment object
 	 * @var	wcf\data\comment\Comment
@@ -45,15 +59,87 @@ class CommentAction extends AbstractDatabaseObjectAction {
 	protected $response = null;
 	
 	/**
-	 * @see	wcf\data\AbstractDatabaseObjectAction::$className
+	 * @see	wcf\data\AbstractDatabaseObjectAction::delete()
 	 */
-	protected $className = 'wcf\data\comment\CommentEditor';
+	public function delete() {
+		if (empty($this->objects)) {
+			$this->readObjects();
+		}
+		
+		// update counters
+		$processors = array();
+		$commentIDs = array();
+		foreach ($this->objects as $comment) {
+			if (!isset($processors[$comment->objectTypeID])) {
+				$objectType = ObjectTypeCache::getInstance()->getObjectType($comment->objectTypeID);
+				$processors[$comment->objectTypeID] = $objectType->getProcessor();
+				
+				$commentIDs[$comment->objectTypeID] = array();
+			}
+			
+			$processors[$comment->objectTypeID]->updateCounter($comment->objectID, -1 * ($comment->responses + 1));
+			$commentIDs[$comment->objectTypeID][] = $comment->objectID;
+		}
+		
+		if (!empty($commentIDs)) {
+			$likeObjectIDs = array();
+			foreach ($commentIDs as $objectTypeID => $objectIDs) {
+				// remove activity events
+				$objectType = ObjectTypeCache::getInstance()->getObjectType($objectTypeID);
+				if (UserActivityEventHandler::getInstance()->getObjectTypeID($objectType->objectType.'.recentActivityEvent')) {
+					UserActivityEventHandler::getInstance()->removeEvents($objectType->objectType.'.recentActivityEvent', $objectType->packageID, $objectIDs);
+				}
+				
+				$likeObjectIDs = array_merge($likeObjectIDs, $objectIDs);
+			}
+			
+			$likeObjectsProvider = new LikeableCommentProvider();
+			$likeObjects = $likeObjectsProvider->getObjectsByIDs($likeObjectIDs);
+			foreach ($likeObjects as $likeObject) {
+				LikeHandler::getInstance()->removeLikes($likeObject);
+			}
+		}
+		
+		return parent::delete();
+	}
+	
+	/**
+	 * Validates parameters to load comments.
+	 */
+	public function validateLoadComments() {
+		$this->readInteger('lastCommentTime', false, 'data');
+		$this->readInteger('objectID', false, 'data');
+		
+		$objectType = $this->validateObjectType();
+		$this->commentProcessor = $objectType->getProcessor();
+		if (!$this->commentProcessor->isAccessible($this->parameters['data']['objectID'])) {
+			throw new PermissionDeniedException();
+		}
+	}
+	
+	/**
+	 * Returns parsed comments.
+	 * 
+	 * @return	array
+	 */
+	public function loadComments() {
+		$commentList = CommentHandler::getInstance()->getCommentList($this->commentProcessor, $this->parameters['data']['objectTypeID'], $this->parameters['data']['objectID'], false);
+		$commentList->getConditionBuilder()->add("comment.time < ?", array($this->parameters['data']['lastCommentTime']));
+		$commentList->readObjects();
+		
+		WCF::getTPL()->assign(array(
+			'commentList' => $commentList
+		));
+		
+		return array(
+			'template' => WCF::getTPL()->fetch('commentList')
+		);
+	}
 	
 	/**
 	 * Validates parameters to add a comment.
 	 */
 	public function validateAddComment() {
-		$this->validateContainerID();
 		$this->validateMessage();
 		$objectType = $this->validateObjectType();
 		
@@ -81,6 +167,9 @@ class CommentAction extends AbstractDatabaseObjectAction {
 			'lastResponseIDs' => serialize(array())
 		));
 		
+		// update counter
+		$this->commentProcessor->updateCounter($this->parameters['data']['objectID'], 1);
+		
 		// fire activity event
 		$objectType = ObjectTypeCache::getInstance()->getObjectType($this->parameters['data']['objectTypeID']);
 		if (UserActivityEventHandler::getInstance()->getObjectTypeID($objectType->objectType.'.recentActivityEvent')) {
@@ -99,7 +188,6 @@ class CommentAction extends AbstractDatabaseObjectAction {
 		}
 		
 		return array(
-			'containerID' => $this->parameters['data']['containerID'],
 			'template' => $this->renderComment($comment)
 		);
 	}
@@ -148,6 +236,9 @@ class CommentAction extends AbstractDatabaseObjectAction {
 			'responses' => $responses
 		));
 		
+		// update counter
+		$this->commentProcessor->updateCounter($this->parameters['data']['objectID'], 1);
+		
 		// fire activity event
 		$objectType = ObjectTypeCache::getInstance()->getObjectType($this->comment->objectTypeID);
 		if (UserActivityEventHandler::getInstance()->getObjectTypeID($objectType->objectType.'.response.recentActivityEvent')) {
@@ -172,7 +263,7 @@ class CommentAction extends AbstractDatabaseObjectAction {
 		}
 		
 		return array(
-			'containerID' => $this->parameters['data']['containerID'],
+			'commentID' => $this->comment->commentID,
 			'template' => $this->renderResponse($response),
 			'responses' => $responses
 		);
@@ -182,8 +273,6 @@ class CommentAction extends AbstractDatabaseObjectAction {
 	 * Validates parameters to edit a comment or a response.
 	 */
 	public function validatePrepareEdit() {
-		$this->validateContainerID();
-		
 		// validate comment id or response id
 		try {
 			$this->validateCommentID();
@@ -202,10 +291,15 @@ class CommentAction extends AbstractDatabaseObjectAction {
 		
 		// validate object id and permissions
 		$this->commentProcessor = $objectType->getProcessor();
-		$commentID = ($this->comment === null) ?: $this->comment->commentID;
-		$responseID = ($this->response === null) ?: $this->response->responseID;
-		if (!$this->commentProcessor->canEdit($this->parameters['data']['objectID'], $commentID, $responseID)) {
-			throw new PermissionDeniedException();
+		if ($this->comment !== null) {
+			if (!$this->commentProcessor->canEditComment($this->comment)) {
+				throw new PermissionDeniedException();
+			}
+		}
+		else {
+			if (!$this->commentProcessor->canEditResponse($this->response)) {
+				throw new PermissionDeniedException();
+			}
 		}
 	}
 	
@@ -225,10 +319,12 @@ class CommentAction extends AbstractDatabaseObjectAction {
 		
 		$returnValues = array(
 			'action' => 'prepare',
-			'containerID' => $this->parameters['data']['containerID'],
 			'message' => $message
 		);
-		if ($this->response !== null) {
+		if ($this->comment !== null) {
+			$returnValues['commentID'] = $this->comment->commentID;
+		}
+		else {
 			$returnValues['responseID'] = $this->response->responseID;
 		}
 		
@@ -252,7 +348,6 @@ class CommentAction extends AbstractDatabaseObjectAction {
 	public function edit() {
 		$returnValues = array(
 			'action' => 'saved',
-			'containerID' => $this->parameters['data']['containerID']
 		);
 		
 		if ($this->response === null) {
@@ -261,6 +356,7 @@ class CommentAction extends AbstractDatabaseObjectAction {
 				'message' => $this->parameters['data']['message']
 			));
 			$comment = new Comment($this->comment->commentID);
+			$returnValues['commentID'] = $this->comment->commentID;
 			$returnValues['message'] = $comment->message;
 		}
 		else {
@@ -269,10 +365,69 @@ class CommentAction extends AbstractDatabaseObjectAction {
 				'message' => $this->parameters['data']['message']
 			));
 			$response = new CommentResponse($this->response->responseID);
+			$returnValues['responseID'] = $this->response->responseID;
 			$returnValues['message'] = $response->message;
 		}
 		
 		return $returnValues;
+	}
+	
+	/**
+	 * Validates parameters to remove a comment or response.
+	 */
+	public function validateRemove() {
+		// validate comment id or response id
+		try {
+			$this->validateCommentID();
+		}
+		catch (UserInputException $e) {
+			try {
+				$this->validateResponseID();
+			}
+			catch (UserInputException $e) {
+				throw new UserInputException('objectIDs');
+			}
+		}
+		
+		// validate object type id
+		$objectType = $this->validateObjectType();
+		
+		// validate object id and permissions
+		$this->commentProcessor = $objectType->getProcessor();
+		if ($this->comment !== null) {
+			if (!$this->commentProcessor->canDeleteComment($this->comment)) {
+				throw new PermissionDeniedException();
+			}
+		}
+		else {
+			if (!$this->commentProcessor->canDeleteResponse($this->response)) {
+				throw new PermissionDeniedException();
+			}
+		}
+	}
+	
+	/**
+	 * Removes a comment or response.
+	 * 
+	 * @return	array
+	 */
+	public function remove() {
+		if ($this->comment !== null) {
+			$objectAction = new CommentAction(array($this->comment), 'delete');
+			$objectAction->executeAction();
+			
+			return array(
+				'commentID' => $this->comment->commentID
+			);
+		}
+		else {
+			$objectAction = new CommentResponseAction(array($this->response), 'delete');
+			$objectAction->executeAction();
+			
+			return array(
+				'responseID' => $this->response->responseID
+			);
+		}
 	}
 	
 	/**
@@ -283,7 +438,7 @@ class CommentAction extends AbstractDatabaseObjectAction {
 	 */
 	protected function renderComment(Comment $comment) {
 		$comment = new StructuredComment($comment);
-		$comment->setIsEditable($this->commentProcessor->canEdit($this->parameters['data']['objectID'], $comment->commentID));
+		$comment->setIsEditable($this->commentProcessor->canEditComment($comment->getDecoratedObject()));
 		
 		// set user profile
 		$userProfile = UserProfile::getUserProfile($comment->userID);
@@ -303,7 +458,7 @@ class CommentAction extends AbstractDatabaseObjectAction {
 	 */
 	protected function renderResponse(CommentResponse $response) {
 		$response = new StructuredCommentResponse($response);
-		$response->setIsEditable($this->commentProcessor->canEdit($this->parameters['data']['objectID'], null, $response->responseID));
+		$response->setIsEditable($this->commentProcessor->canEditResponse($response->getDecoratedObject()));
 		
 		// set user profile
 		$userProfile = UserProfile::getUserProfile($response->userID);
@@ -327,15 +482,6 @@ class CommentAction extends AbstractDatabaseObjectAction {
 		$this->parameters['data']['message'] = StringUtil::trim($this->parameters['data']['message']);
 		if (empty($this->parameters['data']['message'])) {
 			throw new UserInputException('message');
-		}
-	}
-	
-	/**
-	 * Validates container id parameter.
-	 */
-	protected function validateContainerID() {
-		if (!isset($this->parameters['data']['containerID']) || empty($this->parameters['data']['containerID'])) {
-			throw new UserInputException('containerID');
 		}
 	}
 	

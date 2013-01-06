@@ -40,15 +40,23 @@ class CommentUserProfileMenuContent extends SingletonFactory implements IUserPro
 	 * @see	wcf\system\menu\user\profile\content\IUserProfileMenuContent::getContent()
 	 */
 	public function getContent($userID) {
-		$commentList = CommentHandler::getInstance()->getCommentList($this->objectTypeID, $this->commentManager, $userID);
+		$commentList = CommentHandler::getInstance()->getCommentList($this->commentManager, $this->objectTypeID, $userID);
+		$lastCommentTime = 0;
+		foreach ($commentList as $comment) {
+			if (!$lastCommentTime) {
+				$lastCommentTime = $comment->time;
+			}
+			
+			$lastCommentTime = min($lastCommentTime, $comment->time);
+		}
 		
 		// assign variables
 		WCF::getTPL()->assign(array(
 			'commentCanAdd' => $this->commentManager->canAdd($userID),
-			'commentsPerPage' => $this->commentManager->commentsPerPage(),
 			'commentList' => $commentList,
 			'commentObjectTypeID' => $this->objectTypeID,
 			'userID' => $userID,
+			'lastCommentTime' => $lastCommentTime,
 			'likeData' => (MODULE_LIKE ? $commentList->getLikeData() : array())
 		));
 		

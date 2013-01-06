@@ -4,6 +4,7 @@ use wcf\data\comment\response\CommentResponseList;
 use wcf\data\comment\response\StructuredCommentResponse;
 use wcf\data\object\type\ObjectTypeCache;
 use wcf\data\user\UserProfile;
+use wcf\system\comment\manager\ICommentManager;
 use wcf\system\exception\SystemException;
 use wcf\system\like\LikeHandler;
 
@@ -11,13 +12,19 @@ use wcf\system\like\LikeHandler;
  * Provides a structured comment list fetching last responses for every comment.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2011 WoltLab GmbH
+ * @copyright	2001-2013 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf.comment
  * @subpackage	data.comment
  * @category	Community Framework
  */
 class StructuredCommentList extends CommentList {
+	/**
+	 * comment manager object
+	 * @var	wcf\system\comment\manager\ICommentManager
+	 */
+	public $commentManager = null;
+	
 	/**
 	 * object type id
 	 * @var	integer
@@ -43,17 +50,20 @@ class StructuredCommentList extends CommentList {
 	/**
 	 * Creates a new structured comment list.
 	 * 
-	 * @param	integer		$objectTypeID
-	 * @param	integer		$objectID
+	 * @param	wcf\system\comment\manager\ICommentManager	$commentManager
+	 * @param	integer						$objectTypeID
+	 * @param	integer						$objectID
 	 */
-	public function __construct($objectTypeID, $objectID) {
+	public function __construct(ICommentManager $commentManager, $objectTypeID, $objectID) {
 		parent::__construct();
 		
+		$this->commentManager = $commentManager;
 		$this->objectTypeID = $objectTypeID;
 		$this->objectID = $objectID;
 		
 		$this->getConditionBuilder()->add("comment.objectTypeID = ?", array($objectTypeID));
 		$this->getConditionBuilder()->add("comment.objectID = ?", array($objectID));
+		$this->sqlLimit = $this->commentManager->getCommentsPerPage();
 	}
 	
 	/**
@@ -61,13 +71,6 @@ class StructuredCommentList extends CommentList {
 	 */
 	public function readObjects() {
 		parent::readObjects();
-		
-		// get processor
-		$objectType = $objectType = ObjectTypeCache::getInstance()->getObjectType($this->objectTypeID);
-		if ($objectType === null) {
-			throw new SystemException("Invalid object type id given");
-		}
-		$processor = $objectType->getProcessor();
 		
 		// fetch last response ids
 		$responseIDs = array();
@@ -82,7 +85,8 @@ class StructuredCommentList extends CommentList {
 			$userIDs[] = $comment->userID;
 			
 			$comment = new StructuredComment($comment);
-			$comment->setIsEditable($processor->canEdit($this->objectID, $comment->commentID));
+			$comment->setIsDeletable($this->commentManager->canDeleteComment($comment->getDecoratedObject()));
+			$comment->setIsEditable($this->commentManager->canEditComment($comment->getDecoratedObject()));
 		}
 		unset($comment);
 		
@@ -99,7 +103,8 @@ class StructuredCommentList extends CommentList {
 			
 			foreach ($responseList as $response) {
 				$response = new StructuredCommentResponse($response);
-				$response->setIsEditable($processor->canEdit($this->objectID, null, $response->responseID));
+				$response->setIsDeletable($this->commentManager->canDeleteResponse($response->getDecoratedObject()));
+				$response->setIsEditable($this->commentManager->canEditResponse($response->getDecoratedObject()));
 				
 				$commentID = $responseIDs[$response->responseID];
 				$this->objects[$commentID]->addResponse($response);

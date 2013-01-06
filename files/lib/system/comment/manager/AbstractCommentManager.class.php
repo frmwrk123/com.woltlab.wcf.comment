@@ -10,7 +10,7 @@ use wcf\system\WCF;
  * Default implementation for comment managers.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2012 WoltLab GmbH
+ * @copyright	2001-2013 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf.comment
  * @subpackage	system.comment.manager
@@ -18,162 +18,134 @@ use wcf\system\WCF;
  */
 abstract class AbstractCommentManager extends SingletonFactory implements ICommentManager {
 	/**
-	 * current user can add comments
-	 * @var	boolean
-	 */
-	public $canAdd = false;
-	
-	/**
-	 * current user can delete comments
-	 * @var	boolean
-	 */
-	public $canDelete = false;
-	
-	/**
-	 * current user can edit comments
-	 * @var	boolean
-	 */
-	public $canEdit = false;
-	
-	/**
-	 * display comments per page on init
+	 * display comments per page
 	 * @var	integer
 	 */
 	public $commentsPerPage = 10;
 	
 	/**
-	 * comment id
-	 * @var	integer
+	 * permission name for comment/response creation
+	 * @var	string
 	 */
-	public $commentID = 0;
+	protected $permissionAdd = '';
 	
 	/**
-	 * object id
-	 * @var	integer
+	 * permission name for deletion of own comments/responses
+	 * @var	string
 	 */
-	public $objectID = 0;
+	protected $permissionDelete = '';
 	
 	/**
-	 * comment response id
-	 * @var	integer
+	 * permission name for editing of own comments/responses
+	 * @var	string
 	 */
-	public $responseID = 0;
+	protected $permissionEdit = '';
+	
+	/**
+	 * permission name for deletion of comments/responses (moderator)
+	 * @var	string
+	 */
+	protected $permissionModDelete = '';
+	
+	/**
+	 * permission name for editing of comments/responses (moderator)
+	 * @var	string
+	 */
+	protected $permissionModEdit = '';
 	
 	/**
 	 * @see	wcf\system\comment\manager\ICommentManager::canAdd()
 	 */
 	public function canAdd($objectID) {
-		$this->objectID = $objectID;
+		if (!$this->isAccessible($objectID)) {
+			return false;
+		}
 		
-		return false;
+		return (WCF::getSession()->getPermission($this->permissionAdd) ? true : false);
 	}
 	
 	/**
-	 * @see	wcf\system\comment\manager\ICommentManager::canDelete()
+	 * @see	wcf\system\comment\manager\ICommentManager::canEditComment()
 	 */
-	public function canDelete($objectID, $commentID = null, $responseID = null) {
-		if (!$this->canDelete) {
-			return false;
-		}
-		
-		// store ids
-		$this->objectID = $objectID;
-		$this->commentID = $commentID;
-		$this->responseID = $responseID;
-		
-		// check ownership
-		if (!$this->checkOwnership('delete')) {
-			return false;
-		}
-		
-		return true;
+	public function canEditComment(Comment $comment) {
+		return $this->canEdit(($comment->userID == WCF::getUser()->userID));
 	}
 	
 	/**
-	 * @see	wcf\system\comment\manager\ICommentManager::canEdit()
+	 * @see	wcf\system\comment\manager\ICommentManager::canEditResponse()
 	 */
-	public function canEdit($objectID, $commentID = null, $responseID = null) {
-		if (!$this->canEdit) {
-			return false;
-		}
-		
-		// store ids
-		$this->objectID = $objectID;
-		$this->commentID = $commentID;
-		$this->responseID = $responseID;
-		
-		// check ownership
-		if (!$this->checkOwnership('edit')) {
-			return false;
-		}
-		
-		return true;
+	public function canEditResponse(CommentResponse $response) {
+		return $this->canEdit(($response->userID == WCF::getUser()->userID));
 	}
 	
 	/**
-	 * Validates ownership.
-	 *
-	 * @param	string		$action
-	 * @return	boolean
+	 * @see	wcf\system\comment\manager\ICommentManager::canDeleteComment()
 	 */
-	protected function checkOwnership($action) {
-		if ($this->commentID) {
-			$comment = new Comment($this->commentID);
-			if (!$this->validateObject($comment, 'commentID', $action)) {
-				return false;
-			}
-		}
-		else if ($this->responseID) {
-			$response = new CommentResponse($this->responseID);
-			if (!$this->validateObject($response, 'responseID', $action)) {
-				return false;
-			}
-		}
-		else {
-			return false;
-		}
-		
-		return true;
+	public function canDeleteComment(Comment $comment) {
+		return $this->canDelete(($comment->userID == WCF::getUser()->userID));
 	}
 	
 	/**
-	 * Validates object access.
-	 *
-	 * @param	wcf\data\DatabaseObject	$object
-	 * @param	string			$field
-	 * @param	string			$action
-	 * @return	boolean
+	 * @see	wcf\system\comment\manager\ICommentManager::canDeleteResponse()
 	 */
-	protected function validateObject(DatabaseObject $object, $field, $action) {
-		if (!$object->$field) {
-			return false;
-		}
-		
-		if ($object->userID != WCF::getUser()->userID) {
-			if ($this->override($action)) {
-				return true;
-			}
-			
-			return false;
-		}
-		
-		return true;
+	public function canDeleteResponse(CommentResponse $response) {
+		return $this->canDelete(($response->userID == WCF::getUser()->userID));
 	}
 	
 	/**
-	 * Returns true, if you want to override previous validation.
+	 * Returns true, if current user may edit a comment/response.
 	 * 
-	 * @param	string		$action
+	 * @param	boolean		$isOwner
 	 * @return	boolean
 	 */
-	protected function override($action) {
+	protected function canEdit($isOwner) {
+		// disallow guests
+		if (!WCF::getUser()->userID) {
+			return false;
+		}
+		
+		// check moderator permission
+		if (WCF::getSession()->getPermission($this->permissionModEdit)) {
+			return true;
+		}
+		
+		// check user permission and ownership
+		if ($isOwner && WCF::getSession()->getPermission($this->permissionEdit)) {
+			return true;
+		}
+		
 		return false;
 	}
 	
 	/**
-	 * @see	wcf\system\comment\manager\ICommentManager::commentsPerPage()
+	 * Returns true, if current user may delete a comment/response.
+	 * 
+	 * @param	boolean		$isOwner
+	 * @return	boolean
 	 */
-	public function commentsPerPage() {
+	protected function canDelete($isOwner) {
+		// disallow guests
+		if (!WCF::getUser()->userID) {
+			return false;
+		}
+		
+		// check moderator permission
+		if (WCF::getSession()->getPermission($this->permissionModDelete)) {
+			return true;
+		}
+		
+		// check user permission and ownership
+		if ($isOwner && WCF::getSession()->getPermission($this->permissionDelete)) {
+			return true;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * @see	wcf\system\comment\manager\ICommentManager::getCommentsPerPage()
+	 */
+	public function getCommentsPerPage() {
 		return $this->commentsPerPage;
 	}
 }

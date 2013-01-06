@@ -8,7 +8,7 @@ use wcf\data\DatabaseObjectDecorator;
  * Provides methods to handle responses for this comment.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2011 WoltLab GmbH
+ * @copyright	2001-2013 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf.comment
  * @subpackage	data.comment
@@ -27,6 +27,18 @@ class StructuredComment extends DatabaseObjectDecorator implements \Countable, \
 	protected $responses = array();
 	
 	/**
+	 * deletable by current user
+	 * @var	boolean
+	 */
+	public $deletable = false;
+	
+	/**
+	 * editable by current user
+	 * @var	boolean
+	 */
+	public $editable = false;
+	
+	/**
 	 * iterator index
 	 * @var	integer
 	 */
@@ -37,12 +49,6 @@ class StructuredComment extends DatabaseObjectDecorator implements \Countable, \
 	 * @var	wcf\data\user\UserProfile
 	 */
 	public $userProfile = null;
-	
-	/**
-	 * editable for current user
-	 * @var	boolean
-	 */
-	public $editable = false;
 	
 	/**
 	 * Adds an response
@@ -60,6 +66,24 @@ class StructuredComment extends DatabaseObjectDecorator implements \Countable, \
 	 */
 	public function getResponses() {
 		return $this->responses;
+	}
+	
+	/**
+	 * Returns timestamp of oldest response loaded.
+	 * 
+	 * @return	integer
+	 */
+	public function getLastResponseTime() {
+		$lastResponseTime = 0;
+		foreach ($this->responses as $response) {
+			if (!$lastResponseTime) {
+				$lastResponseTime = $response->time;
+			}
+			
+			$lastResponseTime = min($lastResponseTime, $response->time);
+		}
+		
+		return $lastResponseTime;
 	}
 	
 	/**
@@ -81,12 +105,30 @@ class StructuredComment extends DatabaseObjectDecorator implements \Countable, \
 	}
 	
 	/**
+	 * Sets deletable state.
+	 * 
+	 * @param	boolean		$deletable
+	 */
+	public function setIsDeletable($deletable) {
+		$this->deletable = $deletable;
+	}
+	
+	/**
 	 * Sets editable state.
 	 * 
 	 * @param	boolean		$editable
 	 */
 	public function setIsEditable($editable) {
 		$this->editable = $editable;
+	}
+	
+	/**
+	 * Returns true, if comment is deletable by current user.
+	 * 
+	 * @return	boolean
+	 */
+	public function isDeletable() {
+		return $this->deletable;
 	}
 	
 	/**

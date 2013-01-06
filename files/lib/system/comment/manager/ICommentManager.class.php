@@ -1,11 +1,13 @@
 <?php
 namespace wcf\system\comment\manager;
+use wcf\data\comment\response\CommentResponse;
+use wcf\data\comment\Comment;
 
 /**
  * Default interface for comment managers.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2012 WoltLab GmbH
+ * @copyright	2001-2013 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf.comment
  * @subpackage	system.comment.manager
@@ -13,7 +15,7 @@ namespace wcf\system\comment\manager;
  */
 interface ICommentManager {
 	/**
-	 * Returns true, if current user may add comments.
+	 * Returns true, if current user may add comments or responses.
 	 * 
 	 * @param	integer		$objectID
 	 * @return	boolean
@@ -21,29 +23,56 @@ interface ICommentManager {
 	public function canAdd($objectID);
 	
 	/**
-	 * Returns true, if current user may delete the comment / response.
+	 * Returns true, if current user may edit given comment.
 	 * 
-	 * @param	integer		$objectID
-	 * @param	integer		$commentID
-	 * @param	integer		$responseID
+	 * @param	wcf\data\comment\Comment	$comment
 	 * @return	boolean
 	 */
-	public function canDelete($objectID, $commentID = null, $responseID = null);
+	public function canEditComment(Comment $comment);
 	
 	/**
-	 * Returns true, if current user may delete edit comment / response.
-	 *
-	 * @param	integer		$objectID
-	 * @param	integer		$commentID
-	 * @param	integer		$responseID
+	 * Returns true, if current user may edit given response.
+	 * 
+	 * @param	wcf\data\comment\response\CommentResponse	$response
 	 * @return	boolean
 	 */
-	public function canEdit($objectID, $commentID = null, $responseID = null);
+	public function canEditResponse(CommentResponse $response);
+	
+	/**
+	 * Returns true, if current user may delete given comment.
+	 * 
+	 * @param	wcf\data\comment\Comment	$comment
+	 * @return	boolean
+	 */
+	public function canDeleteComment(Comment $comment);
+	
+	/**
+	 * Returns true, if current user may delete given response.
+	 * 
+	 * @param	wcf\data\comment\response\CommentResponse	$response
+	 */
+	public function canDeleteResponse(CommentResponse $response);
 	
 	/**
 	 * Returns the amount of comments per page.
 	 * 
+	 * @return	integer
+	 */
+	public function getCommentsPerPage();
+	
+	/**
+	 * Returns true, if comments and responses for given object id are accessible by current user.
+	 * 
+	 * @param	integer		$objectID
 	 * @return	boolean
 	 */
-	public function commentsPerPage();
+	public function isAccessible($objectID);
+	
+	/**
+	 * Updates total count of comments (includes responses).
+	 * 
+	 * @param	integer		$objectID
+	 * @param	integer		$value
+	 */
+	public function updateCounter($objectID, $value);
 }

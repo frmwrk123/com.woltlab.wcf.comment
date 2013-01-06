@@ -20,6 +20,12 @@ class StructuredCommentResponse extends DatabaseObjectDecorator {
 	public static $baseClass = 'wcf\data\comment\response\CommentResponse';
 	
 	/**
+	 * deletable by current user
+	 * @var	boolean
+	 */
+	public $deletable = false;
+	
+	/**
 	 * editable for current user
 	 * @var	boolean
 	 */
@@ -72,12 +78,30 @@ class StructuredCommentResponse extends DatabaseObjectDecorator {
 	}
 	
 	/**
+	 * Sets deletable state.
+	 * 
+	 * @param	boolean		$deletable
+	 */
+	public function setIsDeletable($deletable) {
+		$this->deletable = $deletable;
+	}
+	
+	/**
 	 * Sets editable state.
 	 *
 	 * @param	boolean		$editable
 	 */
 	public function setIsEditable($editable) {
 		$this->editable = $editable;
+	}
+	
+	/**
+	 * Returns true, if comment is deletable by current user.
+	 * 
+	 * @return	boolean
+	 */
+	public function isDeletable() {
+		return $this->deletable;
 	}
 	
 	/**
