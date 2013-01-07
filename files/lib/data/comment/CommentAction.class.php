@@ -1,7 +1,5 @@
 <?php
 namespace wcf\data\comment;
-use wcf\system\comment\CommentHandler;
-
 use wcf\data\comment\response\CommentResponse;
 use wcf\data\comment\response\CommentResponseAction;
 use wcf\data\comment\response\CommentResponseEditor;
@@ -9,13 +7,14 @@ use wcf\data\comment\response\StructuredCommentResponse;
 use wcf\data\object\type\ObjectTypeCache;
 use wcf\data\user\UserProfile;
 use wcf\data\AbstractDatabaseObjectAction;
+use wcf\system\comment\CommentHandler;
 use wcf\system\exception\PermissionDeniedException;
 use wcf\system\exception\UserInputException;
 use wcf\system\like\LikeHandler;
 use wcf\system\user\activity\event\UserActivityEventHandler;
-use wcf\system\user\notification\UserNotificationHandler;
 use wcf\system\user\notification\object\CommentResponseUserNotificationObject;
 use wcf\system\user\notification\object\CommentUserNotificationObject;
+use wcf\system\user\notification\UserNotificationHandler;
 use wcf\system\WCF;
 use wcf\util\StringUtil;
 

@@ -1,10 +1,8 @@
 <?php
 namespace wcf\data\comment\response;
-use wcf\data\comment\CommentEditor;
-
-use wcf\data\comment\CommentList;
-
 use wcf\data\comment\Comment;
+use wcf\data\comment\CommentEditor;
+use wcf\data\comment\CommentList;
 use wcf\data\comment\StructuredComment;
 use wcf\data\object\type\ObjectTypeCache;
 use wcf\data\user\UserProfile;

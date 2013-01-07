@@ -1,7 +1,7 @@
 <?php
 namespace wcf\system\user\notification\object\type;
-use wcf\data\comment\response\CommentResponseList;
 use wcf\data\comment\response\CommentResponse;
+use wcf\data\comment\response\CommentResponseList;
 use wcf\data\comment\Comment;
 use wcf\data\object\type\AbstractObjectTypeProcessor;
 use wcf\system\user\notification\object\CommentResponseUserNotificationObject;
@@ -10,7 +10,7 @@ use wcf\system\user\notification\object\CommentResponseUserNotificationObject;
  * Represents a comment response notification object type.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2012 WoltLab GmbH
+ * @copyright	2001-2013 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf.user
  * @subpackage	system.user.notification.object.type
