@@ -106,7 +106,7 @@ class CommentResponseAction extends AbstractDatabaseObjectAction {
 		foreach ($responseIDs as $objectTypeID => $objectIDs) {
 			$objectType = ObjectTypeCache::getInstance()->getObjectType($objectTypeID);
 			if (UserActivityEventHandler::getInstance()->getObjectTypeID($objectType->objectType.'.response.recentActivityEvent')) {
-				UserActivityEventHandler::getInstance()->removeEvents($objectType->objectType.'.response.recentActivityEvent', $objectType->packageID, $objectIDs);
+				UserActivityEventHandler::getInstance()->removeEvents($objectType->objectType.'.response.recentActivityEvent', $objectIDs);
 			}
 		}
 		
