@@ -1,8 +1,8 @@
 <?php
 namespace wcf\data\comment\response;
-use wcf\data\DatabaseObjectDecorator;
 use wcf\data\user\User;
 use wcf\data\user\UserProfile;
+use wcf\data\DatabaseObjectDecorator;
 
 /**
  * Represents a viewable comment response.
