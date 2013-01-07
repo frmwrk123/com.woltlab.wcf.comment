@@ -54,6 +54,15 @@ interface ICommentManager {
 	public function canDeleteResponse(CommentResponse $response);
 	
 	/**
+	 * Returns true, if current user may moderated content identified by object type id and object id.
+	 * 
+	 * @param	integer		$objectTypeID
+	 * @param	integer		$objectID
+	 * @return	boolean
+	 */
+	public function canModerate($objectTypeID, $objectID);
+	
+	/**
 	 * Returns the amount of comments per page.
 	 * 
 	 * @return	integer

@@ -37,5 +37,19 @@
 			<classname>wcf\system\user\notification\object\type\UserProfileCommentResponseUserNotificationObjectType</classname>
 			<category>com.woltlab.wcf.user.profileComment</category>
 		</type>
+		
+		<!-- moderation -->
+		<type>
+			<name>com.woltlab.wcf.comment.comment</name>
+			<definitionname>com.woltlab.wcf.moderation.report</definitionname>
+			<classname>wcf\system\moderation\queue\report\CommentCommentModerationQueueReportHandler</classname>
+		</type>
+		
+		<type>
+			<name>com.woltlab.wcf.comment.response</name>
+			<definitionname>com.woltlab.wcf.moderation.report</definitionname>
+			<classname>wcf\system\moderation\queue\report\CommentResponseModerationQueueReportHandler</classname>
+		</type>
+		<!-- /moderation -->
 	</import>
 </data>

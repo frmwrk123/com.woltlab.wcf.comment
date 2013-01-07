@@ -19,6 +19,11 @@ class UserProfileCommentManager extends AbstractCommentManager {
 	protected $permissionAdd = 'user.profileComment.canAddComment';
 	
 	/**
+	 * @see	wcf\system\comment\manager\AbstractCommentManager::$permissionCanModerate
+	 */
+	protected $permissionCanModerate = 'mod.profileComment.canModerateComment';
+	
+	/**
 	 * @see	wcf\system\comment\manager\AbstractCommentManager::$permissionDelete
 	 */
 	protected $permissionDelete = 'user.profileComment.canDeleteComment';

@@ -30,6 +30,12 @@ abstract class AbstractCommentManager extends SingletonFactory implements IComme
 	protected $permissionAdd = '';
 	
 	/**
+	 * permission name for comment/response moderation
+	 * @var	string
+	 */
+	protected $permissionCanModerate = '';
+	
+	/**
 	 * permission name for deletion of own comments/responses
 	 * @var	string
 	 */
@@ -90,6 +96,13 @@ abstract class AbstractCommentManager extends SingletonFactory implements IComme
 	 */
 	public function canDeleteResponse(CommentResponse $response) {
 		return $this->canDelete(($response->userID == WCF::getUser()->userID));
+	}
+	
+	/**
+	 * @see	wcf\system\comment\manager\ICommentManager::canModerate()
+	 */
+	public function canModerate($objectTypeID, $objectID) {
+		return (WCF::getSession()->getPermission($this->permissionCanModerate) ? true : false);
 	}
 	
 	/**
