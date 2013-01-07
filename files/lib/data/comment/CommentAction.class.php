@@ -86,7 +86,7 @@ class CommentAction extends AbstractDatabaseObjectAction {
 				// remove activity events
 				$objectType = ObjectTypeCache::getInstance()->getObjectType($objectTypeID);
 				if (UserActivityEventHandler::getInstance()->getObjectTypeID($objectType->objectType.'.recentActivityEvent')) {
-					UserActivityEventHandler::getInstance()->removeEvents($objectType->objectType.'.recentActivityEvent', $objectType->packageID, $objectIDs);
+					UserActivityEventHandler::getInstance()->removeEvents($objectType->objectType.'.recentActivityEvent', $objectIDs);
 				}
 				
 				$likeObjectIDs = array_merge($likeObjectIDs, $objectIDs);
@@ -172,7 +172,7 @@ class CommentAction extends AbstractDatabaseObjectAction {
 		// fire activity event
 		$objectType = ObjectTypeCache::getInstance()->getObjectType($this->parameters['data']['objectTypeID']);
 		if (UserActivityEventHandler::getInstance()->getObjectTypeID($objectType->objectType.'.recentActivityEvent')) {
-			UserActivityEventHandler::getInstance()->fireEvent($objectType->objectType.'.recentActivityEvent', $objectType->packageID, $comment->commentID);
+			UserActivityEventHandler::getInstance()->fireEvent($objectType->objectType.'.recentActivityEvent', $comment->commentID);
 		}
 		
 		// fire notification event
@@ -241,7 +241,7 @@ class CommentAction extends AbstractDatabaseObjectAction {
 		// fire activity event
 		$objectType = ObjectTypeCache::getInstance()->getObjectType($this->comment->objectTypeID);
 		if (UserActivityEventHandler::getInstance()->getObjectTypeID($objectType->objectType.'.response.recentActivityEvent')) {
-			UserActivityEventHandler::getInstance()->fireEvent($objectType->objectType.'.response.recentActivityEvent', $objectType->packageID, $response->responseID);
+			UserActivityEventHandler::getInstance()->fireEvent($objectType->objectType.'.response.recentActivityEvent', $response->responseID);
 		}
 		
 		// fire notification event
