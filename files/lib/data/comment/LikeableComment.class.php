@@ -1,12 +1,13 @@
 <?php
 namespace wcf\data\comment;
 use wcf\data\like\object\AbstractLikeObject;
+use wcf\data\object\type\ObjectTypeCache;
 
 /**
  * Likeable object implementation for comments.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2011 WoltLab GmbH
+ * @copyright	2001-2013 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf.comment
  * @subpackage	data.comment
@@ -37,5 +38,16 @@ class LikeableComment extends AbstractLikeObject {
 	 */
 	public function getUserID() {
 		return $this->userID;
+	}
+	
+	/**
+	 * @see	wcf\data\like\object\ILikeObject::getObjectType()
+	 */
+	public function getObjectType() {
+		if ($this->objectType === null) {
+			$this->objectType = ObjectTypeCache::getInstance()->getObjectType($this->getDecoratedObject()->objectTypeID);
+		}
+		
+		return $this->objectType;
 	}
 }

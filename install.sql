@@ -6,9 +6,12 @@ CREATE TABLE wcf1_comment (
 	objectID INT(10) NOT NULL,
 	time INT(10) NOT NULL DEFAULT '0',
 	userID INT(10) NOT NULL,
+	username VARCHAR(255) NOT NULL,
 	message TEXT NOT NULL,
 	responses MEDIUMINT(7) NOT NULL DEFAULT '0',
-	lastResponseIDs VARCHAR(255) NOT NULL DEFAULT ''
+	lastResponseIDs VARCHAR(255) NOT NULL DEFAULT '',
+	
+	KEY (objectTypeID, objectID, time)
 );
 
 -- comment responses
@@ -18,10 +21,14 @@ CREATE TABLE wcf1_comment_response (
 	commentID INT(10) NOT NULL,
 	time INT(10) NOT NULL DEFAULT '0',
 	userID INT(10) NOT NULL,
-	message TEXT NOT NULL
+	username VARCHAR(255) NOT NULL,
+	message TEXT NOT NULL,
+	
+	KEY (commentID, time)
 );
 
 ALTER TABLE wcf1_comment ADD FOREIGN KEY (objectTypeID) REFERENCES wcf1_object_type (objectTypeID) ON DELETE CASCADE;
 ALTER TABLE wcf1_comment ADD FOREIGN KEY (userID) REFERENCES wcf1_user (userID) ON DELETE CASCADE;
 
+ALTER TABLE wcf1_comment_response ADD FOREIGN KEY (commentID) REFERENCES wcf1_comment (commentID) ON DELETE CASCADE;
 ALTER TABLE wcf1_comment_response ADD FOREIGN KEY (userID) REFERENCES wcf1_user (userID) ON DELETE CASCADE;

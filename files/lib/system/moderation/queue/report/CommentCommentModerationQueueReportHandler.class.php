@@ -101,10 +101,10 @@ class CommentCommentModerationQueueReportHandler implements IModerationQueueRepo
 	 */
 	public function getReportedContent(ViewableModerationQueue $queue) {
 		WCF::getTPL()->assign(array(
-			'comment' => new ViewableComment($queue->getAffectedObject())
+			'message' => new ViewableComment($queue->getAffectedObject())
 		));
 		
-		return WCF::getTPL()->fetch('moderationCommentComment');
+		return WCF::getTPL()->fetch('moderationComment');
 	}
 	
 	/**
@@ -174,11 +174,14 @@ class CommentCommentModerationQueueReportHandler implements IModerationQueueRepo
 		$commentList->getConditionBuilder()->add("comment.commentID IN (?)", array($objectIDs));
 		$commentList->sqlLimit = 0;
 		$commentList->readObjects();
-		$comments = $commentList->readObjects();
+		$comments = $commentList->getObjects();
 		
 		foreach ($queues as $object) {
 			if (isset($comments[$object->objectID])) {
 				$object->setAffectedObject($comments[$object->objectID]);
+			}
+			else {
+				$object->setIsOrphaned();
 			}
 		}
 	}

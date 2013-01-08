@@ -1,6 +1,8 @@
 <?php
 namespace wcf\system\comment\manager;
 use wcf\data\user\UserProfile;
+use wcf\system\request\LinkHandler;
+use wcf\system\WCF;
 
 /**
  * User profile comment manager implementation.
@@ -64,6 +66,20 @@ class UserProfileCommentManager extends AbstractCommentManager {
 		}
 		
 		return true;
+	}
+	
+	/**
+	 * @see	wcf\system\comment\manager\ICommentManager::getLink()
+	 */
+	public function getLink($objectTypeID, $objectID) {
+		return LinkHandler::getInstance()->getLink('User', array('id' => $objectID));
+	}
+	
+	/**
+	 * @see	wcf\system\comment\manager\ICommentManager::getTitle()
+	 */
+	public function getTitle($objectTypeID, $objectID, $isResponse = false) {
+		return WCF::getLanguage()->getDynamicVariable('wcf.user.profile.content.wall.comment', array('isResponse' => $isResponse));
 	}
 	
 	/**

@@ -70,6 +70,25 @@ interface ICommentManager {
 	public function getCommentsPerPage();
 	
 	/**
+	 * Returns a link to given object type id and object id.
+	 * 
+	 * @param	integer		$objectTypeID
+	 * @param	integer		$objectID
+	 * @return	string
+	 */
+	public function getLink($objectTypeID, $objectID);
+	
+	/**
+	 * Returns the title for a comment or response.
+	 * 
+	 * @param	integer		$objectTypeID
+	 * @param	integer		$objectID
+	 * @param	boolean		$isResponse
+	 * @return	string
+	 */
+	public function getTitle($objectTypeID, $objectID, $isResponse = false);
+	
+	/**
 	 * Returns true, if comments and responses for given object id are accessible by current user.
 	 * 
 	 * @param	integer		$objectID

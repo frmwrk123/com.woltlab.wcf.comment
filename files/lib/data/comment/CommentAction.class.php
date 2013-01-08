@@ -161,6 +161,7 @@ class CommentAction extends AbstractDatabaseObjectAction {
 			'objectID' => $this->parameters['data']['objectID'],
 			'time' => TIME_NOW,
 			'userID' => WCF::getUser()->userID,
+			'username' => WCF::getUser()->username,
 			'message' => $this->parameters['data']['message'],
 			'responses' => 0,
 			'lastResponseIDs' => serialize(array())
@@ -219,6 +220,7 @@ class CommentAction extends AbstractDatabaseObjectAction {
 			'commentID' => $this->comment->commentID,
 			'time' => TIME_NOW,
 			'userID' => WCF::getUser()->userID,
+			'username' => WCF::getUser()->username,
 			'message' => $this->parameters['data']['message']
 		));
 		

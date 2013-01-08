@@ -5,6 +5,7 @@ use wcf\data\comment\response\CommentResponseAction;
 use wcf\data\comment\response\CommentResponseList;
 use wcf\data\comment\response\ViewableCommentResponse;
 use wcf\data\comment\Comment;
+use wcf\data\comment\CommentList;
 use wcf\data\moderation\queue\ModerationQueue;
 use wcf\data\moderation\queue\ViewableModerationQueue;
 use wcf\data\object\type\ObjectTypeCache;
@@ -100,10 +101,10 @@ class CommentResponseModerationQueueReportHandler extends CommentCommentModerati
 	 */
 	public function getReportedContent(ViewableModerationQueue $queue) {
 		WCF::getTPL()->assign(array(
-			'response' => new ViewableCommentResponse($queue->getAffectedObject())
+			'message' => new ViewableCommentResponse($queue->getAffectedObject())
 		));
 		
-		return WCF::getTPL()->fetch('moderationCommentResponse');
+		return WCF::getTPL()->fetch('moderationComment');
 	}
 	
 	/**
@@ -159,20 +160,31 @@ class CommentResponseModerationQueueReportHandler extends CommentCommentModerati
 		$responseList->getConditionBuilder()->add("comment_response.responseID IN (?)", array($objectIDs));
 		$responseList->sqlLimit = 0;
 		$responseList->readObjects();
-		$responses = $responseList->readObjects();
+		$responses = $responseList->getObjects();
 		
-		/*
 		// fetch comments
-		$commentList = new CommentList();
-		$commentList->getConditionBuilder()->add("comment.commentID IN (?)", array($objectIDs));
-		$commentList->sqlLimit = 0;
-		$commentList->readObjects();
-		$comments = $commentList->readObjects();
-		*/
+		$commentIDs = array();
+		foreach ($responses as $response) {
+			$commentIDs[] = $response->commentID;
+		}
+		
+		if (!empty($commentIDs)) {
+			$commentList = new CommentList();
+			$commentList->getConditionBuilder()->add("comment.commentID IN (?)", array($commentIDs));
+			$commentList->sqlLimit = 0;
+			$commentList->readObjects();
+			$comments = $commentList->getObjects();
+		}
 		
 		foreach ($queues as $object) {
 			if (isset($responses[$object->objectID])) {
-				$object->setAffectedObject($responses[$object->objectID]);
+				$response = $responses[$object->objectID];
+				$response->setComment($comments[$response->commentID]);
+				
+				$object->setAffectedObject($response);
+			}
+			else {
+				$object->setIsOrphaned();
 			}
 		}
 	}
@@ -182,7 +194,7 @@ class CommentResponseModerationQueueReportHandler extends CommentCommentModerati
 	 */
 	public function removeContent(ModerationQueue $queue, $message) {
 		if ($this->isValid($queue->objectID)) {
-			$responseAction = new CommentResponeAction(array($this->getResponse($queue->objectID)), 'delete');
+			$responseAction = new CommentResponseAction(array($this->getResponse($queue->objectID)), 'delete');
 			$responseAction->executeAction();
 		}
 	}
