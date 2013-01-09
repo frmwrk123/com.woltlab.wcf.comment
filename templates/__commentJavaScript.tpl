@@ -1,4 +1,5 @@
-<script type="text/javascript" src="{@$__wcf->getPath('wcf')}js/WCF.Comment.js"></script>
+<script type="text/javascript" src="{@$__wcf->getPath()}js/WCF.Comment.js"></script>
+<script type="text/javascript" src="{@$__wcf->getPath()}js/WCF.Moderation.js"></script>
 <script type="text/javascript">
 	//<![CDATA[
 	$(function() {
