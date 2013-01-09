@@ -62,21 +62,24 @@ class ProfileCommentResponseUserActivityEvent extends SingletonFactory implement
 		foreach ($events as $event) {
 			if (isset($responses[$event->objectID])) {
 				$response = $responses[$event->objectID];
-				if (isset($comments[$response->commentID])) {
-					$comment = $comments[$response->commentID];
-					if (isset($users[$comment->objectID]) && isset($users[$comment->userID])) {
-						// title
-						$text = WCF::getLanguage()->getDynamicVariable('wcf.user.profile.recentActivity.profileCommentResponse', array(
-							'commentAuthor' => $users[$comment->userID],
-							'user' => $users[$comment->objectID]
-						));
-						$event->setTitle($text);
-						
-						// description
-						$event->setDescription($response->getFormattedMessage());
-					}
+				$comment = $comments[$response->commentID];
+				if (isset($users[$comment->objectID]) && isset($users[$comment->userID])) {
+					$event->setIsAccessible();
+					
+					// title
+					$text = WCF::getLanguage()->getDynamicVariable('wcf.user.profile.recentActivity.profileCommentResponse', array(
+						'commentAuthor' => $users[$comment->userID],
+						'user' => $users[$comment->objectID]
+					));
+					$event->setTitle($text);
+					
+					// description
+					$event->setDescription($response->getFormattedMessage());
+					continue;
 				}
 			}
+			
+			$event->setIsOrphaned();
 		}
 	}
 }
