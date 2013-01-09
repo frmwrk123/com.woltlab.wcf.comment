@@ -144,4 +144,22 @@ class StructuredCommentList extends CommentList {
 		LikeHandler::getInstance()->loadLikeObjects($objectType, $this->getObjectIDs());
 		return LikeHandler::getInstance()->getLikeObjects($objectType);
 	}
+	
+	/**
+	 * Returns last comment time.
+	 * 
+	 * @return	integer
+	 */
+	public function getLastCommentTime() {
+		$lastCommentTime = 0;
+		foreach ($this->getObjects() as $comment) {
+			if (!$lastCommentTime) {
+				$lastCommentTime = $comment->time;
+			}
+				
+			$lastCommentTime = min($lastCommentTime, $comment->time);
+		}
+		
+		return $lastCommentTime;
+	}
 }

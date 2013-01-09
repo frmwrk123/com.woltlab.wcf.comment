@@ -38,12 +38,12 @@ class UserProfileCommentManager extends AbstractCommentManager {
 	/**
 	 * @see	wcf\system\comment\manager\AbstractCommentManager::$permissionModDelete
 	 */
-	protected $permissionModDelete = '';
+	protected $permissionModDelete = 'mod.profileComment.canDeleteComment';
 	
 	/**
 	 * @see	wcf\system\comment\manager\AbstractCommentManager::$permissionModEdit
 	 */
-	protected $permissionModEdit = '';
+	protected $permissionModEdit = 'mod.profileComment.canEditComment';
 	
 	/**
 	 * @see	wcf\system\comment\manager\ICommentManager::isAccessible()
@@ -79,7 +79,9 @@ class UserProfileCommentManager extends AbstractCommentManager {
 	 * @see	wcf\system\comment\manager\ICommentManager::getTitle()
 	 */
 	public function getTitle($objectTypeID, $objectID, $isResponse = false) {
-		return WCF::getLanguage()->getDynamicVariable('wcf.user.profile.content.wall.comment', array('isResponse' => $isResponse));
+		if ($isResponse) return WCF::getLanguage()->get('wcf.user.profile.content.wall.commentResponse');
+		
+		return WCF::getLanguage()->getDynamicVariable('wcf.user.profile.content.wall.comment');
 	}
 	
 	/**
