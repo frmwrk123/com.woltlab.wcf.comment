@@ -1,10 +1,5 @@
 <?php
 namespace wcf\system\user\notification\object\type;
-use wcf\data\comment\response\CommentResponse;
-use wcf\data\comment\response\CommentResponseList;
-use wcf\data\comment\Comment;
-use wcf\data\object\type\AbstractObjectTypeProcessor;
-use wcf\system\user\notification\object\CommentResponseUserNotificationObject;
 
 /**
  * Represents a comment response notification object type.
@@ -16,40 +11,19 @@ use wcf\system\user\notification\object\CommentResponseUserNotificationObject;
  * @subpackage	system.user.notification.object.type
  * @category	Community Framework
  */
-class UserProfileCommentResponseUserNotificationObjectType extends AbstractObjectTypeProcessor implements IUserNotificationObjectType {
+class UserProfileCommentResponseUserNotificationObjectType extends AbstractUserNotificationObjectType {
 	/**
-	 * @see	wcf\system\user\notification\object\type\IUserNotificationObjectType::getObjectByID()
+	 * @see wcf\system\user\notification\object\type\AbstractUserNotificationObjectType::$decoratorClassName
 	 */
-	public function getObjectByID($objectID) {
-		$object = new CommentResponse($objectID);
-		if (!$object->responseID) {
-			// create empty object for unknown request id
-			$object = new CommentResponse(null, array('responseID' => $objectID));
-		}
-		
-		return array($object->responseID => new CommentResponseUserNotificationObject($object));
-	}
+	protected static $decoratorClassName = 'wcf\system\user\notification\object\CommentResponseUserNotificationObject';
 	
 	/**
-	 * @see	wcf\system\user\notification\object\type\IUserNotificationObjectType::getObjectsByIDs()
+	 * @see wcf\system\user\notification\object\type\AbstractUserNotificationObjectType::$objectClassName
 	 */
-	public function getObjectsByIDs(array $objectIDs) {
-		$objectList = new CommentResponseList();
-		$objectList->getConditionBuilder()->add("comment_response.responseID IN (?)", array($objectIDs));
-		$objectList->readObjects();
-		
-		$objects = array();
-		foreach ($objectList as $object) {
-			$objects[$object->responseID] = new CommentResponseUserNotificationObject($object);
-		}
-		
-		foreach ($objectIDs as $objectID) {
-			// append empty objects for unknown ids
-			if (!isset($objects[$objectID])) {
-				$objects[$objectID] = new CommentResponseUserNotificationObject(new Comment(null, array('responseID' => $objectID)));
-			}
-		}
-		
-		return $objects;
-	}
+	protected static $objectClassName = 'wcf\data\comment\response\CommentResponse';
+	
+	/**
+	 * @see wcf\system\user\notification\object\type\AbstractUserNotificationObjectType::$objectListClassName
+	 */
+	protected static $objectListClassName = 'wcf\data\comment\response\CommentResponseList';
 }
