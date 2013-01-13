@@ -35,16 +35,17 @@ class ProfileCommentUserActivityEvent extends SingletonFactory implements IUserA
 		$comments = $commentList->getObjects();
 		
 		// fetch users
-		$userIDs = array();
+		$userIDs = $users = array();
 		foreach ($comments as $comment) {
 			$userIDs[] = $comment->objectID;
 		}
-		
-		$userList = new UserList();
-		$userList->getConditionBuilder()->add("user_table.userID IN (?)", array($userIDs));
-		$userList->sqlLimit = 0;
-		$userList->readObjects();
-		$users = $userList->getObjects();
+		if (!empty($users)) {
+			$userList = new UserList();
+			$userList->getConditionBuilder()->add("user_table.userID IN (?)", array($userIDs));
+			$userList->sqlLimit = 0;
+			$userList->readObjects();
+			$users = $userList->getObjects();
+		}
 		
 		// set message
 		foreach ($events as $event) {
@@ -52,14 +53,19 @@ class ProfileCommentUserActivityEvent extends SingletonFactory implements IUserA
 				// short output
 				$comment = $comments[$event->objectID];
 				if (isset($users[$comment->objectID])) {
+					$event->setIsAccessible();
+					
 					$user = $users[$comment->objectID];
 					$text = WCF::getLanguage()->getDynamicVariable('wcf.user.profile.recentActivity.profileComment', array('user' => $user));
 					$event->setTitle($text);
 					
 					// output
 					$event->setDescription($comment->getFormattedMessage());
+					continue;
 				}
 			}
+			
+			$event->setIsOrphaned();
 		}
 	}
 }

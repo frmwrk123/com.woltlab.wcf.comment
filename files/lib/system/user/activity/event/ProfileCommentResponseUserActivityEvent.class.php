@@ -35,48 +35,54 @@ class ProfileCommentResponseUserActivityEvent extends SingletonFactory implement
 		$responses = $responseList->getObjects();
 		
 		// fetch comments
-		$commentIDs = array();
+		$commentIDs = $comments = array();
 		foreach ($responses as $response) {
 			$commentIDs[] = $response->commentID;
 		}
-		$commentList = new CommentList();
-		$commentList->getConditionBuilder()->add("comment.commentID IN (?)", array($commentIDs));
-		$commentList->sqlLimit = 0;
-		$commentList->readObjects();
-		$comments = $commentList->getObjects();
+		if (!empty($commentIDs)) {
+			$commentList = new CommentList();
+			$commentList->getConditionBuilder()->add("comment.commentID IN (?)", array($commentIDs));
+			$commentList->sqlLimit = 0;
+			$commentList->readObjects();
+			$comments = $commentList->getObjects();
+		}
 		
 		// fetch users
-		$userIDs = array();
+		$userIDs = $users = array();
 		foreach ($comments as $comment) {
 			$userIDs[] = $comment->objectID;
 			$userIDs[] = $comment->userID;
 		}
-		
-		$userList = new UserList();
-		$userList->getConditionBuilder()->add("user_table.userID IN (?)", array($userIDs));
-		$userList->sqlLimit = 0;
-		$userList->readObjects();
-		$users = $userList->getObjects();
+		if (!empty($users)) {
+			$userList = new UserList();
+			$userList->getConditionBuilder()->add("user_table.userID IN (?)", array($userIDs));
+			$userList->sqlLimit = 0;
+			$userList->readObjects();
+			$users = $userList->getObjects();
+		}
 		
 		// set message
 		foreach ($events as $event) {
 			if (isset($responses[$event->objectID])) {
 				$response = $responses[$event->objectID];
-				if (isset($comments[$response->commentID])) {
-					$comment = $comments[$response->commentID];
-					if (isset($users[$comment->objectID]) && isset($users[$comment->userID])) {
-						// title
-						$text = WCF::getLanguage()->getDynamicVariable('wcf.user.profile.recentActivity.profileCommentResponse', array(
-							'commentAuthor' => $users[$comment->userID],
-							'user' => $users[$comment->objectID]
-						));
-						$event->setTitle($text);
-						
-						// description
-						$event->setDescription($response->getFormattedMessage());
-					}
+				$comment = $comments[$response->commentID];
+				if (isset($users[$comment->objectID]) && isset($users[$comment->userID])) {
+					$event->setIsAccessible();
+					
+					// title
+					$text = WCF::getLanguage()->getDynamicVariable('wcf.user.profile.recentActivity.profileCommentResponse', array(
+						'commentAuthor' => $users[$comment->userID],
+						'user' => $users[$comment->objectID]
+					));
+					$event->setTitle($text);
+					
+					// description
+					$event->setDescription($response->getFormattedMessage());
+					continue;
 				}
 			}
+			
+			$event->setIsOrphaned();
 		}
 	}
 }

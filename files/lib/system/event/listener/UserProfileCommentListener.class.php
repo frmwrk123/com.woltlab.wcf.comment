@@ -73,20 +73,11 @@ class UserProfileCommentListener implements IEventListener {
 	 * Assigns comment data to template.
 	 */
 	protected function assignVariables() {
-		$lastCommentTime = 0;
-		foreach ($this->commentList as $comment) {
-			if (!$lastCommentTime) {
-				$lastCommentTime = $comment->time;
-			}
-			
-			$lastCommentTime = min($lastCommentTime, $comment->time);
-		}
-		
 		WCF::getTPL()->assign(array(
 			'commentCanAdd' => $this->commentManager->canAdd(),
 			'commentList' => $this->commentList,
 			'commentObjectTypeID' => $this->objectTypeID,
-			'lastCommentTime' => $lastCommentTime
+			'lastCommentTime' => $this->commentList->getLastCommentTime()
 		));
 	}
 }
