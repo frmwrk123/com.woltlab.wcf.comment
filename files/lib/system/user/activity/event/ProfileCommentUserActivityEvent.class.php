@@ -39,7 +39,7 @@ class ProfileCommentUserActivityEvent extends SingletonFactory implements IUserA
 		foreach ($comments as $comment) {
 			$userIDs[] = $comment->objectID;
 		}
-		if (!empty($users)) {
+		if (!empty($userIDs)) {
 			$userList = new UserList();
 			$userList->getConditionBuilder()->add("user_table.userID IN (?)", array($userIDs));
 			$userList->sqlLimit = 0;
