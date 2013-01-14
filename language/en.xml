@@ -7,8 +7,6 @@
 	</category>
 	
 	<category name="wcf.comment">
-		<item name="wcf.comment.response.previous"><![CDATA[Show Previous Responses]]></item>
-		<item name="wcf.comment.response.recent"><![CDATA[Show Recent Responses]]></item>
 		<item name="wcf.comment.add"><![CDATA[Write a Comment …]]></item>
 		<item name="wcf.comment.description"><![CDATA[Confirm with Enter to save, or Escape to cancel.]]></item>
 		<item name="wcf.comment.response.add"><![CDATA[Write a Response …]]></item>	
