@@ -5,6 +5,7 @@
 	$(function() {
 		WCF.Language.addObject({
 			'wcf.comment.add': '{lang}wcf.comment.add{/lang}',
+			'wcf.comment.button.response.add': '{lang}wcf.comment.button.response.add{/lang}',
 			'wcf.comment.description': '{lang}wcf.comment.description{/lang}',
 			'wcf.comment.more': '{lang}wcf.comment.more{/lang}',
 			'wcf.comment.response.add': '{lang}wcf.comment.response.add{/lang}',

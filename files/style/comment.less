@@ -31,18 +31,17 @@
 	opacity: 1;
 }
 
-.commentAdd > div > small,
-.commentResponseAdd > div > small {
-	color: @wcfDimmedColor;
-	display: block;
-	opacity: 0;
+.commentList input[type='text'] {
+	+ small {
+		color: @wcfDimmedColor;
+		opacity: 0;
 	
-	.transition(opacity, .1s); 
-}
-
-.commentAdd > div > input:focus + small,
-.commentResponseAdd > div > input:focus + small {
-	opacity: 1;
+		.transition(opacity, .1s); 
+	}
+	
+	&:focus + small {
+		opacity: 1;
+	}
 }
 
 .commentResponse {
