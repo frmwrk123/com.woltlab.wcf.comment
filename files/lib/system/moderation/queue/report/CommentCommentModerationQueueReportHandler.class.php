@@ -172,7 +172,6 @@ class CommentCommentModerationQueueReportHandler implements IModerationQueueRepo
 		// fetch comments
 		$commentList = new CommentList();
 		$commentList->getConditionBuilder()->add("comment.commentID IN (?)", array($objectIDs));
-		$commentList->sqlLimit = 0;
 		$commentList->readObjects();
 		$comments = $commentList->getObjects();
 		

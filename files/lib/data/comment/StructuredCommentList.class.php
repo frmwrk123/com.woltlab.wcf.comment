@@ -98,7 +98,6 @@ class StructuredCommentList extends CommentList {
 			$responseList = new CommentResponseList();
 			$responseList->getConditionBuilder()->add("comment_response.responseID IN (?)", array(array_keys($responseIDs)));
 			$responseList->sqlOrderBy = "comment_response.time ".$sqlOrder;
-			$responseList->sqlLimit = 0;
 			$responseList->readObjects();
 			
 			foreach ($responseList as $response) {

@@ -158,7 +158,6 @@ class CommentResponseModerationQueueReportHandler extends CommentCommentModerati
 		// fetch responses
 		$responseList = new CommentResponseList();
 		$responseList->getConditionBuilder()->add("comment_response.responseID IN (?)", array($objectIDs));
-		$responseList->sqlLimit = 0;
 		$responseList->readObjects();
 		$responses = $responseList->getObjects();
 		
@@ -171,7 +170,6 @@ class CommentResponseModerationQueueReportHandler extends CommentCommentModerati
 		if (!empty($commentIDs)) {
 			$commentList = new CommentList();
 			$commentList->getConditionBuilder()->add("comment.commentID IN (?)", array($commentIDs));
-			$commentList->sqlLimit = 0;
 			$commentList->readObjects();
 			$comments = $commentList->getObjects();
 		}

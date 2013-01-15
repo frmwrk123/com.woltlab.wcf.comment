@@ -30,7 +30,6 @@ class ProfileCommentResponseUserActivityEvent extends SingletonFactory implement
 		// fetch responses
 		$responseList = new CommentResponseList();
 		$responseList->getConditionBuilder()->add("comment_response.responseID IN (?)", array($responseIDs));
-		$responseList->sqlLimit = 0;
 		$responseList->readObjects();
 		$responses = $responseList->getObjects();
 		
@@ -42,7 +41,6 @@ class ProfileCommentResponseUserActivityEvent extends SingletonFactory implement
 		if (!empty($commentIDs)) {
 			$commentList = new CommentList();
 			$commentList->getConditionBuilder()->add("comment.commentID IN (?)", array($commentIDs));
-			$commentList->sqlLimit = 0;
 			$commentList->readObjects();
 			$comments = $commentList->getObjects();
 		}
@@ -56,7 +54,6 @@ class ProfileCommentResponseUserActivityEvent extends SingletonFactory implement
 		if (!empty($userIDs)) {
 			$userList = new UserList();
 			$userList->getConditionBuilder()->add("user_table.userID IN (?)", array($userIDs));
-			$userList->sqlLimit = 0;
 			$userList->readObjects();
 			$users = $userList->getObjects();
 		}
