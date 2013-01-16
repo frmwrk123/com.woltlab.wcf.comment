@@ -92,11 +92,7 @@ class CommentAction extends AbstractDatabaseObjectAction {
 				$likeObjectIDs = array_merge($likeObjectIDs, $objectIDs);
 			}
 			
-			$likeObjectsProvider = new LikeableCommentProvider();
-			$likeObjects = $likeObjectsProvider->getObjectsByIDs($likeObjectIDs);
-			foreach ($likeObjects as $likeObject) {
-				LikeHandler::getInstance()->removeLikes($likeObject);
-			}
+			LikeHandler::getInstance()->removeLikes('com.woltlab.wcf.comment', $likeObjectIDs);
 		}
 		
 		return parent::delete();

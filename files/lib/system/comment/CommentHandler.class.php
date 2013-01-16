@@ -1,9 +1,14 @@
 <?php
 namespace wcf\system\comment;
+use wcf\data\comment\response\CommentResponseList;
+use wcf\data\comment\CommentEditor;
+use wcf\data\comment\CommentList;
 use wcf\data\comment\StructuredCommentList;
 use wcf\data\object\type\ObjectTypeCache;
 use wcf\system\comment\manager\ICommentManager;
 use wcf\system\exception\SystemException;
+use wcf\system\like\LikeHandler;
+use wcf\system\user\activity\event\UserActivityEventHandler;
 use wcf\system\SingletonFactory;
 
 /**
@@ -99,5 +104,46 @@ class CommentHandler extends SingletonFactory {
 		}
 		
 		return $commentList;
+	}
+	
+	/**
+	 * Removes all comments for given objects.
+	 *
+	 * @param	string		$objectType
+	 * @param	array<integer>	$objectIDs
+	 */
+	public function deleteObjects($objectType, array $objectIDs) {
+		$objectTypeID = $this->getObjectTypeID($objectType);
+		$objectTypeObj = $this->getObjectType($objectTypeID);
+		
+		// get comment ids
+		$commentList = new CommentList();
+		$commentList->getConditionBuilder()->add('comment.objectTypeID = ?', array($objectTypeID));
+		$commentList->getConditionBuilder()->add('comment.objectID IN (?)', array($objectIDs));
+		$commentList->readObjectIDs();
+		$commentIDs = $commentList->getObjectIDs();
+		
+		// no comments -> skip
+		if (empty($commentIDs)) return;
+		
+		// get response ids
+		$responseList = new CommentResponseList();
+		$responseList->getConditionBuilder()->add('comment_response.commentID IN (?)', array($commentIDs));
+		$responseList->readObjectIDs();
+		$responseIDs = $responseList->getObjectIDs();
+		
+		// delete likes
+		LikeHandler::getInstance()->removeLikes('com.woltlab.wcf.comment', $commentIDs);
+		
+		// delete activity events
+		if (UserActivityEventHandler::getInstance()->getObjectTypeID($objectTypeObj->objectType.'.recentActivityEvent')) {
+			UserActivityEventHandler::getInstance()->removeEvents($objectTypeObj->objectType.'.recentActivityEvent', array($commentIDs));
+		}
+		if (UserActivityEventHandler::getInstance()->getObjectTypeID($objectTypeObj->objectType.'.response.recentActivityEvent')) {
+			UserActivityEventHandler::getInstance()->removeEvents($objectTypeObj->objectType.'.response.recentActivityEvent', array($responseIDs));
+		}
+		
+		// delete comments / responses
+		CommentEditor::deleteAll($commentIDs);
 	}
 }
