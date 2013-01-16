@@ -109,14 +109,14 @@ class CommentResponse extends DatabaseObject implements IMessage {
 	}
 	
 	/**
-	 * @see	wcf\data\ILinkableDatabaseObject::getLink()
+	 * @see	wcf\data\ILinkableObject::getLink()
 	 */
 	public function getLink() {
 		return CommentHandler::getInstance()->getObjectType($this->getComment()->objectTypeID)->getProcessor()->getLink($this->getComment()->objectTypeID, $this->getComment()->objectID);
 	}
 	
 	/**
-	 * @see	wcf\data\ITitledDatabaseObject::getTitle()
+	 * @see	wcf\data\ITitledObject::getTitle()
 	 */
 	public function getTitle() {
 		return CommentHandler::getInstance()->getObjectType($this->getComment()->objectTypeID)->getProcessor()->getTitle($this->getComment()->objectTypeID, $this->getComment()->objectID, true);
