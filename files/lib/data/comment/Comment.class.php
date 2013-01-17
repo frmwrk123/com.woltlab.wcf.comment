@@ -96,14 +96,14 @@ class Comment extends DatabaseObject implements IMessage {
 	}
 	
 	/**
-	 * @see	wcf\data\ILinkableDatabaseObject::getLink()
+	 * @see	wcf\data\ILinkableObject::getLink()
 	 */
 	public function getLink() {
 		return CommentHandler::getInstance()->getObjectType($this->objectTypeID)->getProcessor()->getLink($this->objectTypeID, $this->objectID);
 	}
 	
 	/**
-	 * @see	wcf\data\ITitledDatabaseObject::getTitle()
+	 * @see	wcf\data\ITitledObject::getTitle()
 	 */
 	public function getTitle() {
 		return CommentHandler::getInstance()->getObjectType($this->objectTypeID)->getProcessor()->getTitle($this->objectTypeID, $this->objectID);
