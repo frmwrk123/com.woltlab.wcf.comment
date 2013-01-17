@@ -110,6 +110,8 @@ class CommentResponseAction extends AbstractDatabaseObjectAction {
 			}
 		}
 		
+		// @todo: delete notifications
+		
 		return $count;
 	}
 	

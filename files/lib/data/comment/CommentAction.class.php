@@ -94,6 +94,8 @@ class CommentAction extends AbstractDatabaseObjectAction {
 			
 			LikeHandler::getInstance()->removeLikes('com.woltlab.wcf.comment', $likeObjectIDs);
 		}
+		// @todo: delete notifications
+		// @todo: delete responses
 		
 		return parent::delete();
 	}
