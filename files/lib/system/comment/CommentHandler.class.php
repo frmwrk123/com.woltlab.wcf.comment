@@ -9,6 +9,7 @@ use wcf\system\comment\manager\ICommentManager;
 use wcf\system\exception\SystemException;
 use wcf\system\like\LikeHandler;
 use wcf\system\user\activity\event\UserActivityEventHandler;
+use wcf\system\user\notification\UserNotificationHandler;
 use wcf\system\SingletonFactory;
 
 /**
@@ -137,10 +138,23 @@ class CommentHandler extends SingletonFactory {
 		
 		// delete activity events
 		if (UserActivityEventHandler::getInstance()->getObjectTypeID($objectTypeObj->objectType.'.recentActivityEvent')) {
-			UserActivityEventHandler::getInstance()->removeEvents($objectTypeObj->objectType.'.recentActivityEvent', array($commentIDs));
+			UserActivityEventHandler::getInstance()->removeEvents($objectTypeObj->objectType.'.recentActivityEvent', $commentIDs);
 		}
-		if (UserActivityEventHandler::getInstance()->getObjectTypeID($objectTypeObj->objectType.'.response.recentActivityEvent')) {
-			UserActivityEventHandler::getInstance()->removeEvents($objectTypeObj->objectType.'.response.recentActivityEvent', array($responseIDs));
+		// delete notifications
+		if (UserNotificationHandler::getInstance()->getObjectTypeID($objectTypeObj->objectType.'.notification')) {
+			UserNotificationHandler::getInstance()->deleteNotifications('comment', $objectTypeObj->objectType.'.notification', array(), $commentIDs);
+		}
+		
+		if (!empty($responseIDs)) {
+			// delete activity events (for responses)
+			if (UserActivityEventHandler::getInstance()->getObjectTypeID($objectTypeObj->objectType.'.response.recentActivityEvent')) {
+				UserActivityEventHandler::getInstance()->removeEvents($objectTypeObj->objectType.'.response.recentActivityEvent', $responseIDs);
+			}
+			// delete notifications (for responses)
+			if (UserNotificationHandler::getInstance()->getObjectTypeID($objectTypeObj->objectType.'.response.notification')) {
+				UserNotificationHandler::getInstance()->deleteNotifications('commentResponse', $objectTypeObj->objectType.'.response.notification', array(), $responseIDs);
+				UserNotificationHandler::getInstance()->deleteNotifications('commentResponseOwner', $objectTypeObj->objectType.'.response.notification', array(), $responseIDs);
+			}
 		}
 		
 		// delete comments / responses
