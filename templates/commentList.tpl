@@ -13,7 +13,7 @@
 					
 					<p class="userMessage">{@$comment->getFormattedMessage()}</p>
 					<ul class="commentOptions">
-						<li class="jsReportCommentComment" data-object-id="{@$comment->commentID}"><a title="{lang}wcf.moderation.report.reportContent{/lang}" class="jsTooltip"><img src="{icon}warning{/icon}" alt="" class="icon16" /></a></li>
+						<li class="jsReportCommentComment" data-object-id="{@$comment->commentID}"><a title="{lang}wcf.moderation.report.reportContent{/lang}" class="jsTooltip"><span class="icon icon16 icon-warning-sign"></span></a></li>
 					</ul>
 				</div>
 				

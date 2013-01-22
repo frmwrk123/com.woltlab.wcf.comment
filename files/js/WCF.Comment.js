@@ -234,12 +234,12 @@ WCF.Comment.Handler = Class.extend({
 		}
 		
 		if (comment.data('canEdit')) {
-			var $editButton = $('<li><a class="jsTooltip" title="' + WCF.Language.get('wcf.global.button.edit') + '"><img src="' + WCF.Icon.get('wcf.icon.edit') + '" alt="" class="icon16" /></a></li>');
+			var $editButton = $('<li><a class="jsTooltip" title="' + WCF.Language.get('wcf.global.button.edit') + '"><span class="icon icon16 icon-pencil" /></a></li>');
 			$editButton.data('commentID', commentID).appendTo(comment.find('ul.commentOptions:eq(0)')).click($.proxy(this._prepareEdit, this));
 		}
 		
 		if (comment.data('canDelete')) {
-			var $deleteButton = $('<li><a class="jsTooltip" title="' + WCF.Language.get('wcf.global.button.delete') + '"><img src="' + WCF.Icon.get('wcf.icon.delete') + '" alt="" class="icon16" /></a></li>');
+			var $deleteButton = $('<li><a class="jsTooltip" title="' + WCF.Language.get('wcf.global.button.delete') + '"><span class="icon icon16 icon-remove" /></a></li>');
 			$deleteButton.data('commentID', commentID).appendTo(comment.find('ul.commentOptions:eq(0)')).click($.proxy(this._delete, this));
 		}
 	},
@@ -268,14 +268,14 @@ WCF.Comment.Handler = Class.extend({
 	 */
 	_initResponse: function(responseID, response) {
 		if (response.data('canEdit')) {
-			var $editButton = $('<li><a class="jsTooltip" title="' + WCF.Language.get('wcf.global.button.edit') + '"><img src="' + WCF.Icon.get('wcf.icon.edit') + '" alt="" class="icon16" /></a></li>');
+			var $editButton = $('<li><a class="jsTooltip" title="' + WCF.Language.get('wcf.global.button.edit') + '"><span class="icon icon16 icon-pencil" /></a></li>');
 			
 			var self = this;
 			$editButton.data('responseID', responseID).appendTo(response.find('ul.commentOptions:eq(0)')).click(function(event) { self._prepareEdit(event, true); });
 		}
 		
 		if (response.data('canDelete')) {
-			var $deleteButton = $('<li><a class="jsTooltip" title="' + WCF.Language.get('wcf.global.button.delete') + '"><img src="' + WCF.Icon.get('wcf.icon.delete') + '" alt="" class="icon16" /></a></li>');
+			var $deleteButton = $('<li><a class="jsTooltip" title="' + WCF.Language.get('wcf.global.button.delete') + '"><span class="icon icon16 icon-remove" /></a></li>');
 			
 			var self = this;
 			$deleteButton.data('responseID', responseID).appendTo(response.find('ul.commentOptions:eq(0)')).click(function(event) { self._delete(event, true); });
