@@ -357,7 +357,7 @@ class CommentAction extends AbstractDatabaseObjectAction {
 			));
 			$comment = new Comment($this->comment->commentID);
 			$returnValues['commentID'] = $this->comment->commentID;
-			$returnValues['message'] = $comment->message;
+			$returnValues['message'] = $comment->getFormattedMessage();
 		}
 		else {
 			$editor = new CommentResponseEditor($this->response);
@@ -366,7 +366,7 @@ class CommentAction extends AbstractDatabaseObjectAction {
 			));
 			$response = new CommentResponse($this->response->responseID);
 			$returnValues['responseID'] = $this->response->responseID;
-			$returnValues['message'] = $response->message;
+			$returnValues['message'] = $response->getFormattedMessage();
 		}
 		
 		return $returnValues;
