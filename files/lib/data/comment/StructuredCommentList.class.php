@@ -36,6 +36,12 @@ class StructuredCommentList extends CommentList {
 	public $objectID = 0;
 	
 	/**
+	 * ids of the responses of the comments in the list
+	 * @var	array<integer>
+	 */
+	public $responseIDs = array();
+	
+	/**
 	 * @see	wcf\data\DatabaseObjectList::$sqlLimit
 	 */
 	public $sqlLimit = 10;
@@ -77,6 +83,7 @@ class StructuredCommentList extends CommentList {
 			$lastResponseIDs = $comment->getLastResponseIDs();
 			if (!empty($lastResponseIDs)) {
 				foreach ($lastResponseIDs as $responseID) {
+					$this->responseIDs[] = $responseID;
 					$responseIDs[$responseID] = $comment->commentID;
 				}
 			}
@@ -137,9 +144,18 @@ class StructuredCommentList extends CommentList {
 	public function getLikeData() {
 		if (empty($this->objectIDs)) return array();
 		
-		$objectType = LikeHandler::getInstance()->getObjectType('com.woltlab.wcf.comment');
-		LikeHandler::getInstance()->loadLikeObjects($objectType, $this->getObjectIDs());
-		return LikeHandler::getInstance()->getLikeObjects($objectType);
+		$likeData = array();
+		$commentObjectType = LikeHandler::getInstance()->getObjectType('com.woltlab.wcf.comment');
+		LikeHandler::getInstance()->loadLikeObjects($commentObjectType, $this->getObjectIDs());
+		$likeData['comment'] = LikeHandler::getInstance()->getLikeObjects($commentObjectType);
+		
+		if (!empty($this->responseIDs)) {
+			$responseObjectType = LikeHandler::getInstance()->getObjectType('com.woltlab.wcf.comment.response');
+			LikeHandler::getInstance()->loadLikeObjects($responseObjectType, $this->responseIDs);
+			$likeData['response'] = LikeHandler::getInstance()->getLikeObjects($responseObjectType);
+		}
+		
+		return $likeData;
 	}
 	
 	/**
@@ -153,7 +169,7 @@ class StructuredCommentList extends CommentList {
 			if (!$lastCommentTime) {
 				$lastCommentTime = $comment->time;
 			}
-				
+			
 			$lastCommentTime = min($lastCommentTime, $comment->time);
 		}
 		

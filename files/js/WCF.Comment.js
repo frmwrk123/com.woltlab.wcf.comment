@@ -705,3 +705,51 @@ WCF.Comment.Like = WCF.Like.extend({
 	 */
 	_addWidget: function(containerID, widget) {}
 });
+
+/**
+ * Namespace for comment responses
+ */
+WCF.Comment.Response = { };
+
+/**
+ * Like support for comments responses.
+ * 
+ * @see	WCF.Like
+ */
+WCF.Comment.Response.Like = WCF.Like.extend({
+	/**
+	 * @see	WCF.Like._addWidget()
+	 */
+	_addWidget: function(containerID, widget) { },
+	
+	/**
+	 * @see	WCF.Like._buildWidget()
+	 */
+	_buildWidget: function(containerID, likeButton, dislikeButton, badge, summary) {
+		this._containers[containerID].find('hgroup:eq(0) > h1').append(badge);
+		
+		if (this._canLike) {
+			dislikeButton.appendTo(this._containers[containerID].find('.commentOptions:eq(0)'));
+			likeButton.appendTo(this._containers[containerID].find('.commentOptions:eq(0)'));
+		}
+	},
+	
+	/**
+	 * @see	WCF.Like._getContainers()
+	 */
+	_getContainers: function() {
+		return $('.commentResponseList > li.commentResponse');
+	},
+	
+	/**
+	 * @see	WCF.Like._getObjectID()
+	 */
+	_getObjectID: function(containerID) {
+		return this._containers[containerID].data('responseID');
+	},
+	
+	/**
+	 * @see	WCF.Like._getWidgetContainer()
+	 */
+	_getWidgetContainer: function(containerID) { }
+});
