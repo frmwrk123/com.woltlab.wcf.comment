@@ -15,7 +15,7 @@ use wcf\data\comment\Comment;
  */
 interface ICommentManager {
 	/**
-	 * Returns true, if current user may add comments or responses.
+	 * Returns true if the current user may add comments or responses.
 	 * 
 	 * @param	integer		$objectID
 	 * @return	boolean
@@ -23,7 +23,7 @@ interface ICommentManager {
 	public function canAdd($objectID);
 	
 	/**
-	 * Returns true, if current user may edit given comment.
+	 * Returns true if the current user may edit given comment.
 	 * 
 	 * @param	wcf\data\comment\Comment	$comment
 	 * @return	boolean
@@ -31,7 +31,7 @@ interface ICommentManager {
 	public function canEditComment(Comment $comment);
 	
 	/**
-	 * Returns true, if current user may edit given response.
+	 * Returns true if the current user may edit given response.
 	 * 
 	 * @param	wcf\data\comment\response\CommentResponse	$response
 	 * @return	boolean
@@ -39,7 +39,7 @@ interface ICommentManager {
 	public function canEditResponse(CommentResponse $response);
 	
 	/**
-	 * Returns true, if current user may delete given comment.
+	 * Returns true if the current user may delete given comment.
 	 * 
 	 * @param	wcf\data\comment\Comment	$comment
 	 * @return	boolean
@@ -47,14 +47,15 @@ interface ICommentManager {
 	public function canDeleteComment(Comment $comment);
 	
 	/**
-	 * Returns true, if current user may delete given response.
+	 * Returns true if the current user may delete given response.
 	 * 
 	 * @param	wcf\data\comment\response\CommentResponse	$response
 	 */
 	public function canDeleteResponse(CommentResponse $response);
 	
 	/**
-	 * Returns true, if current user may moderated content identified by object type id and object id.
+	 * Returns true if the current user may moderated content identified by
+	 * object type id and object id.
 	 * 
 	 * @param	integer		$objectTypeID
 	 * @param	integer		$objectID
@@ -89,7 +90,8 @@ interface ICommentManager {
 	public function getTitle($objectTypeID, $objectID, $isResponse = false);
 	
 	/**
-	 * Returns true, if comments and responses for given object id are accessible by current user.
+	 * Returns true if comments and responses for given object id are accessible
+	 * by current user.
 	 * 
 	 * @param	integer		$objectID
 	 * @return	boolean

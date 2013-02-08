@@ -106,7 +106,7 @@ abstract class AbstractCommentManager extends SingletonFactory implements IComme
 	}
 	
 	/**
-	 * Returns true, if current user may edit a comment/response.
+	 * Returns true if the current user may edit a comment/response.
 	 * 
 	 * @param	boolean		$isOwner
 	 * @return	boolean
@@ -131,7 +131,7 @@ abstract class AbstractCommentManager extends SingletonFactory implements IComme
 	}
 	
 	/**
-	 * Returns true, if current user may delete a comment/response.
+	 * Returns true if the current user may delete a comment/response.
 	 * 
 	 * @param	boolean		$isOwner
 	 * @return	boolean

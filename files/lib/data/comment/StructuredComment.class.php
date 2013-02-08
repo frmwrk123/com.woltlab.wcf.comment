@@ -123,7 +123,7 @@ class StructuredComment extends DatabaseObjectDecorator implements \Countable, \
 	}
 	
 	/**
-	 * Returns true, if comment is deletable by current user.
+	 * Returns true if the comment is deletable by current user.
 	 * 
 	 * @return	boolean
 	 */
@@ -132,7 +132,7 @@ class StructuredComment extends DatabaseObjectDecorator implements \Countable, \
 	}
 	
 	/**
-	 * Returns true, if comment is editable by current user.
+	 * Returns true if the comment is editable by current user.
 	 * 
 	 * @return	boolean
 	 */

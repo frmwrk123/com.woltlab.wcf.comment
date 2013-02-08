@@ -96,7 +96,7 @@ class StructuredCommentResponse extends DatabaseObjectDecorator {
 	}
 	
 	/**
-	 * Returns true, if comment is deletable by current user.
+	 * Returns true if the response is deletable by current user.
 	 * 
 	 * @return	boolean
 	 */
@@ -105,7 +105,7 @@ class StructuredCommentResponse extends DatabaseObjectDecorator {
 	}
 	
 	/**
-	 * Returns true, if response is editable by current user.
+	 * Returns true if the response is editable by current user.
 	 *
 	 * @return	boolean
 	 */
