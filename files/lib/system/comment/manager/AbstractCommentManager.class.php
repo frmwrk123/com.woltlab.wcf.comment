@@ -2,7 +2,6 @@
 namespace wcf\system\comment\manager;
 use wcf\data\comment\response\CommentResponse;
 use wcf\data\comment\Comment;
-use wcf\data\DatabaseObject;
 use wcf\system\SingletonFactory;
 use wcf\system\WCF;
 

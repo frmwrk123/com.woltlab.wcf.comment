@@ -8,7 +8,6 @@ use wcf\data\comment\Comment;
 use wcf\data\comment\CommentList;
 use wcf\data\moderation\queue\ModerationQueue;
 use wcf\data\moderation\queue\ViewableModerationQueue;
-use wcf\data\object\type\ObjectTypeCache;
 use wcf\system\database\util\PreparedStatementConditionBuilder;
 use wcf\system\moderation\queue\ModerationQueueManager;
 use wcf\system\WCF;

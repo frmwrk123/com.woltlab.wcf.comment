@@ -255,8 +255,6 @@ WCF.Comment.Handler = Class.extend({
 			self._responses[$responseID] = $response;
 			
 			self._initResponse($responseID, $response);
-			
-			$loadedResponses = true;
 		});
 	},
 	

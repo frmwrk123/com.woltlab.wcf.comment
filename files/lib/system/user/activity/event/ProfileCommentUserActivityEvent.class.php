@@ -2,7 +2,6 @@
 namespace wcf\system\user\activity\event;
 use wcf\data\comment\CommentList;
 use wcf\data\user\UserList;
-use wcf\system\style\StyleHandler;
 use wcf\system\user\activity\event\IUserActivityEvent;
 use wcf\system\SingletonFactory;
 use wcf\system\WCF;
@@ -11,7 +10,7 @@ use wcf\system\WCF;
  * User activity event implementation for profile comments.
  * 
  * @author	Marcel Werk
- * @copyright	2001-2012 WoltLab GmbH
+ * @copyright	2001-2013 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf.comment
  * @subpackage	system.user.activity.event

@@ -76,7 +76,7 @@ class CommentResponse extends DatabaseObject implements IMessage {
 		else {
 			$message = StringUtil::encodeHTML($message);
 		}
-	
+		
 		return $message;
 	}
 	
