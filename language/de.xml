@@ -31,9 +31,9 @@
 		<item name="wcf.user.notification.commentResponseOwner.message"><![CDATA[Hat eine Antwort zum Kommentar von {$commentAuthor->username} an <a href="{link controller='User' object=$__wcf->getUser()}#wall{/link}">Ihrer Pinnwand</a> verfasst.]]></item>
 		<item name="wcf.user.notification.commentResponseOwner.mail"><![CDATA[{@$author->username} hat eine Antwort zum Kommentar von "{@$commentAuthor->username}" an Ihrer Pinnwand verfasst:
 {link controller='User' object=$__wcf->getUser() encode=false}{/link}#wall]]></item>
-		<item name="wcf.user.notification.com.woltlab.wcf.user.profileComment.comment"><![CDATA[Neuer Kommentar auf Ihrer Pinnwand]]></item>
-		<item name="wcf.user.notification.com.woltlab.wcf.user.profileComment.commentResponse"><![CDATA[Neue Antwort auf einen Kommentar auf Ihrer Pinnwand]]></item>
-		<item name="wcf.user.notification.com.woltlab.wcf.user.profileComment.commentResponseOwner"><![CDATA[Neue Antwort auf einen Kommentar von Ihnen]]></item>
+		<item name="wcf.user.notification.com.woltlab.wcf.user.profileComment.notification.comment"><![CDATA[Neuer Kommentar auf Ihrer Pinnwand]]></item>
+		<item name="wcf.user.notification.com.woltlab.wcf.user.profileComment.response.notification.commentResponse"><![CDATA[Neue Antwort auf einen Kommentar auf Ihrer Pinnwand]]></item>
+		<item name="wcf.user.notification.com.woltlab.wcf.user.profileComment.response.notification.commentResponseOwner"><![CDATA[Neue Antwort auf einen Kommentar von Ihnen]]></item>
 	</category>
 	
 	<category name="wcf.user.option">
