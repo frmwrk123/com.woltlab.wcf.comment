@@ -74,7 +74,7 @@ class ProfileCommentResponseUserActivityEvent extends SingletonFactory implement
 					$event->setTitle($text);
 					
 					// description
-					$event->setDescription($response->getFormattedMessage());
+					$event->setDescription($response->getExcerpt());
 					continue;
 				}
 			}

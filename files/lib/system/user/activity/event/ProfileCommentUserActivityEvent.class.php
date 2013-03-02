@@ -57,7 +57,7 @@ class ProfileCommentUserActivityEvent extends SingletonFactory implements IUserA
 					$event->setTitle($text);
 					
 					// output
-					$event->setDescription($comment->getFormattedMessage());
+					$event->setDescription($comment->getExcerpt());
 					continue;
 				}
 			}

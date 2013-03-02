@@ -69,15 +69,7 @@ class CommentResponse extends DatabaseObject implements IMessage {
 	 * @see	wcf\data\IMessage::getExcerpt()
 	 */
 	public function getExcerpt($maxLength = 255) {
-		$message = $this->getFormattedMessage();
-		if (StringUtil::length($message) > $maxLength) {
-			$message = StringUtil::encodeHTML(StringUtil::substring($message, 0, $maxLength)).StringUtil::HELLIP;
-		}
-		else {
-			$message = StringUtil::encodeHTML($message);
-		}
-		
-		return $message;
+		return StringUtil::truncateHTML($this->getFormattedMessage(), $maxLength);
 	}
 	
 	/**
