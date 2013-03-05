@@ -16,6 +16,8 @@
 				
 				<ul class="commentOptions">
 					<li class="jsReportCommentResponse jsOnly" data-object-id="{@$response->responseID}"><a title="{lang}wcf.moderation.report.reportContent{/lang}" class="jsTooltip"><span class="icon icon16 icon-warning-sign"></span></a></li>
+					
+					{event name='commentOptions'}
 				</ul>
 			</div>
 		</div>
