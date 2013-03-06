@@ -40,7 +40,7 @@
 		<item name="wcf.user.option.canWriteProfileComments"><![CDATA[Kann Pinnwand-Kommentare schreiben]]></item>
 	</category>
 	
-	<category name="wcf.user">
+	<category name="wcf.user.recentActivity">
 		<item name="wcf.user.recentActivity.com.woltlab.wcf.user.profileComment.recentActivityEvent"><![CDATA[Pinnwand-Kommentar]]></item>
 		<item name="wcf.user.recentActivity.com.woltlab.wcf.user.profileComment.response.recentActivityEvent"><![CDATA[Pinnwand-Antwort]]></item>
 	</category>
