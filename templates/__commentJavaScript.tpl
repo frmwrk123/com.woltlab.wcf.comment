@@ -24,3 +24,5 @@
 	});
 	//]]>
 </script>
+
+{event name='javascriptInclude'}

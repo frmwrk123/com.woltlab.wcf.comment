@@ -12,8 +12,11 @@
 					</hgroup>
 					
 					<p class="userMessage">{@$comment->getFormattedMessage()}</p>
+					
 					<ul class="commentOptions">
 						<li class="jsReportCommentComment jsOnly" data-object-id="{@$comment->commentID}"><a title="{lang}wcf.moderation.report.reportContent{/lang}" class="jsTooltip"><span class="icon icon16 icon-warning-sign"></span></a></li>
+						
+						{event name='commentOptions'}
 					</ul>
 				</div>
 				
