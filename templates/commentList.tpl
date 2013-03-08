@@ -8,7 +8,7 @@
 			<div>
 				<div class="commentContent">
 					<hgroup class="containerHeadline">
-						<h1><a href="{link controller='User' object=$comment->getUserProfile()}{/link}">{$comment->getUserProfile()->username}</a><small> - {@$comment->time|time}</small></h1> 
+						<h1><a href="{link controller='User' object=$comment->getUserProfile()}{/link}">{$comment->username}</a><small> - {@$comment->time|time}</small></h1> 
 					</hgroup>
 					
 					<p class="userMessage">{@$comment->getFormattedMessage()}</p>
