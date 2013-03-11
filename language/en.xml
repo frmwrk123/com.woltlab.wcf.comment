@@ -1,23 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <language xmlns="http://www.woltlab.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.woltlab.com http://www.woltlab.com/XSD/maelstrom/language.xsd" languagecode="en">
 	<category name="wcf.user.profile">
+		<item name="wcf.user.profile.content.wall.comment"><![CDATA[Wall Comment]]></item>
+		<item name="wcf.user.profile.content.wall.commentResponse"><![CDATA[Reply to wall comment]]></item>
+		<item name="wcf.user.profile.content.wall.noEntries"><![CDATA[There are no comments yet.]]></item>
 		<item name="wcf.user.profile.menu.wall"><![CDATA[Wall]]></item>
-		<item name="wcf.user.profile.recentActivity.profileComment"><![CDATA[Posted a comment on <a href="{link controller='User' object=$user}{/link}#wcf_user_profile_menu_comment">{$user->username}'s wall</a>.]]></item>
-		<item name="wcf.user.profile.recentActivity.profileCommentResponse"><![CDATA[Replied to a comment by <a href="{link controller='User' object=$commentAuthor}{/link}">{$commentAuthor->username}</a> on <a href="{link controller='User' object=$user}{/link}#wcf_user_profile_menu_comment">{$user->username}'s wall</a>.]]></item>
+		<item name="wcf.user.profile.recentActivity.profileComment"><![CDATA[Wrote a comment on <a href="{link controller='User' object=$user}{/link}#wall">{$user->username}’s wall</a>.]]></item>
+		<item name="wcf.user.profile.recentActivity.profileCommentResponse"><![CDATA[Replied to a comment by <a href="{link controller='User' object=$commentAuthor}{/link}">{$commentAuthor->username}</a> on <a href="{link controller='User' object=$user}{/link}#wall">{$user->username}’s wall</a>.]]></item>
 	</category>
 	
 	<category name="wcf.comment">
-		<item name="wcf.comment.add"><![CDATA[Write a Comment …]]></item>
-		<item name="wcf.comment.description"><![CDATA[Confirm with Enter to save, or Escape to cancel.]]></item>
-		<item name="wcf.comment.response.add"><![CDATA[Write a Response …]]></item>	
+		<item name="wcf.comment.add"><![CDATA[Write a comment …]]></item>
+		<item name="wcf.comment.description"><![CDATA[Press Enter to send or Escape to cancel.]]></item>
+		<item name="wcf.comment.more"><![CDATA[More Comments]]></item>
+		<item name="wcf.comment.response.add"><![CDATA[Reply …]]></item>
+		<item name="wcf.comment.response.more"><![CDATA[More Replies]]></item>
+		<item name="wcf.comment.button.response.add"><![CDATA[Replies]]></item>
 	</category>
 	
 	<category name="wcf.user.notification">
-		<item name="wcf.user.notification.comment.output"><![CDATA[Posted a new comment on <a href="{link controller='User' object=$__wcf->getUser()}#wall{/link}">your wall</a>.]]></item>
-		<item name="wcf.user.notification.comment.shortOutput"><![CDATA[New Comment (Wall)]]></item>
-		<item name="wcf.user.notification.commentResponse.output"><![CDATA[Replied to your comment on <a href="{link controller='User' object=$owner}#wall{/link}">{$owner->username}'s wall</a>.]]></item>
-		<item name="wcf.user.notification.commentResponse.shortOutput"><![CDATA[New Reply (Wall)]]></item>
-		<item name="wcf.user.notification.commentResponseOwner.output"><![CDATA[Replied to a comment by {$commentAuthor->username} on <a href="{link controller='User' object=$__wcf->getUser()}#wall{/link}">your wall</a>.]]></item>
-		<item name="wcf.user.notification.commentResponseOwner.shortOutput"><![CDATA[New Reply (Wall)]]></item>
+		<item name="wcf.user.notification.comment.title"><![CDATA[New Comment (Wall)]]></item>
+		<item name="wcf.user.notification.comment.message"><![CDATA[Wrote a comment on <a href="{link controller='User' object=$__wcf->getUser()}#wall{/link}">your wall</a>.]]></item>
+		<item name="wcf.user.notification.comment.mail"><![CDATA[{@$author->username} wrote a comment on your wall:
+{link controller='User' object=$__wcf->getUser() encode=false}#wall{/link}]]></item>
+		<item name="wcf.user.notification.commentResponse.title"><![CDATA[New Reply (Wall)]]></item>
+		<item name="wcf.user.notification.commentResponse.message"><![CDATA[Wrote a reply to your comment on <a href="{link controller='User' object=$owner}#wall{/link}">{$owner->username}’s wall</a>.]]></item>
+		<item name="wcf.user.notification.commentResponse.mail"><![CDATA[{@$author->username} wrote a reply to your comment on {@$owner->username}’s wall:
+{link controller='User' object=$owner encode=false}{/link}#wall]]></item>
+		<item name="wcf.user.notification.commentResponseOwner.title"><![CDATA[New Reply (Wall)]]></item>
+		<item name="wcf.user.notification.commentResponseOwner.message"><![CDATA[Wrote a reply to {$commentAuthor->username}’s comment on <a href="{link controller='User' object=$__wcf->getUser()}#wall{/link}">your wall</a>.]]></item>
+		<item name="wcf.user.notification.commentResponseOwner.mail"><![CDATA[{@$author->username} wrote a reply to {@$commentAuthor->username}’s comment on your wall:
+{link controller='User' object=$__wcf->getUser() encode=false}{/link}#wall]]></item>
+		<item name="wcf.user.notification.com.woltlab.wcf.user.profileComment.notification.comment"><![CDATA[New comment on your wall]]></item>
+		<item name="wcf.user.notification.com.woltlab.wcf.user.profileComment.response.notification.commentResponse"><![CDATA[New reply to a comment on your wall]]></item>
+		<item name="wcf.user.notification.com.woltlab.wcf.user.profileComment.response.notification.commentResponseOwner"><![CDATA[New reply to one of your comments]]></item>
+	</category>
+	
+	<category name="wcf.user.option">
+		<item name="wcf.user.option.canWriteProfileComments"><![CDATA[Can write comments on users walls]]></item>
+	</category>
+	
+	<category name="wcf.user.recentActivity">
+		<item name="wcf.user.recentActivity.com.woltlab.wcf.user.profileComment.recentActivityEvent"><![CDATA[Wall Comment]]></item>
+		<item name="wcf.user.recentActivity.com.woltlab.wcf.user.profileComment.response.recentActivityEvent"><![CDATA[Wall Reply]]></item>
 	</category>
 </language>
