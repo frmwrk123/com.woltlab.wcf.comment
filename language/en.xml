@@ -37,7 +37,7 @@
 	</category>
 	
 	<category name="wcf.user.option">
-		<item name="wcf.user.option.canWriteProfileComments"><![CDATA[Can write comments on users walls]]></item>
+		<item name="wcf.user.option.canWriteProfileComments"><![CDATA[Can Write Comments on My Wall]]></item>
 	</category>
 	
 	<category name="wcf.user.recentActivity">
