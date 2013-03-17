@@ -15,7 +15,7 @@
 		<item name="wcf.comment.more"><![CDATA[More Comments]]></item>
 		<item name="wcf.comment.response.add"><![CDATA[Reply …]]></item>
 		<item name="wcf.comment.response.more"><![CDATA[More Replies]]></item>
-		<item name="wcf.comment.button.response.add"><![CDATA[Replies]]></item>
+		<item name="wcf.comment.button.response.add"><![CDATA[Reply]]></item>
 	</category>
 	
 	<category name="wcf.user.notification">
