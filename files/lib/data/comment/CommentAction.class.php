@@ -438,6 +438,7 @@ class CommentAction extends AbstractDatabaseObjectAction {
 	 */
 	protected function renderComment(Comment $comment) {
 		$comment = new StructuredComment($comment);
+		$comment->setIsDeletable($this->commentProcessor->canDeleteComment($comment->getDecoratedObject()));
 		$comment->setIsEditable($this->commentProcessor->canEditComment($comment->getDecoratedObject()));
 		
 		// set user profile
@@ -458,6 +459,7 @@ class CommentAction extends AbstractDatabaseObjectAction {
 	 */
 	protected function renderResponse(CommentResponse $response) {
 		$response = new StructuredCommentResponse($response);
+		$response->setIsDeletable($this->commentProcessor->canDeleteResponse($response->getDecoratedObject()));
 		$response->setIsEditable($this->commentProcessor->canEditResponse($response->getDecoratedObject()));
 		
 		// set user profile

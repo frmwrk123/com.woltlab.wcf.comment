@@ -500,6 +500,8 @@ WCF.Comment.Handler = Class.extend({
 				this._remove(data);
 			break;
 		}
+		
+		WCF.DOMNodeInsertedHandler.forceExecution();
 	},
 	
 	/**

@@ -11,6 +11,7 @@
 	
 	<category name="wcf.comment">
 		<item name="wcf.comment.add"><![CDATA[Write a comment …]]></item>
+		<item name="wcf.comment.delete.confirmMessage"><![CDATA[Do you really want to delete this comment?]]></item>
 		<item name="wcf.comment.description"><![CDATA[Press Enter to send or Escape to cancel.]]></item>
 		<item name="wcf.comment.more"><![CDATA[More Comments]]></item>
 		<item name="wcf.comment.response.add"><![CDATA[Reply …]]></item>
