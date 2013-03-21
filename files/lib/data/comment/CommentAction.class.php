@@ -507,7 +507,7 @@ class CommentAction extends AbstractDatabaseObjectAction {
 	 * Validates comment id parameter.
 	 */
 	protected function validateCommentID() {
-		$this->readInteger('commentID', false, 'data');;
+		$this->readInteger('commentID', false, 'data');
 		
 		if ($this->comment === null || !$this->comment->commentID) {
 			throw new UserInputException('commentID');
