@@ -137,6 +137,7 @@ class CommentAction extends AbstractDatabaseObjectAction {
 	 * Validates parameters to add a comment.
 	 */
 	public function validateAddComment() {
+		$this->readInteger('objectID', false, 'data');
 		$this->validateMessage();
 		$objectType = $this->validateObjectType();
 		
@@ -194,6 +195,8 @@ class CommentAction extends AbstractDatabaseObjectAction {
 	 * Validates parameters to add a response.
 	 */
 	public function validateAddResponse() {
+		$this->readInteger('objectID', false, 'data');
+		
 		// validate comment id
 		$this->validateCommentID();
 		
@@ -477,11 +480,8 @@ class CommentAction extends AbstractDatabaseObjectAction {
 	 * Validates message parameter.
 	 */
 	protected function validateMessage() {
-		// validate message
-		if (!isset($this->parameters['data']['message'])) {
-			throw new UserInputException('message');
-		}
-		$this->parameters['data']['message'] = StringUtil::trim($this->parameters['data']['message']);
+		$this->readString('message', false, 'data');
+		
 		if (empty($this->parameters['data']['message'])) {
 			throw new UserInputException('message');
 		}
@@ -493,9 +493,8 @@ class CommentAction extends AbstractDatabaseObjectAction {
 	 * @return	wcf\data\object\type\ObjectType
 	 */
 	protected function validateObjectType() {
-		if (!isset($this->parameters['data']['objectTypeID'])) {
-			throw new UserInputException('objectTypeID');
-		}
+		$this->readInteger('objectTypeID', false, 'data');
+		
 		$objectType = ObjectTypeCache::getInstance()->getObjectType($this->parameters['data']['objectTypeID']);
 		if ($objectType === null) {
 			throw new UserInputException('objectTypeID');
@@ -508,9 +507,8 @@ class CommentAction extends AbstractDatabaseObjectAction {
 	 * Validates comment id parameter.
 	 */
 	protected function validateCommentID() {
-		if (isset($this->parameters['data']['commentID'])) {
-			$this->comment = new Comment($this->parameters['data']['commentID']);
-		}
+		$this->readInteger('commentID', false, 'data');;
+		
 		if ($this->comment === null || !$this->comment->commentID) {
 			throw new UserInputException('commentID');
 		}
