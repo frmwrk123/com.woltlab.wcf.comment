@@ -11,6 +11,7 @@
 			'wcf.comment.response.add': '{lang}wcf.comment.response.add{/lang}',
 			'wcf.comment.response.more': '{lang}wcf.comment.response.more{/lang}',
 			'wcf.moderation.report.reportContent': '{lang}wcf.moderation.report.reportContent{/lang}',
+			'wcf.moderation.report.success': '{lang}wcf.moderation.report.success{/lang}'
 		});
 		
 		new {if $commentHandlerClass|isset}{@$commentHandlerClass}{else}WCF.Comment.Handler{/if}('{$commentContainerID}', '{@$__wcf->getUserProfileHandler()->getAvatar()->getImageTag(32)}');
