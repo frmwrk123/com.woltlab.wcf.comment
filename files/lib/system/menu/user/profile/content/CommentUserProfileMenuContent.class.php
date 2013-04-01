@@ -28,18 +28,15 @@ class CommentUserProfileMenuContent extends SingletonFactory implements IUserPro
 	public $objectTypeID = 0;
 	
 	/**
-	 * @see	wcf\system\SingletonFactory::init()
-	 */
-	protected function init() {
-		$this->objectTypeID = CommentHandler::getInstance()->getObjectTypeID('com.woltlab.wcf.user.profileComment');
-		$objectType = CommentHandler::getInstance()->getObjectType($this->objectTypeID);
-		$this->commentManager = $objectType->getProcessor();
-	}
-	
-	/**
 	 * @see	wcf\system\menu\user\profile\content\IUserProfileMenuContent::getContent()
 	 */
 	public function getContent($userID) {
+		if ($this->commentManager === null) {
+			$this->objectTypeID = CommentHandler::getInstance()->getObjectTypeID('com.woltlab.wcf.user.profileComment');
+			$objectType = CommentHandler::getInstance()->getObjectType($this->objectTypeID);
+			$this->commentManager = $objectType->getProcessor();
+		}
+		
 		$commentList = CommentHandler::getInstance()->getCommentList($this->commentManager, $this->objectTypeID, $userID);
 		
 		// assign variables
@@ -53,5 +50,12 @@ class CommentUserProfileMenuContent extends SingletonFactory implements IUserPro
 		));
 		
 		return WCF::getTPL()->fetch('userProfileCommentList');
+	}
+	
+	/**
+	 * @see	wcf\system\menu\user\profile\content\IUserProfileMenuContent::isVisible()
+	 */
+	public function isVisible($userID) {
+		return true;
 	}
 }
