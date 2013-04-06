@@ -3,7 +3,6 @@ namespace wcf\system\user\notification\event;
 use wcf\data\comment\Comment;
 use wcf\data\user\User;
 use wcf\system\user\notification\event\AbstractUserNotificationEvent;
-use wcf\system\WCF;
 
 /**
  * User notification event for profile's owner for commment responses.
@@ -20,7 +19,7 @@ class UserProfileCommentResponseOwnerUserNotificationEvent extends AbstractUserN
 	 * @see	wcf\system\user\notification\event\IUserNotificationEvent::getTitle()
 	 */
 	public function getTitle() {
-		return WCF::getLanguage()->get('wcf.user.notification.commentResponseOwner.title');
+		return $this->getLanguage()->get('wcf.user.notification.commentResponseOwner.title');
 	}
 	
 	/**
@@ -31,7 +30,7 @@ class UserProfileCommentResponseOwnerUserNotificationEvent extends AbstractUserN
 		$comment = new Comment($this->userNotificationObject->commentID);
 		$commentAuthor = new User($comment->userID);
 		
-		return WCF::getLanguage()->getDynamicVariable('wcf.user.notification.commentResponseOwner.message', array(
+		return $this->getLanguage()->getDynamicVariable('wcf.user.notification.commentResponseOwner.message', array(
 			'author' => $this->author,
 			'commentAuthor' => $commentAuthor
 		));
@@ -44,7 +43,7 @@ class UserProfileCommentResponseOwnerUserNotificationEvent extends AbstractUserN
 		$comment = new Comment($this->userNotificationObject->commentID);
 		$commentAuthor = new User($comment->userID);
 		
-		return WCF::getLanguage()->getDynamicVariable('wcf.user.notification.commentResponseOwner.mail', array(
+		return $this->getLanguage()->getDynamicVariable('wcf.user.notification.commentResponseOwner.mail', array(
 			'author' => $this->author,
 			'commentAuthor' => $commentAuthor
 		));
