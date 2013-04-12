@@ -42,10 +42,12 @@ class UserProfileCommentResponseOwnerUserNotificationEvent extends AbstractUserN
 	public function getEmailMessage() {
 		$comment = new Comment($this->userNotificationObject->commentID);
 		$commentAuthor = new User($comment->userID);
+		$owner = new User($comment->objectID);
 		
 		return $this->getLanguage()->getDynamicVariable('wcf.user.notification.commentResponseOwner.mail', array(
 			'author' => $this->author,
-			'commentAuthor' => $commentAuthor
+			'commentAuthor' => $commentAuthor,
+			'owner' => $owner
 		));
 	}
 }

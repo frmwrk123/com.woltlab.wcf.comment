@@ -1,5 +1,6 @@
 <?php
 namespace wcf\system\user\notification\event;
+use wcf\data\user\User;
 use wcf\system\user\notification\event\AbstractUserNotificationEvent;
 
 /**
@@ -33,8 +34,11 @@ class UserProfileCommentUserNotificationEvent extends AbstractUserNotificationEv
 	 * @see	wcf\system\user\notification\event\IUserNotificationEvent::getEmailMessage()
 	 */
 	public function getEmailMessage() {
+		$user = new User($this->userNotificationObject->objectID);
+		
 		return $this->getLanguage()->getDynamicVariable('wcf.user.notification.comment.mail', array(
-			'author' => $this->author
+			'author' => $this->author,
+			'owner' => $user
 		));
 	}
 }
