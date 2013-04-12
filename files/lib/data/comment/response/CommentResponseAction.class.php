@@ -8,6 +8,7 @@ use wcf\data\AbstractDatabaseObjectAction;
 use wcf\system\exception\PermissionDeniedException;
 use wcf\system\exception\UserInputException;
 use wcf\system\user\activity\event\UserActivityEventHandler;
+use wcf\system\user\notification\UserNotificationHandler;
 use wcf\system\WCF;
 
 /**
@@ -78,7 +79,7 @@ class CommentResponseAction extends AbstractDatabaseObjectAction {
 			}
 			
 			$processors[$objectTypeID]->updateCounter($comments[$response->commentID]->objectID, -1);
-			$responseIDs[$objectTypeID][] = $response->responseIDs;
+			$responseIDs[$objectTypeID][] = $response->responseID;
 			
 			if (!isset($updateComments[$response->commentID])) {
 				$updateComments[$response->commentID] = 0;
@@ -99,15 +100,19 @@ class CommentResponseAction extends AbstractDatabaseObjectAction {
 			));
 		}
 		
-		// remove activity events
 		foreach ($responseIDs as $objectTypeID => $objectIDs) {
+			// remove activity events
 			$objectType = ObjectTypeCache::getInstance()->getObjectType($objectTypeID);
 			if (UserActivityEventHandler::getInstance()->getObjectTypeID($objectType->objectType.'.response.recentActivityEvent')) {
 				UserActivityEventHandler::getInstance()->removeEvents($objectType->objectType.'.response.recentActivityEvent', $objectIDs);
 			}
+			
+			// delete notifications
+			if (UserNotificationHandler::getInstance()->getObjectTypeID($objectType->objectType.'.response.notification')) {
+				UserNotificationHandler::getInstance()->deleteNotifications('commentResponse', $objectType->objectType.'.response.notification', array(), $objectIDs);
+				UserNotificationHandler::getInstance()->deleteNotifications('commentResponseOwner', $objectType->objectType.'.response.notification', array(), $objectIDs);
+			}
 		}
-		
-		// @todo: delete notifications
 		
 		return $count;
 	}

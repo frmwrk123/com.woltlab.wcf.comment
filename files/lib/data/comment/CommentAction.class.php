@@ -3,6 +3,7 @@ namespace wcf\data\comment;
 use wcf\data\comment\response\CommentResponse;
 use wcf\data\comment\response\CommentResponseAction;
 use wcf\data\comment\response\CommentResponseEditor;
+use wcf\data\comment\response\CommentResponseList;
 use wcf\data\comment\response\StructuredCommentResponse;
 use wcf\data\object\type\ObjectTypeCache;
 use wcf\data\user\UserProfile;
@@ -67,22 +68,23 @@ class CommentAction extends AbstractDatabaseObjectAction {
 		
 		// update counters
 		$processors = array();
-		$commentIDs = array();
+		$groupCommentIDs = $commentIDs = array();
 		foreach ($this->objects as $comment) {
 			if (!isset($processors[$comment->objectTypeID])) {
 				$objectType = ObjectTypeCache::getInstance()->getObjectType($comment->objectTypeID);
 				$processors[$comment->objectTypeID] = $objectType->getProcessor();
 				
-				$commentIDs[$comment->objectTypeID] = array();
+				$groupCommentIDs[$comment->objectTypeID] = array();
 			}
 			
 			$processors[$comment->objectTypeID]->updateCounter($comment->objectID, -1 * ($comment->responses + 1));
-			$commentIDs[$comment->objectTypeID][] = $comment->objectID;
+			$groupCommentIDs[$comment->objectTypeID][] = $comment->commentID;
+			$commentIDs[] = $comment->commentID; 
 		}
 		
-		if (!empty($commentIDs)) {
+		if (!empty($groupCommentIDs)) {
 			$likeObjectIDs = array();
-			foreach ($commentIDs as $objectTypeID => $objectIDs) {
+			foreach ($groupCommentIDs as $objectTypeID => $objectIDs) {
 				// remove activity events
 				$objectType = ObjectTypeCache::getInstance()->getObjectType($objectTypeID);
 				if (UserActivityEventHandler::getInstance()->getObjectTypeID($objectType->objectType.'.recentActivityEvent')) {
@@ -90,12 +92,28 @@ class CommentAction extends AbstractDatabaseObjectAction {
 				}
 				
 				$likeObjectIDs = array_merge($likeObjectIDs, $objectIDs);
+				
+				// delete notifications
+				$objectType = ObjectTypeCache::getInstance()->getObjectType($comment->objectTypeID);
+				if (UserNotificationHandler::getInstance()->getObjectTypeID($objectType->objectType.'.notification')) {
+					UserNotificationHandler::getInstance()->deleteNotifications('comment', $objectType->objectType.'.notification', array(), $objectIDs);
+				}
 			}
 			
+			// remove likes
 			LikeHandler::getInstance()->removeLikes('com.woltlab.wcf.comment', $likeObjectIDs);
 		}
-		// @todo: delete notifications
-		// @todo: delete responses
+		
+		// delete responses
+		if (!empty($commentIDs)) {
+			$commentResponseList = new CommentResponseList();
+			$commentResponseList->getConditionBuilder()->add('comment_response.commentID IN (?)', array($commentIDs));
+			$commentResponseList->readObjectIDs();
+			if (count($commentResponseList->getObjectIDs())) {
+				$action = new CommentResponseAction($commentResponseList->getObjectIDs(), 'delete');
+				$action->executeAction();
+			}
+		}
 		
 		return parent::delete();
 	}
