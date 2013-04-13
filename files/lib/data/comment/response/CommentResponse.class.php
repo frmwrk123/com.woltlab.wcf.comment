@@ -115,6 +115,13 @@ class CommentResponse extends DatabaseObject implements IMessage {
 	}
 	
 	/**
+	 * @see	wcf\data\IMessage::isVisible()
+	 */
+	public function isVisible() {
+		return true;
+	}
+	
+	/**
 	 * @see	wcf\data\IMessage::__toString()
 	 */
 	public function __toString() {

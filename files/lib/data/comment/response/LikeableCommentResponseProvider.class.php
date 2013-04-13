@@ -1,6 +1,9 @@
 <?php
 namespace wcf\data\comment\response;
+use wcf\data\comment\Comment;
+use wcf\data\like\ILikeObjectTypeProvider;
 use wcf\data\object\type\AbstractObjectTypeProvider;
+use wcf\system\comment\CommentHandler;
 
 /**
  * Object type provider for likeable comment responses.
@@ -12,7 +15,7 @@ use wcf\data\object\type\AbstractObjectTypeProvider;
  * @subpackage	data.comment.response
  * @category	Community Framework
  */
-class LikeableCommentResponseProvider extends AbstractObjectTypeProvider {
+class LikeableCommentResponseProvider extends AbstractObjectTypeProvider implements ILikeObjectTypeProvider {
 	/**
 	 * @see	wcf\data\object\type\AbstractObjectTypeProvider::$className
 	 */
@@ -27,4 +30,22 @@ class LikeableCommentResponseProvider extends AbstractObjectTypeProvider {
 	 * @see	wcf\data\object\type\AbstractObjectTypeProvider::$listClassName
 	 */
 	public $listClassName = 'wcf\data\comment\response\CommentResponseList';
+	
+	/**
+	 * @see	wcf\data\like\ILikeObjectTypeProvider::checkPermissions()
+	 */
+	public function checkPermissions($objectID) {
+		$response = new CommentResponse($objectID);
+		if (!$response->responseID) {
+			return false;
+		}
+		
+		$comment = new Comment($response->commentID);
+		if (!$comment->commentID) {
+			return false;
+		}
+		
+		$objectType = CommentHandler::getInstance()->getObjectType($comment->objectTypeID);
+		return CommentHandler::getInstance()->getCommentManager($objectType->objectType)->isAccessible($comment->commentID);
+	}
 }
