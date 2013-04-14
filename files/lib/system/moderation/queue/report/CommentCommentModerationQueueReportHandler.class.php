@@ -8,6 +8,7 @@ use wcf\data\moderation\queue\ModerationQueue;
 use wcf\data\moderation\queue\ViewableModerationQueue;
 use wcf\data\object\type\ObjectTypeCache;
 use wcf\system\database\util\PreparedStatementConditionBuilder;
+use wcf\system\moderation\queue\AbstractModerationQueueHandler;
 use wcf\system\moderation\queue\ModerationQueueManager;
 use wcf\system\WCF;
 
@@ -21,7 +22,17 @@ use wcf\system\WCF;
  * @subpackage	system.moderation.queue
  * @category	Community Framework
  */
-class CommentCommentModerationQueueReportHandler implements IModerationQueueReportHandler {
+class CommentCommentModerationQueueReportHandler extends AbstractModerationQueueHandler implements IModerationQueueReportHandler {
+	/**
+	 * @see	wcf\system\moderation\queue\AbstractModerationQueueHandler::$definitionName
+	 */
+	protected $definitionName = 'com.woltlab.wcf.moderation.report';
+	
+	/**
+	 * @see	wcf\system\moderation\queue\AbstractModerationQueueHandler::$objectType
+	 */
+	protected $objectType = 'com.woltlab.wcf.comment.comment';
+	
 	/**
 	 * list of comments
 	 * @var	array<wcf\data\comment\Comment>
