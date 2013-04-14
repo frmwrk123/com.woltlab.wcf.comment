@@ -566,7 +566,7 @@ WCF.Comment.Handler = Class.extend({
 		
 		// replace content with input field
 		$content.html($.proxy(function(index, oldHTML) {
-			var $input = $('<input type="text" value="' + data.returnValues.message + '" class="long" /><small>' + WCF.Language.get('wcf.comment.description') + '</small>');
+			var $input = $('<input type="text" class="long" /><small>' + WCF.Language.get('wcf.comment.description') + '</small>').val(data.returnValues.message);
 			$input.data('__html', oldHTML).keyup($.proxy(this._saveEdit, this));
 			
 			if (data.returnValues.commentID) {
