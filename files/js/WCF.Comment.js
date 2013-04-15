@@ -692,8 +692,8 @@ WCF.Comment.Like = WCF.Like.extend({
 		this._containers[containerID].find('hgroup:eq(0) > h1').append(badge);
 		
 		if (this._canLike) {
-			dislikeButton.appendTo(this._containers[containerID].find('.commentOptions:eq(0)'));
 			likeButton.appendTo(this._containers[containerID].find('.commentOptions:eq(0)'));
+			dislikeButton.appendTo(this._containers[containerID].find('.commentOptions:eq(0)'));
 		}
 	},
 	
@@ -731,8 +731,8 @@ WCF.Comment.Response.Like = WCF.Like.extend({
 		this._containers[containerID].find('hgroup:eq(0) > h1').append(badge);
 		
 		if (this._canLike) {
-			dislikeButton.appendTo(this._containers[containerID].find('.commentOptions:eq(0)'));
 			likeButton.appendTo(this._containers[containerID].find('.commentOptions:eq(0)'));
+			dislikeButton.appendTo(this._containers[containerID].find('.commentOptions:eq(0)'));
 		}
 	},
 	
