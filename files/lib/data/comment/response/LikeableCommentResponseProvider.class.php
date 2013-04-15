@@ -46,6 +46,6 @@ class LikeableCommentResponseProvider extends AbstractObjectTypeProvider impleme
 		}
 		
 		$objectType = CommentHandler::getInstance()->getObjectType($comment->objectTypeID);
-		return CommentHandler::getInstance()->getCommentManager($objectType->objectType)->isAccessible($comment->commentID);
+		return CommentHandler::getInstance()->getCommentManager($objectType->objectType)->isAccessible($comment->objectID);
 	}
 }
