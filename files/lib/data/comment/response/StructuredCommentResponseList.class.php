@@ -3,6 +3,7 @@ namespace wcf\data\comment\response;
 use wcf\data\comment\Comment;
 use wcf\data\user\UserProfile;
 use wcf\system\comment\manager\ICommentManager;
+use wcf\system\like\LikeHandler;
 
 /**
  * Provides a structured comment response list.
@@ -76,5 +77,20 @@ class StructuredCommentResponseList extends CommentResponseList {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Fetches the like data.
+	 *
+	 * @return	array
+	 */
+	public function getLikeData() {
+		if (empty($this->objectIDs)) return array();
+		
+		$objectType = LikeHandler::getInstance()->getObjectType('com.woltlab.wcf.comment.response');
+		LikeHandler::getInstance()->loadLikeObjects($objectType, $this->objectIDs);
+		$likeData = array('response' => LikeHandler::getInstance()->getLikeObjects($objectType));
+		
+		return $likeData;
 	}
 }

@@ -156,6 +156,7 @@ class CommentResponseAction extends AbstractDatabaseObjectAction {
 		}
 		
 		WCF::getTPL()->assign(array(
+			'likeData' => (MODULE_LIKE ? $responseList->getLikeData() : array()),
 			'responseList' => $responseList
 		));
 		
