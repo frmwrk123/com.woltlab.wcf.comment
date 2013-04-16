@@ -287,7 +287,7 @@ WCF.Comment.Handler = Class.extend({
 		// create UI
 		this._commentAdd = $('<li class="box32 jsCommentAdd"><span class="framed">' + this._userAvatar + '</span><div /></li>').prependTo(this._container);
 		var $inputContainer = this._commentAdd.children('div');
-		var $input = $('<input type="text" placeholder="' + WCF.Language.get('wcf.comment.add') + '" class="long" />').appendTo($inputContainer);
+		var $input = $('<input type="text" placeholder="' + WCF.Language.get('wcf.comment.add') + '" maxlength="65535" class="long" />').appendTo($inputContainer);
 		$('<small>' + WCF.Language.get('wcf.comment.description') + '</small>').appendTo($inputContainer);
 		
 		$input.keyup($.proxy(this._keyUp, this));
@@ -305,7 +305,7 @@ WCF.Comment.Handler = Class.extend({
 		
 		var $listItem = $('<div class="box32 commentResponseAdd jsCommentResponseAdd"><span class="framed">' + this._userAvatar + '</span><div /></div>').hide().insertAfter($placeholder);
 		var $inputContainer = $listItem.children('div');
-		var $input = $('<input type="text" placeholder="' + WCF.Language.get('wcf.comment.response.add') + '" class="long" />').data('commentID', commentID).appendTo($inputContainer);
+		var $input = $('<input type="text" placeholder="' + WCF.Language.get('wcf.comment.response.add') + '" maxlength="65535" class="long" />').data('commentID', commentID).appendTo($inputContainer);
 		$('<small>' + WCF.Language.get('wcf.comment.description') + '</small>').appendTo($inputContainer);
 		
 		var self = this;
@@ -566,7 +566,7 @@ WCF.Comment.Handler = Class.extend({
 		
 		// replace content with input field
 		$content.html($.proxy(function(index, oldHTML) {
-			var $input = $('<input type="text" class="long" /><small>' + WCF.Language.get('wcf.comment.description') + '</small>').val(data.returnValues.message);
+			var $input = $('<input type="text" class="long" maxlength="65535" /><small>' + WCF.Language.get('wcf.comment.description') + '</small>').val(data.returnValues.message);
 			$input.data('__html', oldHTML).keyup($.proxy(this._saveEdit, this));
 			
 			if (data.returnValues.commentID) {
