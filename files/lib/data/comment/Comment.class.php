@@ -28,21 +28,21 @@ class Comment extends DatabaseObject implements IMessage {
 	protected static $databaseTableIndexName = 'commentID';
 	
 	/**
-	 * Returns a list of first response ids.
+	 * Returns a list of last response ids.
 	 * 
 	 * @return	array<integer>
 	 */
-	public function getFirstResponseIDs() {
-		if ($this->firstResponseIDs === null || $this->firstResponseIDs == '') {
+	public function getLastResponseIDs() {
+		if ($this->lastResponseIDs === null || $this->lastResponseIDs == '') {
 			return array();
 		}
 		
-		$firstResponseIDs = @unserialize($this->firstResponseIDs);
-		if ($firstResponseIDs === false) {
+		$lastResponseIDs = @unserialize($this->lastResponseIDs);
+		if ($lastResponseIDs === false) {
 			return array();
 		}
 		
-		return $firstResponseIDs;
+		return $lastResponseIDs;
 	}
 	
 	/**

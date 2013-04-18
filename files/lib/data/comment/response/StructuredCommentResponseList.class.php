@@ -29,10 +29,15 @@ class StructuredCommentResponseList extends CommentResponseList {
 	public $commentManager = null;
 	
 	/**
-	 * maximum response time
+	 * minimum response time
 	 * @var	integer
 	 */
-	public $maxResponseTime = 0;
+	public $minResponseTime = 0;
+	
+	/**
+	 * @see	wcf\data\DatabaseObjectList::$sqlLimit
+	 */
+	public $sqlLimit = 50;
 	
 	/**
 	 * @see	wcf\data\DatabaseObjectList::$sqlOrderBy
@@ -64,7 +69,7 @@ class StructuredCommentResponseList extends CommentResponseList {
 		// get user ids
 		$userIDs = array();
 		foreach ($this->objects as &$response) {
-			if ($response->time > $this->maxResponseTime) $this->maxResponseTime = $response->time;
+			if (!$this->responseTime || $response->time < $this->minResponseTime) $this->minResponseTime = $response->time;
 			$userIDs[] = $response->userID;
 			
 			$response = new StructuredCommentResponse($response);
@@ -102,11 +107,11 @@ class StructuredCommentResponseList extends CommentResponseList {
 	}
 	
 	/**
-	 * Returns maximum response time.
-	 *
+	 * Returns mimimum response time.
+	 * 
 	 * @return	integer
 	 */
-	public function getMaxResponseTime() {
-		return $this->maxResponseTime;
+	public function getMinResponseTime() {
+		return $this->minResponseTime;
 	}
 }

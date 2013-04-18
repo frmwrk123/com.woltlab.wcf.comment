@@ -86,11 +86,10 @@ class StructuredCommentList extends CommentList {
 		$responseIDs = array();
 		$userIDs = array();
 		foreach ($this->objects as &$comment) {
-			if ($comment->time > $this->minCommentTime) $this->minCommentTime = $comment->time;
-			
-			$firstResponseIDs = $comment->getFirstResponseIDs();
-			if (!empty($firstResponseIDs)) {
-				foreach ($firstResponseIDs as $responseID) {
+			if (!$this->minCommentTime || $comment->time < $this->minCommentTime) $this->minCommentTime = $comment->time;
+			$lastResponseIDs = $comment->getLastResponseIDs();
+			if (!empty($lastResponseIDs)) {
+				foreach ($lastResponseIDs as $responseID) {
 					$this->responseIDs[] = $responseID;
 					$responseIDs[$responseID] = $comment->commentID;
 				}
