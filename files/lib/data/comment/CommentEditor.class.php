@@ -20,13 +20,13 @@ class CommentEditor extends DatabaseObjectEditor {
 	protected static $baseClass = 'wcf\data\comment\Comment';
 	
 	/**
-	 * Updates last response ids.
+	 * Updates first response ids.
 	 */
-	public function updateLastResponseIDs() {
+	public function updateFirstResponseIDs() {
 		$sql = "SELECT		responseID
 			FROM		wcf".WCF_N."_comment_response
 			WHERE		commentID = ?
-			ORDER BY	time DESC";
+			ORDER BY	time ASC";
 		$statement = WCF::getDB()->prepareStatement($sql, 3);
 		$statement->execute(array($this->commentID));
 		$responseIDs = array();
@@ -35,7 +35,7 @@ class CommentEditor extends DatabaseObjectEditor {
 		}
 		
 		$this->update(array(
-			'lastResponseIDs' => serialize($responseIDs)
+			'firstResponseIDs' => serialize($responseIDs)
 		));
 	}
 }

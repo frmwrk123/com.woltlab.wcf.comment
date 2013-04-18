@@ -29,6 +29,12 @@ class StructuredCommentResponseList extends CommentResponseList {
 	public $commentManager = null;
 	
 	/**
+	 * maximum response time
+	 * @var	integer
+	 */
+	public $maxResponseTime = 0;
+	
+	/**
 	 * @see	wcf\data\DatabaseObjectList::$sqlOrderBy
 	 */
 	public $sqlOrderBy = 'comment_response.time DESC';
@@ -58,6 +64,7 @@ class StructuredCommentResponseList extends CommentResponseList {
 		// get user ids
 		$userIDs = array();
 		foreach ($this->objects as &$response) {
+			if ($response->time > $this->maxResponseTime) $this->maxResponseTime = $response->time;
 			$userIDs[] = $response->userID;
 			
 			$response = new StructuredCommentResponse($response);
@@ -92,5 +99,14 @@ class StructuredCommentResponseList extends CommentResponseList {
 		$likeData = array('response' => LikeHandler::getInstance()->getLikeObjects($objectType));
 		
 		return $likeData;
+	}
+	
+	/**
+	 * Returns maximum response time.
+	 *
+	 * @return	integer
+	 */
+	public function getMaxResponseTime() {
+		return $this->maxResponseTime;
 	}
 }

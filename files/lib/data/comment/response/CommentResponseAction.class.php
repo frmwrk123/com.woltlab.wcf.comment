@@ -94,7 +94,7 @@ class CommentResponseAction extends AbstractDatabaseObjectAction {
 		// update comment responses and cached response ids
 		foreach ($comments as $comment) {
 			$commentEditor = new CommentEditor($comment);
-			$commentEditor->updateLastResponseIDs();
+			$commentEditor->updateFirstResponseIDs();
 			$commentEditor->updateCounters(array(
 				'responses' => -1 * $updateComments[$comment->commentID]
 			));
@@ -144,16 +144,8 @@ class CommentResponseAction extends AbstractDatabaseObjectAction {
 		// get response list
 		$responseList = new StructuredCommentResponseList($this->commentManager, $this->comment);
 		$responseList->getConditionBuilder()->add("comment_response.time < ?", array($this->parameters['data']['lastResponseTime']));
+		$responseList->sqlLimit = 50;
 		$responseList->readObjects();
-		
-		$lastResponseTime = 0;
-		foreach ($responseList as $response) {
-			if (!$lastResponseTime) {
-				$lastResponseTime = $response->time;
-			}
-			
-			$lastResponseTime = min($lastResponseTime, $response->time);
-		}
 		
 		WCF::getTPL()->assign(array(
 			'likeData' => (MODULE_LIKE ? $responseList->getLikeData() : array()),
@@ -162,7 +154,7 @@ class CommentResponseAction extends AbstractDatabaseObjectAction {
 		
 		return array(
 			'commentID' => $this->comment->commentID,
-			'lastResponseTime' => $lastResponseTime,
+			'lastResponseTime' => $responseList->getMaxResponseTime(),
 			'template' => WCF::getTPL()->fetch('commentResponseList')
 		);
 	}

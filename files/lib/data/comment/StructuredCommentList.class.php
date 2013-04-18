@@ -24,6 +24,12 @@ class StructuredCommentList extends CommentList {
 	public $commentManager = null;
 	
 	/**
+	 * minimum comment time
+	 * @var	integer
+	 */
+	public $minCommentTime = 0;
+	
+	/**
 	 * object type id
 	 * @var	integer
 	 */
@@ -80,9 +86,11 @@ class StructuredCommentList extends CommentList {
 		$responseIDs = array();
 		$userIDs = array();
 		foreach ($this->objects as &$comment) {
-			$lastResponseIDs = $comment->getLastResponseIDs();
-			if (!empty($lastResponseIDs)) {
-				foreach ($lastResponseIDs as $responseID) {
+			if ($comment->time > $this->minCommentTime) $this->minCommentTime = $comment->time;
+			
+			$firstResponseIDs = $comment->getFirstResponseIDs();
+			if (!empty($firstResponseIDs)) {
+				foreach ($firstResponseIDs as $responseID) {
 					$this->responseIDs[] = $responseID;
 					$responseIDs[$responseID] = $comment->commentID;
 				}
@@ -159,20 +167,11 @@ class StructuredCommentList extends CommentList {
 	}
 	
 	/**
-	 * Returns last comment time.
+	 * Returns minimum comment time.
 	 * 
 	 * @return	integer
 	 */
-	public function getLastCommentTime() {
-		$lastCommentTime = 0;
-		foreach ($this->getObjects() as $comment) {
-			if (!$lastCommentTime) {
-				$lastCommentTime = $comment->time;
-			}
-			
-			$lastCommentTime = min($lastCommentTime, $comment->time);
-		}
-		
-		return $lastCommentTime;
+	public function getMinCommentTime() {
+		return $this->minCommentTime;
 	}
 }
