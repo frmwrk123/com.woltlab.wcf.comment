@@ -141,6 +141,7 @@ class CommentAction extends AbstractDatabaseObjectAction {
 		$commentList = CommentHandler::getInstance()->getCommentList($this->commentProcessor, $this->parameters['data']['objectTypeID'], $this->parameters['data']['objectID'], false);
 		$commentList->getConditionBuilder()->add("comment.time < ?", array($this->parameters['data']['lastCommentTime']));
 		$commentList->readObjects();
+		$commentList->sqlLimit = 10;
 		
 		WCF::getTPL()->assign(array(
 			'commentList' => $commentList,
@@ -148,6 +149,7 @@ class CommentAction extends AbstractDatabaseObjectAction {
 		));
 		
 		return array(
+			'lastCommentTime' => $commentList->getMinCommentTime(),
 			'template' => WCF::getTPL()->fetch('commentList')
 		);
 	}
@@ -182,7 +184,7 @@ class CommentAction extends AbstractDatabaseObjectAction {
 			'username' => WCF::getUser()->username,
 			'message' => $this->parameters['data']['message'],
 			'responses' => 0,
-			'lastResponseIDs' => serialize(array())
+			'firstResponseIDs' => serialize(array())
 		));
 		
 		// update counter
@@ -245,15 +247,14 @@ class CommentAction extends AbstractDatabaseObjectAction {
 		));
 		
 		// update response data
-		$lastResponseIDs = $this->comment->getLastResponseIDs();
-		if (count($lastResponseIDs) == 3) array_shift($lastResponseIDs);
-		$lastResponseIDs[] = $response->responseID;
+		$firstResponseIDs = $this->comment->getFirstResponseIDs();
+		if (count($firstResponseIDs) < 3) $firstResponseIDs[] = $response->responseID;
 		$responses = $this->comment->responses + 1;
 		
 		// update comment
 		$commentEditor = new CommentEditor($this->comment);
 		$commentEditor->update(array(
-			'lastResponseIDs' => serialize($lastResponseIDs),
+			'firstResponseIDs' => serialize($firstResponseIDs),
 			'responses' => $responses
 		));
 		
