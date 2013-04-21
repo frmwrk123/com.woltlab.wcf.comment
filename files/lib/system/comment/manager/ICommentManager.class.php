@@ -94,9 +94,10 @@ interface ICommentManager {
 	 * by current user.
 	 * 
 	 * @param	integer		$objectID
+	 * @param	boolean		$validateWritePermission
 	 * @return	boolean
 	 */
-	public function isAccessible($objectID);
+	public function isAccessible($objectID, $validateWritePermission = false);
 	
 	/**
 	 * Updates total count of comments (includes responses).

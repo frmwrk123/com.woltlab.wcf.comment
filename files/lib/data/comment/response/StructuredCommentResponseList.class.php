@@ -69,7 +69,7 @@ class StructuredCommentResponseList extends CommentResponseList {
 		// get user ids
 		$userIDs = array();
 		foreach ($this->objects as &$response) {
-			if (!$this->responseTime || $response->time < $this->minResponseTime) $this->minResponseTime = $response->time;
+			if (!$this->minResponseTime || $response->time < $this->minResponseTime) $this->minResponseTime = $response->time;
 			$userIDs[] = $response->userID;
 			
 			$response = new StructuredCommentResponse($response);

@@ -48,7 +48,7 @@ class UserProfileCommentManager extends AbstractCommentManager {
 	/**
 	 * @see	wcf\system\comment\manager\ICommentManager::isAccessible()
 	 */
-	public function isAccessible($objectID) {
+	public function isAccessible($objectID, $validateWritePermission = false) {
 		// check object id
 		$userProfile = UserProfile::getUserProfile($objectID);
 		if ($userProfile === null) {
@@ -61,7 +61,7 @@ class UserProfileCommentManager extends AbstractCommentManager {
 		}
 		
 		// check target user settings
-		if (!$userProfile->isAccessible('canWriteProfileComments')) {
+		if ($validateWritePermission && !$userProfile->isAccessible('canWriteProfileComments')) {
 			return false;
 		}
 		

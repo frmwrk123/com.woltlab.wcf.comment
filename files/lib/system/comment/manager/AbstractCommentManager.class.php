@@ -62,7 +62,7 @@ abstract class AbstractCommentManager extends SingletonFactory implements IComme
 	 * @see	wcf\system\comment\manager\ICommentManager::canAdd()
 	 */
 	public function canAdd($objectID) {
-		if (!$this->isAccessible($objectID)) {
+		if (!$this->isAccessible($objectID, true)) {
 			return false;
 		}
 		
