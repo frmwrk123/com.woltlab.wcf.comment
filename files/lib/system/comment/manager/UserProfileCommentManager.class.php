@@ -61,8 +61,14 @@ class UserProfileCommentManager extends AbstractCommentManager {
 		}
 		
 		// check target user settings
-		if ($validateWritePermission && !$userProfile->isAccessible('canWriteProfileComments')) {
-			return false;
+		if ($validateWritePermission) {
+			if (!$userProfile->isAccessible('canWriteProfileComments')) {
+				return false;
+			}
+			
+			if ($userProfile->isIgnoredUser(WCF::getUser()->userID)) {
+				return false;
+			}
 		}
 		
 		return true;
