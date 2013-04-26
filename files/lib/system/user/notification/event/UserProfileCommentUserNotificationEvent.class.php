@@ -1,13 +1,14 @@
 <?php
 namespace wcf\system\user\notification\event;
 use wcf\data\user\User;
+use wcf\system\request\LinkHandler;
 use wcf\system\user\notification\event\AbstractUserNotificationEvent;
 
 /**
  * User notification event for profile commments.
  * 
  * @author	Alexander Ebert
- * @copyright	2001-2012 WoltLab GmbH
+ * @copyright	2001-2013 WoltLab GmbH
  * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
  * @package	com.woltlab.wcf.comment
  * @subpackage	system.user.notification.event
@@ -40,5 +41,12 @@ class UserProfileCommentUserNotificationEvent extends AbstractUserNotificationEv
 			'author' => $this->author,
 			'owner' => $user
 		));
+	}
+	
+	/**
+	 * @see	wcf\system\user\notification\event\IUserNotificationEvent::getLink()
+	 */
+	public function getLink() {
+		return LinkHandler::getInstance()->getLink('User', array('object' => WCF::getUser()), '#wall');
 	}
 }

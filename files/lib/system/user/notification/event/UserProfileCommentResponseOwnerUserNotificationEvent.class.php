@@ -2,7 +2,9 @@
 namespace wcf\system\user\notification\event;
 use wcf\data\comment\Comment;
 use wcf\data\user\User;
+use wcf\system\request\LinkHandler;
 use wcf\system\user\notification\event\AbstractUserNotificationEvent;
+use wcf\system\WCF;
 
 /**
  * User notification event for profile's owner for commment responses.
@@ -49,5 +51,12 @@ class UserProfileCommentResponseOwnerUserNotificationEvent extends AbstractUserN
 			'commentAuthor' => $commentAuthor,
 			'owner' => $owner
 		));
+	}
+	
+	/**
+	 * @see	wcf\system\user\notification\event\IUserNotificationEvent::getLink()
+	 */
+	public function getLink() {
+		return LinkHandler::getInstance()->getLink('User', array('object' => WCF::getUser()), '#wall');
 	}
 }
