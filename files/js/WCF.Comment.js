@@ -581,7 +581,7 @@ WCF.Comment.Handler = Class.extend({
 		$content.children('input').focus();
 		
 		// hide elements
-		$content.parent().find('hgroup:eq(0)').hide();
+		$content.parent().find('.containerHeadline:eq(0)').hide();
 		$content.parent().find('.commentOptions:eq(0)').hide();
 	},
 	
@@ -657,7 +657,7 @@ WCF.Comment.Handler = Class.extend({
 	 */
 	_cancelEdit: function(input) {
 		// restore elements
-		input.parent().prev('hgroup:eq(0)').show();
+		input.parent().prev('.containerHeadline:eq(0)').show();
 		input.parent().next('.commentOptions:eq(0)').show();
 		
 		// restore HTML
@@ -689,7 +689,7 @@ WCF.Comment.Like = WCF.Like.extend({
 	 * @see	WCF.Like._buildWidget()
 	 */
 	_buildWidget: function(containerID, likeButton, dislikeButton, badge, summary) {
-		this._containers[containerID].find('hgroup:eq(0) > h1').append(badge);
+		this._containers[containerID].find('.containerHeadline:eq(0) > h3').append(badge);
 		
 		if (this._canLike) {
 			likeButton.appendTo(this._containers[containerID].find('.commentOptions:eq(0)'));
@@ -728,7 +728,7 @@ WCF.Comment.Response.Like = WCF.Like.extend({
 	 * @see	WCF.Like._buildWidget()
 	 */
 	_buildWidget: function(containerID, likeButton, dislikeButton, badge, summary) {
-		this._containers[containerID].find('hgroup:eq(0) > h1').append(badge);
+		this._containers[containerID].find('.containerHeadline:eq(0) > h3').append(badge);
 		
 		if (this._canLike) {
 			likeButton.appendTo(this._containers[containerID].find('.commentOptions:eq(0)'));
