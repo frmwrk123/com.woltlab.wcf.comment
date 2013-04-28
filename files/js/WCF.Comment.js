@@ -300,7 +300,7 @@ WCF.Comment.Handler = Class.extend({
 	 * @param	jQuery		comment
 	 */
 	_initAddResponse: function(commentID, comment) {
-		var $placeholder = $('<div class="commentResponseAdd jsCommentResponseAddPlaceholder"><a>' + WCF.Language.get('wcf.comment.button.response.add') + '</a></div>').insertBefore(comment.find('ul.commentResponseList'));
+		var $placeholder = $('<div class="commentResponseAdd jsCommentResponseAddPlaceholder"><a class="button small">' + WCF.Language.get('wcf.comment.button.response.add') + '</a></div>').insertBefore(comment.find('ul.commentResponseList'));
 		$placeholder.data('commentID', commentID).click($.proxy(this._showAddResponse, this));
 		
 		var $listItem = $('<div class="box32 commentResponseAdd jsCommentResponseAdd"><span class="framed">' + this._userAvatar + '</span><div /></div>').hide().insertAfter($placeholder);
