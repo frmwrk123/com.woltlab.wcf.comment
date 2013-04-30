@@ -55,6 +55,11 @@ class UserProfileCommentManager extends AbstractCommentManager {
 			return false;
 		}
 		
+		// current user equals owner of profile and should therefore have always access
+		if (WCF::getUser()->userID == $objectID) {
+			return true;
+		}
+		
 		// check visibility
 		if ($userProfile->isProtected()) {
 			return false;
